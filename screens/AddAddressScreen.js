@@ -1,9 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
-import { TextInput } from 'react-native';
 import { AntDesign, Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
-import { Pressable } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { UserType } from '../UserContext';
@@ -11,181 +8,138 @@ import { UserType } from '../UserContext';
 const AddAddressScreen = () => {
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
-
-  const { userId, setUserId } = useContext(UserType);
-  console.log(userId);
+  const { userId } = useContext(UserType);
+  
   useEffect(() => {
     fetchAddresses();
   }, []);
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/addresses/${userId}`
-      );
+      const response = await axios.get(`http://192.168.31.155:8000/addresses/${userId}`);
       const { addresses } = response.data;
       setAddresses(addresses);
     } catch (error) {
-      console.log('Error', error);
+      console.log('Error fetching addresses', error);
     }
   };
-  //   refress the addressess when the component come into focus
+
   useFocusEffect(
     useCallback(() => {
       fetchAddresses();
-    })
+    }, [])
   );
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 50 }}>
-      <View
-        style={{
-          backgroundColor: '#00CED1',
-          padding: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginHorizontal: 7,
-            gap: 10,
-            backgroundColor: 'white',
-            borderRadius: 3,
-            height: 38,
-            flex: 1,
-          }}
-        >
-          <AntDesign
-            style={{ paddingLeft: 10 }}
-            name="search1"
-            size={22}
-            color="black"
-          />
-          <TextInput placeholder="Search Amazon.in" />
-        </Pressable>
-        <Feather name="mic" size={24} color="black" />
-      </View>
 
-      <View style={{ padding: 10 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Your Addresses</Text>
+  return (
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Your Addresses</Text>
         <Pressable
           onPress={() => navigation.navigate('Add')}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: 10,
-            borderColor: '#D0D0D0',
-            borderWidth: 1,
-            borderLeftWidth: 0,
-            borderRightWidth: 0,
-            paddingVertical: 7,
-            paddingHorizontal: 5,
-          }}
+          style={styles.addAddressButton}
         >
-          <Text>Add a new address</Text>
+          <Text style={styles.addAddressText}>Add a new address</Text>
           <MaterialIcons name="keyboard-arrow-right" size={24} color="#000" />
         </Pressable>
 
-        <Pressable>
-          {/* all the added addresses */}
-          {addresses?.map((item, index) => (
-            <Pressable
-              key={index}
-              style={{
-                borderWidth: 1,
-                borderColor: '#D0D0D0',
-                padding: 10,
-                flexDirection: 'column',
-                gap: 5,
-                marginVertical: 10,
-              }}
-            >
-              <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}
-              >
-                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                  {item.name}
-                </Text>
-                <Entypo name="location-pin" size={24} color="red" />
-              </View>
+        {addresses?.map((item, index) => (
+          <Pressable
+            key={item.id || index}
+            style={styles.addressCard}
+          >
+            <View style={styles.addressHeader}>
+              <Text style={styles.addressName}>{item.name}</Text>
+              <Entypo name="location-pin" size={24} color="red" />
+            </View>
+            <Text style={styles.addressDetail}>{item.houseNo}, {item.landmark}</Text>
+            <Text style={styles.addressDetail}>{item.street}</Text>
+            <Text style={styles.addressDetail}>India, Rajasthan</Text>
+            <Text style={styles.addressDetail}>Phone No: {item.mobileNo}</Text>
+            <Text style={styles.addressDetail}>Pin code: {item.postalCode}</Text>
 
-              <Text style={{ fontSize: 15, color: '#181818' }}>
-                {item.houseNo}, {item.landmark}
-              </Text>
-
-              <Text style={{ fontSize: 15, color: '#181818' }}>
-                {item.street}
-              </Text>
-
-              <Text style={{ fontSize: 15, color: '#181818' }}>
-                India, Rajasthan
-              </Text>
-
-              <Text style={{ fontSize: 15, color: '#181818' }}>
-                Phone No : {item.mobileNo}
-              </Text>
-              <Text style={{ fontSize: 15, color: '#181818' }} t>
-                Pin code : {item.postalCode}
-              </Text>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                  marginTop: 7,
-                }}
-              >
-                <Pressable
-                  style={{
-                    backgroundColor: '#F5F5F5',
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 5,
-                    borderWidth: 0.9,
-                    borderColor: '#D0D0D0',
-                  }}
-                >
-                  <Text>Edit</Text>
-                </Pressable>
-
-                <Pressable
-                  style={{
-                    backgroundColor: '#F5F5F5',
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 5,
-                    borderWidth: 0.9,
-                    borderColor: '#D0D0D0',
-                  }}
-                >
-                  <Text>Remove</Text>
-                </Pressable>
-
-                <Pressable
-                  style={{
-                    backgroundColor: '#F5F5F5',
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 5,
-                    borderWidth: 0.9,
-                    borderColor: '#D0D0D0',
-                  }}
-                >
-                  <Text>Set as Default</Text>
-                </Pressable>
-              </View>
-            </Pressable>
-          ))}
-        </Pressable>
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.actionButton}><Text>Edit</Text></Pressable>
+              <Pressable style={styles.actionButton}><Text>Remove</Text></Pressable>
+              <Pressable style={styles.actionButton}><Text>Set as Default</Text></Pressable>
+            </View>
+          </Pressable>
+        ))}
       </View>
     </ScrollView>
   );
 };
 
-export default AddAddressScreen;
+const styles = StyleSheet.create({
+  scrollView: {
+    marginTop: 50,
+    backgroundColor: '#F5F5F5',
+  },
+  container: {
+    padding: 15,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    marginHorizontal: 10,
+    elevation: 3,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  addAddressButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFC72C',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    marginVertical: 10,
+    elevation: 1,
+  },
+  addAddressText: {
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  addressCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#D0D0D0',
+    padding: 15,
+    marginVertical: 10,
+    elevation: 2,
+  },
+  addressHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  addressName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+  },
+  addressDetail: {
+    fontSize: 14,
+    color: '#34495E',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  actionButton: {
+    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: '#D0D0D0',
+    alignItems: 'center',
+  },
+});
 
-const styles = StyleSheet.create({});
+export default AddAddressScreen;

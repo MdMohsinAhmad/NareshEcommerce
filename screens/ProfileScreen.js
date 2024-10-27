@@ -11,6 +11,7 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { UserType } from '../UserContext';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -65,6 +66,7 @@ const ProfileScreen = () => {
     fetchUserProfile();
   }, []);
   const logout = () => {
+    AsyncStorage.removeItem('authToken')
     clearAuthToken();
   };
   const clearAuthToken = async () => {
@@ -104,7 +106,7 @@ const ProfileScreen = () => {
           marginTop: 12,
         }}
       >
-        <Pressable
+        <Pressable onPress={()=>navigation.navigate('yourOrder')}
           style={{
             padding: 10,
             backgroundColor: '#E0E0E0',
@@ -115,7 +117,7 @@ const ProfileScreen = () => {
           <Text style={{ textAlign: 'center' }}>Your orders</Text>
         </Pressable>
 
-        <Pressable
+        <Pressable onPress={()=>navigation.navigate('yourAccount')}
           style={{
             padding: 10,
             backgroundColor: '#E0E0E0',

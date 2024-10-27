@@ -29,12 +29,11 @@ const RegisterScreen = () => {
       email: email,
       password: password,
     };
-
+    console.log(user.email)
     // send a post request to the backend API
     axios
-      .post(`http://locahost:8000/register`, user)
+      .post(`http://192.168.31.155:8000/register`, user)
       .then((response) => {
-        console.log(response);
         Alert.alert(
           'Registration Successfull',
           'You have registered successfully'

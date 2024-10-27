@@ -21,11 +21,9 @@ const CartScreen = () => {
 
   const cart = useSelector((state) => state.cart.cart);
 
-  console.log(cart);
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);
-  console.log(total);
 
   const dispatch = useDispatch();
   const increaseQuantity = (item) => {
@@ -40,7 +38,10 @@ const CartScreen = () => {
     dispatch(removeFromCart(item));
   };
   return (
-    <ScrollView style={{ marginTop: 55, flex: 1, backgroundColor: 'white' }}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+      style={{ marginTop: 55, flex: 1, backgroundColor: 'white' }}>
       <View
         style={{
           backgroundColor: '#00CED1',

@@ -16,6 +16,11 @@ import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
 import OrderScreen from '../screens/OrderScreen';
+import YourAccount from '../Dashboard/YourAccount';
+import YourOrders from '../Dashboard/YourOrders';
+import OrderHistory from '../Dashboard/YourOrders';
+import CustomHeader from './orderHeader';
+import HomeHeader from './HomeHeader';
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -30,7 +35,7 @@ const StackNavigator = () => {
           options={{
             tabBarLabel: 'Home',
             tabBarLabelStyle: '#000E97',
-            headerShown: false,
+            header: () => <HomeHeader title="Order History" />, 
             tabBarIcon: ({ focused }) =>
               focused ? (
                 <Entypo name="home" size={24} color="#000E97" />
@@ -112,6 +117,18 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Order"
           component={OrderScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="yourOrder"
+          component={OrderHistory}
+          options={{
+            header: () => <CustomHeader title="Order History" />, 
+        }}
+        />
+        <Stack.Screen
+          name="yourAccount"
+          component={YourAccount}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
