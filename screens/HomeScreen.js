@@ -314,7 +314,7 @@ const HomeScreen = () => {
         showsHorizontalScrollIndicator={false}>
         <SafeAreaView
           style={{
-            paddingTop: Platform.OS === 'android' ? 40 : 0,
+            paddingTop: Platform.OS === 'android' ? 30 : 10,
             flex: 1,
             backgroundColor: 'white',
           }}
@@ -328,7 +328,10 @@ const HomeScreen = () => {
                 <Pressable
                   key={index}
                   style={{
-                    margin: 10,
+                    marginRight: 10,
+                    marginLeft: 10,
+                    marginBottom: 10,
+                    marginTop: 10,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}

@@ -20,14 +20,14 @@ const HomeHeader = () => {
     const [address, setAddress] = useState('');
     const [pincode, setPincode] = useState({});
     const [addresses, setAddresses] = useState([]);
-
+    console.log(pincode)
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
     };
 
     useEffect(() => {
         getLocation();
-    }, []);
+    },[]);
 
     const getLocation = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -88,16 +88,16 @@ const HomeHeader = () => {
             <View style={styles.header}>
                 <Pressable onPress={() => setModalVisible(!modalVisible)} style={styles.addressButton}>
                     <Ionicons name="location" size={28} color="#005aa8" />
-                    <View>
-                        <Text style={styles.postalCodeText}>{pincode?.postalCode}</Text>
-                        <Text style={styles.cityText}>{pincode.city}</Text>
-                    </View>
+
                     {selectedAddress ? (
                         <Text style={styles.selectedAddressText}>
                             Deliver to {selectedAddress?.name} - {selectedAddress?.street}
                         </Text>
                     ) : (
-                        <Text style={styles.placeholderText} />
+                        <View>
+                            <Text style={styles.postalCodeText}>{pincode?.postalCode}</Text>
+                            <Text style={styles.cityText}>{pincode.city}</Text>
+                        </View>
                     )}
                 </Pressable>
 
@@ -165,20 +165,14 @@ const HomeHeader = () => {
                         </Pressable>
                     </ScrollView>
                     <View style={styles.pincodeSection}>
-                        <View style={styles.pincodeRow}>
-                            <Entypo name="location-pin" size={22} color="#0066B2" />
-                            <Text style={styles.pincodeText}>Enter an Indian Pincode</Text>
-                        </View>
+
                         <View style={styles.pincodeRow}>
                             <Ionicons name="locate-sharp" size={22} color="#0066B2" />
                             <Text style={styles.pincodeText} onPress={getLocation}>
                                 Use My Current Location
                             </Text>
                         </View>
-                        <View style={styles.pincodeRow}>
-                            <AntDesign name="earth" size={22} color="#0066B2" />
-                            <Text style={styles.pincodeText}>Deliver outside India</Text>
-                        </View>
+
                     </View>
                 </ModalContent>
             </BottomModal>
@@ -268,12 +262,12 @@ const styles = StyleSheet.create({
         color: '#6b6b6b',
     },
     addressCard: {
-        backgroundColor: 'white',
+        backgroundColor: '#e4f7eb',
         borderRadius: 10,
         padding: 10,
         marginHorizontal: 5,
         elevation: 2,
-        width: 200,
+        width: 200, margin: 10
     },
     selectedCard: {
         borderWidth: 2,
@@ -282,7 +276,7 @@ const styles = StyleSheet.create({
     addressRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'center', height: 50,
     },
     addressName: {
         fontWeight: 'bold',

@@ -53,178 +53,122 @@ const RegisterScreen = () => {
         console.log('registration failed', error);
       });
   };
-
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: '#fff', alignItems: 'center' }}
-    >
-      <View style={{ marginTop: 20 }}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.logoContainer}>
         <Image
-          style={{ width: 150, height: 100 }}
-          source={{
-            uri: 'https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png',
-          }}
+          style={styles.logoImage}
+          source={require('../assets/splashScreen.png')
+          }
         />
       </View>
 
-      <KeyboardAvoidingView>
-        <View style={{ alignItems: 'center' }}>
-          <Text
-            style={{
-              fontSize: 17,
-              fontWeight: 'bold',
-              marginTop: 12,
-              color: '#041E42',
-            }}
-          >
-            Register to your Account
-          </Text>
-        </View>
+      <Text style={styles.titleText}>Register to your Account</Text>
 
-        <View style={{ marginTop: 70 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#D0D0D0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}
-          >
-            <Ionicons
-              name="ios-person"
-              size={24}
-              color="gray"
-              style={{ marginLeft: 8 }}
-            />
-            <TextInput
-              value={name}
-              onChangeText={(text) => setName(text)}
-              style={{
-                color: 'gray',
-                marginVertical: 10,
-                width: 300,
-                fontSize: name ? 16 : 16,
-              }}
-              placeholder="enter your Name"
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
-              backgroundColor: '#D0D0D0',
-              paddingVertical: 5,
-              borderRadius: 5,
-              marginTop: 30,
-            }}
-          >
-            <AntDesign
-              name="lock1"
-              size={24}
-              color="gray"
-              style={{ marginLeft: 8 }}
-            />
-            <TextInput
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              style={{
-                color: 'gray',
-                marginVertical: 10,
-                width: 300,
-                fontSize: email ? 16 : 16,
-              }}
-              placeholder="enter your Email"
-            />
-          </View>
-        </View>
+      <View style={styles.inputContainer}>
+        <Ionicons name="ios-person" size={24} style={styles.inputIcon} />
+        <TextInput
+          value={name}
+          onChangeText={(text) => setName(text)}
+          style={styles.inputField}
+          placeholder="Enter your Name"
+        />
+      </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 5,
-            backgroundColor: '#D0D0D0',
-            paddingVertical: 5,
-            borderRadius: 5,
-            marginTop: 30,
-          }}
-        >
-          <MaterialIcons
-            name="email"
-            size={24}
-            color="gray"
-            style={{ marginLeft: 8 }}
-          />
-          <TextInput
-            value={password}
-            secureTextEntry={true}
-            onChangeText={(text) => setPassword(text)}
-            style={{
-              color: 'gray',
-              marginVertical: 10,
-              width: 300,
-              fontSize: password ? 16 : 16,
-            }}
-            placeholder="enter your Password"
-          />
-        </View>
+      <View style={styles.inputContainer}>
+        <MaterialIcons name="email" size={24} style={styles.inputIcon} />
+        <TextInput
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          style={styles.inputField}
+          placeholder="Enter your Email"
+        />
+      </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 12,
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Text>Keep me logged in</Text>
-          <Text style={{ color: '#007FFF', fontWeight: '500' }}>
-            Forgot Password
-          </Text>
-        </View>
+      <View style={styles.inputContainer}>
+        <AntDesign name="lock1" size={24} style={styles.inputIcon} />
+        <TextInput
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          style={styles.inputField}
+          placeholder="Enter your Password"
+          secureTextEntry
+        />
+      </View>
 
-        <View style={{ marginTop: 50 }} />
+      <Pressable onPress={handleRegister} style={styles.button}>
+        <Text style={styles.buttonText}>Register</Text>
+      </Pressable>
 
-        <Pressable
-          onPress={handleRegister}
-          style={{
-            width: 200,
-            backgroundColor: '#FEBE10',
-            borderRadius: 6,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            padding: 15,
-          }}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              fontSize: 16,
-              fontWeight: 'bold',
-            }}
-          >
-            Register
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={{ marginTop: 15 }}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={{ textAlign: 'center', color: 'gray', fontSize: 16 }}>
-            Already have an account? Sign In
-          </Text>
-        </Pressable>
-      </KeyboardAvoidingView>
+      <Pressable onPress={() => navigation.goBack()}>
+        <Text style={styles.footerText}>Already have an account? Sign In</Text>
+      </Pressable>
     </SafeAreaView>
-  );
+  )
 };
 
 export default RegisterScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  logoContainer: {
+    marginTop: 80,
+    alignItems: 'center',
+  },
+  logoImage: {
+    width: 150,
+    height: 150,
+  },
+  titleText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#041E42',
+    marginVertical: 20,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFEFEF',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginBottom: 15,
+    width: '100%',
+  },
+  inputIcon: {
+    marginRight: 10,
+    color: 'gray',
+  },
+  inputField: {
+    color: '#333',
+    fontSize: 16,
+    flex: 1,
+  },
+  button: {
+    width: 200,
+    backgroundColor: '#FEBE10',
+    borderRadius: 6,
+    paddingVertical: 15,
+    alignSelf: 'center',
+    marginTop: 40,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  footerText: {
+    textAlign: 'center',
+    color: 'gray',
+    fontSize: 16,
+    marginTop: 20,
+  },
+});
+

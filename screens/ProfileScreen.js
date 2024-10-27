@@ -18,20 +18,14 @@ const ProfileScreen = () => {
   const { userId, setUserId } = useContext(UserType);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: '',
+      headerTitle: 'Dashboard',
       headerStyle: {
-        backgroundColor: '#00CED1',
+        backgroundColor: 'transparent',
       },
-      headerLeft: () => (
-        <Image
-          style={{ width: 140, height: 120, resizeMode: 'contain' }}
-          source={{
-            uri: 'https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c518.png',
-          }}
-        />
-      ),
+     
       headerRight: () => (
         <View
           style={{
@@ -41,9 +35,9 @@ const ProfileScreen = () => {
             marginRight: 12,
           }}
         >
-          <Ionicons name="notifications-outline" size={24} color="black" />
+          {/* <Ionicons name="notifications-outline" size={24} color="black" />
 
-          <AntDesign name="search1" size={24} color="black" />
+          <AntDesign name="search1" size={24} color="black" /> */}
         </View>
       ),
     });
@@ -65,6 +59,7 @@ const ProfileScreen = () => {
 
     fetchUserProfile();
   }, []);
+  
   const logout = () => {
     AsyncStorage.removeItem('authToken')
     clearAuthToken();
@@ -93,111 +88,114 @@ const ProfileScreen = () => {
   }, []);
   console.log('orders', orders);
   return (
-    <ScrollView style={{ padding: 10, flex: 1, backgroundColor: 'white' }}>
-      <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-        Welcome {user?.name}
-      </Text>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          marginTop: 12,
-        }}
-      >
-        <Pressable onPress={()=>navigation.navigate('yourOrder')}
-          style={{
-            padding: 10,
-            backgroundColor: '#E0E0E0',
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: 'center' }}>Your orders</Text>
-        </Pressable>
-
-        <Pressable onPress={()=>navigation.navigate('yourAccount')}
-          style={{
-            padding: 10,
-            backgroundColor: '#E0E0E0',
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: 'center' }}>Your Account</Text>
-        </Pressable>
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          marginTop: 12,
-        }}
-      >
-        <Pressable
-          style={{
-            padding: 10,
-            backgroundColor: '#E0E0E0',
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: 'center' }}>Buy Again</Text>
-        </Pressable>
-
-        <Pressable
-          onPress={logout}
-          style={{
-            padding: 10,
-            backgroundColor: '#E0E0E0',
-            borderRadius: 25,
-            flex: 1,
-          }}
-        >
-          <Text style={{ textAlign: 'center' }}>Logout</Text>
-        </Pressable>
-      </View>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : orders.length > 0 ? (
-          orders.map((order) => (
-            <Pressable
-              style={{
-                marginTop: 20,
-                padding: 15,
-                borderRadius: 8,
-                borderWidth: 1,
-                borderColor: '#d0d0d0',
-                marginHorizontal: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              key={order._id}
-            >
-              {/* Render the order information here */}
-              {order.products.slice(0, 1)?.map((product) => (
-                <View style={{ marginVertical: 10 }} key={product._id}>
-                  <Image
-                    source={{ uri: product.image }}
-                    style={{ width: 100, height: 100, resizeMode: 'contain' }}
-                  />
-                </View>
-              ))}
-            </Pressable>
-          ))
-        ) : (
-          <Text>No orders found</Text>
-        )}
+   
+      <ScrollView style={styles.container}>
+        <Text style={styles.headerText}>Welcome {user?.name}</Text>
+    
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
+          <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>Your orders</Text>
+          </Pressable>
+    
+          <Pressable onPress={() => navigation.navigate('yourAccount')} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>Your Account</Text>
+          </Pressable>
+        </View>
+    
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
+          <Pressable style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>Buy Again</Text>
+          </Pressable>
+    
+          <Pressable onPress={logout} style={styles.actionButton}>
+            <Text style={styles.actionButtonText}>Logout</Text>
+          </Pressable>
+        </View>
+    
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {loading ? (
+            <Text></Text>
+          ) : orders.length > 0 ? (
+            orders.map((order) => (
+              <Pressable style={styles.orderContainer} key={order._id}>
+                {order.products.slice(0, 1)?.map((product) => (
+                  <View style={{ marginVertical: 10 }} key={product._id}>
+                    <Image source={{ uri: product.image }} style={styles.productImage} />
+                  </View>
+                ))}
+              </Pressable>
+            ))
+          ) : (
+            <Text style={styles.noOrdersText}>No orders found</Text>
+          )}
+        </ScrollView>
       </ScrollView>
-    </ScrollView>
-  );
+    );
+    
+
 };
+
+// export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    flex: 1,
+    backgroundColor: '#f7f8fa',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  actionButton: {
+    padding: 15,
+    backgroundColor: '#4CAF50',
+    borderRadius: 25,
+    flex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  actionButtonText: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  orderContainer: {
+    marginTop: 20,
+    padding: 15,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    marginHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  noOrdersText: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+});
 
 export default ProfileScreen;
 
-const styles = StyleSheet.create({});
