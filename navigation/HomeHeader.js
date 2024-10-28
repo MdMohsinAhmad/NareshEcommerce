@@ -1,33 +1,41 @@
-import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
-import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { BottomModal, ModalContent, SlideAnimation } from 'react-native-modals';
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
-import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { UserType } from '../UserContext';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-
+import DropDownPicker from 'react-native-dropdown-picker';
+import Octicons from '@expo/vector-icons/Octicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState('');
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        { label: 'Profile', value: 'profile' },
+        { label: 'Settings', value: 'settings' },
+        { label: 'Logout', value: 'logout' },
+    ]);
     const navigation = useNavigation();
     const [address, setAddress] = useState('');
     const [pincode, setPincode] = useState({});
     const [addresses, setAddresses] = useState([]);
-    console.log(pincode)
+
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
+        setOpen(!open);
     };
 
     useEffect(() => {
         getLocation();
-    },[]);
+    }, []);
 
     const getLocation = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -41,15 +49,9 @@ const HomeHeader = () => {
         const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
 
         if (result) {
-            const street = result.street || '';
-            const city = result.city || '';
-            const region = result.region || '';
-            const country = result.country || '';
-            const postalCode = result.postalCode || '';
-            const formattedAddress = `${street ? street + ', ' : ''}${city}${city && region ? ', ' : ''}${region}${region && country ? ', ' : ''}${country}${postalCode ? ' - ' + postalCode : ''}`;
-
+            const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
             setAddress(formattedAddress);
-            setPincode({ postalCode, city });
+            setPincode({ postalCode: result.postalCode, city: result.city });
         } else {
             alert("Error", "Unable to retrieve address.");
         }
@@ -83,12 +85,36 @@ const HomeHeader = () => {
         fetchUser();
     }, []);
 
+    const clearAuthToken = async () => {
+        await AsyncStorage.removeItem('authToken');
+        navigation.replace('Login');
+    };
+
+    const handleBarsButton = (num) => {
+        if (num == 1) {
+            setDrawerOpen(!drawerOpen);
+            navigation.navigate('Cart')
+        }
+        if (num == 2) {
+            setDrawerOpen(!drawerOpen);
+            navigation.navigate('yourAccount')
+            
+        }
+        if (num == 3) {
+            setDrawerOpen(!drawerOpen);
+            navigation.navigate('yourOrder')
+            
+        }
+        if (num == 4) {
+            setDrawerOpen(!drawerOpen);
+            clearAuthToken();
+        }
+    }
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Pressable onPress={() => setModalVisible(!modalVisible)} style={styles.addressButton}>
                     <Ionicons name="location" size={28} color="#005aa8" />
-
                     {selectedAddress ? (
                         <Text style={styles.selectedAddressText}>
                             Deliver to {selectedAddress?.name} - {selectedAddress?.street}
@@ -101,96 +127,39 @@ const HomeHeader = () => {
                     )}
                 </Pressable>
 
-                {drawerOpen ? (
-                    <Entypo name="cross" size={35} color="#005aa8" onPress={toggleDrawer} />
-                ) : (
-                    <FontAwesome
-                        name="bars"
-                        size={29}
-                        color="#005aa8"
-                        onPress={toggleDrawer}
-                        style={styles.barsIcon}
-                    />
-                )}
+                <FontAwesome
+                    name={drawerOpen ? "bars" : "bars"}
+                    size={29}
+                    color="#005aa8"
+                    onPress={toggleDrawer}
+                    style={styles.barsIcon}
+                />
             </View>
-            <BottomModal
-                onBackdropPress={() => setModalVisible(!modalVisible)}
-                swipeDirection={['up', 'down']}
-                swipeThreshold={200}
-                modalAnimation={new SlideAnimation({ slideFrom: 'bottom' })}
-                onHardwareBackPress={() => setModalVisible(!modalVisible)}
-                visible={modalVisible}
-                onTouchOutside={() => setModalVisible(!modalVisible)}
-            >
-                <ModalContent style={styles.modalContent}>
-                    <View style={styles.modalHeader}>
-                        <Text style={styles.modalTitle}>Choose your Location</Text>
-                        <Text style={styles.modalSubtitle}>
-                            Select a delivery location to see product availability and delivery options
-                        </Text>
-                    </View>
 
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {addresses?.map((item, index) => (
-                            <Pressable
-                                onPress={() => setSelectedAddress(item)}
-                                key={index}
-                                style={[styles.addressCard, selectedAddress === item && styles.selectedCard]}
-                            >
-                                <View style={styles.addressRow}>
-                                    <Text style={styles.addressName}>{item?.name}</Text>
-                                    <Entypo name="location-pin" size={24} color="red" />
-                                </View>
-                                <Text style={styles.addressDetail} numberOfLines={1}>
-                                    {item?.houseNo}, {item?.landmark}
-                                </Text>
-                                <Text style={styles.addressDetail} numberOfLines={1}>
-                                    {item?.street}
-                                </Text>
-                                <Text style={styles.addressDetail} numberOfLines={1}>
-                                    India, Rajasthan
-                                </Text>
-                            </Pressable>
-                        ))}
-                        <Pressable
-                            onPress={() => {
-                                setModalVisible(false);
-                                navigation.navigate('Address');
-                            }}
-                            style={styles.addAddressCard}
-                        >
-                            <Text style={styles.addAddressText}>
-                                Add an Address or pick-up point
-                            </Text>
-                        </Pressable>
-                    </ScrollView>
-                    <View style={styles.pincodeSection}>
+            {drawerOpen && (
 
-                        <View style={styles.pincodeRow}>
-                            <Ionicons name="locate-sharp" size={22} color="#0066B2" />
-                            <Text style={styles.pincodeText} onPress={getLocation}>
-                                Use My Current Location
-                            </Text>
-                        </View>
+                <View style={{ backgroundColor: 'white', height: 900, width: 200, position: 'absolute', right: 0, top: 0 }}>
+                    <View style={{ paddingTop: 100, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10, gap: 20 }}>
+                        <TouchableOpacity onPress={() => handleBarsButton(1)} style={{ display: 'flex', flexDirection: 'row', gap: 5, borderWidth: 1, borderColor: 'black', borderRadius: 6, width: 180, padding: 6, alignItems: 'center', justifyContent: 'center', backgroundColor: 'green' }}>
+                            <Ionicons name="cart" size={24} color="white" />
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>Cart</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleBarsButton(2)} style={{ display: 'flex', flexDirection: 'row', gap: 5, borderWidth: 1, borderColor: 'black', borderRadius: 6, width: 180, padding: 6, alignItems: 'center', justifyContent: 'center', backgroundColor: 'green' }}>
+                            <FontAwesome name="user-circle" size={24} color="white" />
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>Profile</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleBarsButton(3)} style={{ display: 'flex', flexDirection: 'row', gap: 5, borderWidth: 1, borderColor: 'black', borderRadius: 6, width: 180, padding: 6, alignItems: 'center', justifyContent: 'center', backgroundColor: 'green' }}>
+                            <Octicons name="history" size={24} color="white" />
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>Orders</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleBarsButton(4)} style={{ display: 'flex', flexDirection: 'row', gap: 5, borderWidth: 1, borderColor: 'black', borderRadius: 6, width: 180, padding: 6, alignItems: 'center', justifyContent: 'center', backgroundColor: 'orange',marginTop:40 }}>
+                            <MaterialCommunityIcons name="logout" size={24} color="white" />
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>LogOut</Text>
+                        </TouchableOpacity>
 
                     </View>
-                </ModalContent>
-            </BottomModal>
-            <BottomModal
-                onBackdropPress={() => setDrawerOpen(!drawerOpen)}
-                swipeDirection={['up', 'down']}
-                swipeThreshold={200}
-                modalAnimation={new SlideAnimation({ slideFrom: 'right' })}
-                onHardwareBackPress={() => setDrawerOpen(!drawerOpen)}
-                visible={drawerOpen}
-                onTouchOutside={() => setDrawerOpen(!drawerOpen)}
-            >
-                <ModalContent style={styles.sidebarContent}>
-                    <View>
-                        <Text>Hello</Text>
-                    </View>
-                </ModalContent>
-            </BottomModal>
+                </View>
+            )}
         </View>
     );
 };
@@ -234,88 +203,12 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: '500',
     },
-    placeholderText: {
-        fontSize: 13,
-        fontWeight: '500',
-    },
     barsIcon: {
         paddingRight: 10,
     },
-    modalContent: {
-        width: '100%',
-        height: 'auto',
-        backgroundColor: 'white',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        padding: 20,
-    },
-    modalHeader: {
-        marginBottom: 15,
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#005aa8',
-    },
-    modalSubtitle: {
-        fontSize: 14,
-        color: '#6b6b6b',
-    },
-    addressCard: {
-        backgroundColor: '#e4f7eb',
-        borderRadius: 10,
-        padding: 10,
-        marginHorizontal: 5,
-        elevation: 2,
-        width: 200, margin: 10
-    },
-    selectedCard: {
-        borderWidth: 2,
-        borderColor: '#005aa8',
-    },
-    addressRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center', height: 50,
-    },
-    addressName: {
-        fontWeight: 'bold',
-        color: '#005aa8',
-    },
-    addressDetail: {
-        fontSize: 12,
-        color: 'grey',
-    },
-    addAddressCard: {
-        padding: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 5,
-        marginTop: 10,
-    },
-    addAddressText: {
-        fontSize: 14,
-        color: '#005aa8',
-        fontWeight: 'bold',
-    },
-    pincodeSection: {
-        marginTop: 20,
-        padding: 10,
-    },
-    pincodeRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 5,
-    },
-    pincodeText: {
-        marginLeft: 10,
-        color: '#0066B2',
-        fontSize: 14,
-    },
-    sidebarContent: {
-        width: '70%',
-        height: '90%',
-        backgroundColor: 'white',
-        padding: 20,
+    dropdownContainer: {
+        width: '40%',
+        alignSelf: 'flex-end',
+        zIndex: 1000, marginTop: -15, marginRight: 4,
     },
 });

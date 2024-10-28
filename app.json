@@ -2,6 +2,10 @@
   "expo": {
     "name": "ecommerce-project",
     "slug": "ecommerce-project",
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,14 +22,20 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "host.exp.exponent"
+      "package": "com.mdmohsin9701.ecommerceproject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0d1495f0-af2a-492d-8133-1c0fe88ed08d"
+      }
     }
   }
 }

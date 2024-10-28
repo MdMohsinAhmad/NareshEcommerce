@@ -542,4 +542,102 @@ const ConfirmationScreen = () => {
 
 export default ConfirmationScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+    paddingHorizontal: 20,
+    paddingTop: 55,
+  },
+  stepContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  step: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#D1D5DB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepActiveCircle: {
+    backgroundColor: '#16A34A',
+  },
+  stepText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  stepTitle: {
+    textAlign: 'center',
+    marginTop: 8,
+    color: '#4B5563',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 15,
+  },
+  addressOption: {
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    padding: 15,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  addressText: {
+    fontSize: 15,
+    color: '#374151',
+  },
+  actionButton: {
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginRight: 10,
+  },
+  primaryButton: {
+    backgroundColor: '#FFC72C',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  primaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  deliveryOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginTop: 12,
+  },
+  summaryContainer: {
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginTop: 15,
+  },
+});
+

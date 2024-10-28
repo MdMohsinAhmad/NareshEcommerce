@@ -2,6 +2,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/CartReducer';
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 
 const ProductItem = ({ item }) => {
   const [addedToCart, setAddedToCart] = useState(false);

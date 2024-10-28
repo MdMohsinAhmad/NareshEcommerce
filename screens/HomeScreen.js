@@ -21,7 +21,7 @@ import { SliderBox } from 'react-native-image-slider-box';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductItem from '../components/ProductItem';
-// import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { BottomModal, ModalContent, SlideAnimation } from 'react-native-modals';

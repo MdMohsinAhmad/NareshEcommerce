@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "832337434087",
+    "project_id": "naresh-ecommerce-otp-auth",
+    "storage_bucket": "naresh-ecommerce-otp-auth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832337434087:android:4a8a237e087b3e9a791942",
+        "android_client_info": {
+          "package_name": "com.mdmohsin9701.ecommerceproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKcLYVQrXEHoscz2sBpQRVmIKYJt2AdTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
