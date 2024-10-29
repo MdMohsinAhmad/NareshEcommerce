@@ -247,6 +247,18 @@ const HomeScreen = () => {
     }
   }, [userId, modalVisible]);
 
+  const [getproducts, setGetProducts] = useState([])
+
+  const fetchProducts = async () => {
+    const response = await axios.get('http://192.168.31.155:8800/api/products');
+    setGetProducts(response.data);
+  };
+
+
+  useEffect(() => {
+    fetchProducts()
+  }, [userId])
+
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
@@ -300,9 +312,9 @@ const HomeScreen = () => {
       const postalCode = result.postalCode ? result.postalCode : '';
 
       const formattedAddress = `${street ? street + ', ' : ''}${city}${city && region ? ', ' : ''}${region}${region && country ? ', ' : ''}${country}${postalCode ? ' - ' + postalCode : ''}`;
-// console.log(city)
+      // console.log(city)
       setAddress(formattedAddress);
-      setPincode({postalCode,city})
+      setPincode({ postalCode, city })
     } else {
       alert("Error", "Unable to retrieve address.");
     }
@@ -321,7 +333,7 @@ const HomeScreen = () => {
         >
           <ScrollView showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
-           
+
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {list.map((item, index) => (
@@ -510,11 +522,10 @@ const HomeScreen = () => {
                 flexWrap: 'wrap',
               }}
             >
-              {products
-                ?.filter((item) => item.category === category)
-                .map((item, index) => (
-                  <ProductItem item={item} key={index} />
-                ))}
+
+              {getproducts.map(getproducts => (
+                <ProductItem key={getproducts._id} product={getproducts} />
+              ))}
             </View>
           </ScrollView>
         </SafeAreaView>

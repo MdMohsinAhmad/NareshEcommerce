@@ -4,10 +4,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,16 +15,48 @@ import {
   removeFromCart,
 } from '../redux/CartReducer';
 import { useNavigation } from '@react-navigation/native';
+
 const CartScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation(); // Moved up for better context
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350,height:20 }}>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 19 }}>
+            Cart Section
+          </Text>
+        </View>
+      ),
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+      headerRight: () => (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            marginRight: 12,
+            fontSize: 13,
+          }}
+        >
+          {/* Add any buttons or icons here */}
+        </View>
+      ),
+    });
+  }, [navigation]);
 
   const cart = useSelector((state) => state.cart.cart);
-
+  
+  // Calculate total price
   const total = cart
     ?.map((item) => item.price * item.quantity)
-    .reduce((curr, prev) => curr + prev, 0);
+    .reduce((curr, prev) => curr + prev, 0) || 0; // Added fallback to avoid NaN
 
   const dispatch = useDispatch();
+
   const increaseQuantity = (item) => {
     dispatch(incrementQuantity(item));
   };
@@ -37,48 +68,19 @@ const CartScreen = () => {
   const deleteItem = (item) => {
     dispatch(removeFromCart(item));
   };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
-      style={{ marginTop: 55, flex: 1, backgroundColor: 'white' }}>
-      <View
-        style={{
-          backgroundColor: '#00CED1',
-          padding: 10,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginHorizontal: 7,
-            gap: 10,
-            backgroundColor: 'white',
-            borderRadius: 3,
-            height: 38,
-            flex: 1,
-          }}
-        >
-          <AntDesign
-            style={{ paddingLeft: 10 }}
-            name="search1"
-            size={22}
-            color="black"
-          />
-          <TextInput placeholder="Search Amazon.in" />
-        </Pressable>
-        <Feather name="mic" size={24} color="black" />
-      </View>
-
+      style={{ marginTop: 0, flex: 1, backgroundColor: 'white' }}
+    >
       <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ fontSize: 18, fontWeight: '400' }}>Subtotal : </Text>
+        <Text style={{ fontSize: 18, fontWeight: '400' }}>Subtotal: </Text>
         <Text style={{ fontSize: 20, fontWeight: 'bold' }}>₹{total}</Text>
       </View>
 
-      <Text style={{ marginHorizontal: 10 }}>EMI details Available</Text>
+      {/* <Text style={{ marginHorizontal: 10 }}>EMI details available</Text> */}
 
       <Pressable
         onPress={() => navigation.navigate('Confirm')}
@@ -94,6 +96,7 @@ const CartScreen = () => {
       >
         <Text>Proceed to Buy ({cart.length}) item</Text>
       </Pressable>
+
       <Text
         style={{
           height: 1,
@@ -124,7 +127,7 @@ const CartScreen = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <View style={{}}>
+              <View>
                 <Image
                   style={{ width: 140, height: 140, resizeMode: 'contain' }}
                   source={{ uri: item?.image }}
@@ -134,10 +137,8 @@ const CartScreen = () => {
                 <Text numberOfLines={3} style={{ width: 150, marginTop: 10 }}>
                   {item?.title}
                 </Text>
-                <Text
-                  style={{ fontSize: 20, fontWeight: 'bold', marginTop: 6 }}
-                >
-                  {item?.price}
+                <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 6 }}>
+                  ₹{item?.price}
                 </Text>
                 <Image
                   style={{ width: 30, height: 30, resizeMode: 'contain' }}
@@ -146,9 +147,6 @@ const CartScreen = () => {
                   }}
                 />
                 <Text style={{ color: 'green' }}>In Stock</Text>
-                {/* <Text style={{ fontWeight: '500', marginTop: 6 }}>
-                  {item?.rating?.rate} ratings
-                </Text> */}
               </View>
             </Pressable>
 
@@ -265,7 +263,7 @@ const CartScreen = () => {
                   borderWidth: 0.6,
                 }}
               >
-                <Text>See More Like this</Text>
+                <Text>See More Like This</Text>
               </Pressable>
             </Pressable>
           </View>

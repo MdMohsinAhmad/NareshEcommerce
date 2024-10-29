@@ -1,72 +1,106 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/CartReducer';
-import { ViewPropTypes } from 'deprecated-react-native-prop-types';
+// Uncomment the next line if you want to use PropTypes
+// import PropTypes from 'prop-types';
 
-const ProductItem = ({ item }) => {
+const ProductItem = ({ product }) => {
   const [addedToCart, setAddedToCart] = useState(false);
-
   const dispatch = useDispatch();
+
   const addItemToCart = (item) => {
     setAddedToCart(true);
     dispatch(addToCart(item));
+
+    // Reset the addedToCart state after 1 minute
     setTimeout(() => {
       setAddedToCart(false);
     }, 60000);
   };
 
   return (
-    <Pressable style={{ marginHorizontal: 20, marginVertical: 25 }}>
+    <Pressable style={styles.container}>
       <Image
-        source={{ uri: item?.image }}
-        style={{ width: 150, height: 150, resizeMode: 'contain' }}
+        source={{ uri: product?.image }}
+        style={styles.image}
       />
-      <Text style={{ width: 150, marginTop: 10 }} numberOfLines={1}>
-        {item?.title}
+      <Text style={styles.title} numberOfLines={1}>
+        {product?.title}
       </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 5,
-          justifyContent: 'space-between',
-        }}
-      >
-        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>₹{item?.price}</Text>
-        <Text style={{ color: '#FFC72C', fontWeight: 'bold' }}>
-          {item?.rating?.rate} ratings
+      <View style={styles.priceContainer}>
+        <Text style={styles.price}>₹{product?.price}</Text>
+        <Text style={styles.rating}>
+          {/* {product?.rating?.rate} ratings */}
         </Text>
       </View>
 
       <Pressable
-        onPress={() => addItemToCart(item)}
-        style={{
-          backgroundColor: '#FFC72C',
-          padding: 10,
-          borderRadius: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginHorizontal: 10,
-          marginTop: 10,
-        }}
+        onPress={() => addItemToCart(product)}
+        style={styles.button}
+        disabled={addedToCart} // Disable button when added to cart
       >
-        <Text>
-          {addedToCart ? (
-            <View>
-              <Text>Added to Cart</Text>
-            </View>
-          ) : (
-            <View>
-              <Text>Add to Cart</Text>
-            </View>
-          )}
+        <Text style={styles.buttonText}>
+          {addedToCart ? 'Added to Cart' : 'Add to Cart'}
         </Text>
       </Pressable>
     </Pressable>
   );
 };
 
+// Optional: Add PropTypes for better type-checking
+// ProductItem.propTypes = {
+//   product: PropTypes.shape({
+//     image: PropTypes.string.isRequired,
+//     title: PropTypes.string.isRequired,
+//     price: PropTypes.number.isRequired,
+//     rating: PropTypes.shape({
+//       rate: PropTypes.number,
+//     }),
+//   }).isRequired,
+// };
+
 export default ProductItem;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 20,
+    marginVertical: 25,
+    alignItems: 'center',
+  },
+  image: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+  },
+  title: {
+    width: 150,
+    marginTop: 10,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    justifyContent: 'space-between',
+  },
+  price: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  rating: {
+    color: '#FFC72C',
+    fontWeight: 'bold',
+  },
+  button: {
+    backgroundColor: '#FFC72C',
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginTop: 10,
+  },
+  buttonText: {
+    fontWeight: 'bold',
+  },
+});

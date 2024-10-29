@@ -17,11 +17,10 @@ import ProfileScreen from '../screens/ProfileScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
 import OrderScreen from '../screens/OrderScreen';
 import YourAccount from '../Dashboard/YourAccount';
-import YourOrders from '../Dashboard/YourOrders';
 import OrderHistory from '../Dashboard/YourOrders';
 import CustomHeader from './orderHeader';
 import HomeHeader from './HomeHeader';
-
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -64,10 +63,10 @@ const StackNavigator = () => {
           options={{
             tabBarLabel: 'Cart',
             tabBarLabelStyle: '#000E97',
-            headerShown: false,
+            headerShown: true,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <AntDesign name="shoppingcart" size={24} color="#000E97" />
+                <FontAwesome5 name="shopping-cart" size={20} color="black" />
               ) : (
                 <AntDesign name="shoppingcart" size={24} color="black" />
               ),
@@ -131,6 +130,7 @@ const StackNavigator = () => {
           component={YourAccount}
           options={{ headerShown: false }}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

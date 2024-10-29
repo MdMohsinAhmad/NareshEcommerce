@@ -1,10 +1,15 @@
 // CustomHeader.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 const CustomHeader = ({ title }) => {
+
+    const navigation = useNavigation()
     return (
         <View style={styles.headerContainer}>
+            <MaterialIcons onPress={()=>navigation.goBack()} style={{ position: 'absolute', left: 25, fontWeight: 'bold' }} name="arrow-back-ios-new" size={24} color="black" />
+
             <Text style={styles.headerTitle}>{title}</Text>
         </View>
     );

@@ -4,7 +4,7 @@
     "slug": "ecommerce-project",
     "plugins": [
       "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      "@react-native-firebase/auth",
     ],
     "version": "1.0.0",
     "orientation": "portrait",

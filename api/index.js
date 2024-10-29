@@ -1,64 +1,73 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const crypto = require('crypto');
-const app = express();
-const port = 8000;
 const cors = require('cors');
-app.use(cors());
-const { ADDTOCART, GETFROMCART, REGISTER, VERIFYTOKEN, ADDRESS, GETADDRESS, DELETECART, ORDER, GETPROFILE, GETORDER, LOGIN } = require('./models/Functionality')
+require('dotenv').config();
 
+const app = express();
+const port = 8800;
+
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// const jwt = require('jsonwebtoken');
-const MONGO_URL = 'mongodb+srv://ecommerce:ecommerce@ecommerce.vdosh.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=ecommerce'
+
+// const MONGO_URL = process.env.MONGO_URL; // Use an environment variable
+const MONGO_URL = 'mongodb+srv://ecommerce:ecommerce@ecommerce.vdosh.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=ecommerce';
+
 mongoose
-  .connect(`${MONGO_URL}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect(MONGO_URL, {
+
   })
   .then(() => {
     console.log('Connected to MongoDB');
   })
   .catch((err) => {
-    console.log('Error connecting to MongoDB', err);
+    console.error('Error connecting to MongoDB', err);
   });
 
+// Product Schema
+const productSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  price: Number,
+  image: String,
+});
 
-// endpoint to register user
+const Product = mongoose.model('Product', productSchema);
+// User authentication endpoints
+const { ADDTOCART, GETFROMCART, REGISTER, VERIFYTOKEN, ADDRESS, GETADDRESS, DELETECART, ORDER, GETPROFILE, GETORDER, LOGIN } = require('./models/Functionality');
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, message: 'Something went wrong!' });
+});
+// Retrieve product from MongoDB database
+app.get('/api/products', async (req, res, next) => {
+  try {
+    const products = await Product.find();
+    res.json(products );
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.post('/register', REGISTER);
-
-//endpoint to verify the email
 app.get('/verify/:token', VERIFYTOKEN);
-
-// endpoint to login the user
 app.post('/login', LOGIN);
-
-// endpoint to store a new address into the backend
 app.post('/addresses', ADDRESS);
-
-//endpoint to get all the addresses of a particular user
 app.get('/addresses/:userId', GETADDRESS);
-
-// add to cart
 app.post('/addtocart', ADDTOCART);
-
-// Retrive cart item from database
 app.get('/getcart', GETFROMCART);
-
-// Detele from database of cart items
 app.delete('/deletecartitem/:id', DELETECART);
-
-
-//endpoint to store all the orders
 app.post('/orders', ORDER);
-
-//get the user profile
 app.get('/profile/:userId', GETPROFILE);
-
-// get the order of that particular user
 app.get('/orders/:userId', GETORDER);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
 
 app.listen(port, () => {
   console.log(`Server is running on Port ${port}`);

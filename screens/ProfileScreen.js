@@ -21,27 +21,30 @@ const ProfileScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Dashboard',
+      headerTitle: () => (
+        <View style={{ flex: 1, alignItems: 'center',justifyContent:'center',width:350 }}>
+        <Text style={{ color: 'black', fontWeight: 'bold',fontSize:19,fontWeight:'bold' }}>Dashboard</Text>
+      </View>
+            ),
       headerStyle: {
         backgroundColor: 'transparent',
       },
-     
       headerRight: () => (
         <View
           style={{
+            display:'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: 6,
-            marginRight: 12,
+            marginRight: 12,fontSize:13
           }}
         >
-          {/* <Ionicons name="notifications-outline" size={24} color="black" />
-
-          <AntDesign name="search1" size={24} color="black" /> */}
+          {/* Add any buttons or icons here */}
         </View>
       ),
     });
-  }, []);
+  }, [navigation]);
 
   const [user, setUser] = useState();
   useEffect(() => {
@@ -59,7 +62,7 @@ const ProfileScreen = () => {
 
     fetchUserProfile();
   }, []);
-  
+
   const logout = () => {
     AsyncStorage.removeItem('authToken')
     clearAuthToken();
@@ -69,6 +72,7 @@ const ProfileScreen = () => {
     console.log('auth token cleared');
     navigation.replace('Login');
   };
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -86,52 +90,51 @@ const ProfileScreen = () => {
 
     fetchOrders();
   }, []);
-  console.log('orders', orders);
   return (
-   
-      <ScrollView style={styles.container}>
-        <Text style={styles.headerText}>Welcome {user?.name}</Text>
-    
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-          <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>Your orders</Text>
-          </Pressable>
-    
-          <Pressable onPress={() => navigation.navigate('yourAccount')} style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>Your Account</Text>
-          </Pressable>
-        </View>
-    
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-          <Pressable style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>Buy Again</Text>
-          </Pressable>
-    
-          <Pressable onPress={logout} style={styles.actionButton}>
-            <Text style={styles.actionButtonText}>Logout</Text>
-          </Pressable>
-        </View>
-    
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {loading ? (
-            <Text></Text>
-          ) : orders.length > 0 ? (
-            orders.map((order) => (
-              <Pressable style={styles.orderContainer} key={order._id}>
-                {order.products.slice(0, 1)?.map((product) => (
-                  <View style={{ marginVertical: 10 }} key={product._id}>
-                    <Image source={{ uri: product.image }} style={styles.productImage} />
-                  </View>
-                ))}
-              </Pressable>
-            ))
-          ) : (
-            <Text style={styles.noOrdersText}>No orders found</Text>
-          )}
-        </ScrollView>
+
+    <ScrollView style={styles.container}>
+      <Text style={styles.headerText}>Welcome {user?.name}</Text>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
+        <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Your orders</Text>
+        </Pressable>
+
+        <Pressable onPress={() => navigation.navigate('yourAccount')} style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Your Account</Text>
+        </Pressable>
+      </View>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
+        <Pressable style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Buy Again</Text>
+        </Pressable>
+
+        <Pressable onPress={logout} style={styles.actionButton}>
+          <Text style={styles.actionButtonText}>Logout</Text>
+        </Pressable>
+      </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {loading ? (
+          <Text></Text>
+        ) : orders.length > 0 ? (
+          orders.map((order) => (
+            <Pressable style={styles.orderContainer} key={order._id}>
+              {order.products.slice(0, 1)?.map((product) => (
+                <View style={{ marginVertical: 10 }} key={product._id}>
+                  <Image source={{ uri: product.image }} style={styles.productImage} />
+                </View>
+              ))}
+            </Pressable>
+          ))
+        ) : (
+          <Text style={styles.noOrdersText}>No orders found</Text>
+        )}
       </ScrollView>
-    );
-    
+    </ScrollView>
+  );
+
 
 };
 
