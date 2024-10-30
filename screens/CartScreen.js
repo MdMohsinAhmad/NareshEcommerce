@@ -49,7 +49,7 @@ const CartScreen = () => {
   }, [navigation]);
 
   const cart = useSelector((state) => state.cart.cart);
-  console.log('from cart==',cart)
+  // console.log('from cart==',cart)
   // Calculate total price
   const total = cart
     ?.map((item) => item.price * item.quantity)

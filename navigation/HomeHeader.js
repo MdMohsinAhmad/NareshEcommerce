@@ -67,7 +67,7 @@ const HomeHeader = () => {
             const response = await axios.get(`http://192.168.31.155:8800/addresses/${userId}`);
             const { addresses } = response.data;
             setAddresses(addresses);
-            console.log(addresses)
+            // console.log(addresses)
         } catch (error) {
             console.log('Error', error);
         }

@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -8,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
@@ -19,12 +21,14 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const [tokenfound, setTokenFound] = useState(true);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
+          setTokenFound(false);
           navigation.replace('Main');
         }
       } catch (err) {
@@ -48,6 +52,14 @@ const LoginScreen = () => {
         Alert.alert('Login Error', 'Invalid Email or Password');
       });
   };
+
+  if (tokenfound) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0F70E6" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -87,7 +99,6 @@ const LoginScreen = () => {
         </View>
 
         <View style={styles.optionsContainer}>
-          {/* <Text style={styles.rememberText}>Keep me logged in</Text> */}
           <Text style={styles.forgotText}>Forgot Password ?</Text>
         </View>
 
@@ -95,8 +106,17 @@ const LoginScreen = () => {
           <Text style={styles.loginButtonText}>Login</Text>
         </Pressable>
 
-        <Pressable  style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'center'}} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signupText}>Don't have an account? </Text><Text style={styles.signupTextsignin}>Sign Up</Text>
+        <Pressable
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'center',
+          }}
+          onPress={() => navigation.navigate('Register')}
+        >
+          <Text style={styles.signupText}>Don't have an account? </Text>
+          <Text style={styles.signupTextsignin}>Sign Up</Text>
         </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -112,7 +132,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   logoContainer: {
     marginBottom: 20,
   },
@@ -141,8 +165,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     marginBottom: 15,
-    // borderColor: '#6c757d',
-    // borderWidth: 1,
   },
   inputText: {
     color: '#343a40',
@@ -155,9 +177,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginBottom: 15,
-  },
-  rememberText: {
-    color: '#495057',
   },
   forgotText: {
     color: '#c8d6e5',
@@ -181,15 +200,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  signupLink: {
-    marginTop: 10,
-  },
   signupText: {
     color: '#888',
     fontSize: 16,
   },
   signupTextsignin: {
     color: '#c8d6e5',
-    fontSize: 16,fontWeight:'bold'
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
