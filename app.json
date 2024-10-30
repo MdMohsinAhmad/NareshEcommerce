@@ -4,14 +4,14 @@
     "slug": "ecommerce-project",
     "plugins": [
       "@react-native-firebase/app",
-      "@react-native-firebase/auth",
+      "@react-native-firebase/auth"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,7 +24,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/splashScreen.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.mdmohsin9701.ecommerceproject"
