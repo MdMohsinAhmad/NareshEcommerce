@@ -11,12 +11,12 @@ const ProductItem = ({ product }) => {
 
   const addItemToCart = (item) => {
     setAddedToCart(true);
-    dispatch(addToCart(item));
+    dispatch(addToCart(item)); // Pass full product object here if expected by addToCart
 
     // Reset the addedToCart state after 1 minute
     setTimeout(() => {
       setAddedToCart(false);
-    }, 60000);
+    }, 600000);
   };
 
   return (
@@ -36,7 +36,7 @@ const ProductItem = ({ product }) => {
       </View>
 
       <Pressable
-        onPress={() => addItemToCart(product)}
+        onPress={() => addItemToCart(product)} // Pass entire product instead of product._id
         style={styles.button}
         disabled={addedToCart} // Disable button when added to cart
       >

@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, Ionicons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
@@ -20,91 +18,78 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-
   const navigation = useNavigation();
 
   const handleRegister = () => {
-    const user = {
-      name: name,
-      email: email,
-      password: password,
-    };
-    console.log(user.email)
-    // send a post request to the backend API
-    axios
-      .post(`http://192.168.31.155:8000/register`, user)
-      .then((response) => {
-        Alert.alert(
-          'Registration Successfull',
-          'You have registered successfully'
-        );
+    const user = { name, email, password };
+
+    axios.post(`http://192.168.31.155:8800/register`, user)
+      .then(() => {
+        Alert.alert('Registration Successful', 'You have registered successfully');
         setName('');
         setEmail('');
         setPassword('');
       })
-      .catch((error) => {
-        Alert.alert(
-          'Registration Error',
-          'An error occured during registration'
-        );
+      .catch(() => {
+        Alert.alert('Registration Error', 'An error occurred during registration');
         setName('');
         setEmail('');
         setPassword('');
-        console.log('registration failed', error);
       });
   };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image
-          style={styles.logoImage}
-          source={require('../assets/splashScreen.png')
-          }
-        />
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <View style={styles.logoContainer}>
+          <Image style={styles.logoImage} source={require('../assets/logo.png')} />
+          <Text style={styles.titleText}>Register to Your Account</Text>
+        </View>
 
-      <Text style={styles.titleText}>Register to your Account</Text>
+        <View style={styles.inputContainer}>
+          <Entypo name="user" size={24} style={styles.inputIcon} color="black" />
+          <TextInput
+            value={name}
+            onChangeText={(text) => setName(text)}
+            style={styles.inputField}
+            placeholder="Enter your Name"
+            placeholderTextColor="#888"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Ionicons name="ios-person" size={24} style={styles.inputIcon} />
-        <TextInput
-          value={name}
-          onChangeText={(text) => setName(text)}
-          style={styles.inputField}
-          placeholder="Enter your Name"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <MaterialIcons name="email" size={24} style={styles.inputIcon} />
+          <TextInput
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            style={styles.inputField}
+            placeholder="Enter your Email"
+            placeholderTextColor="#888"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <MaterialIcons name="email" size={24} style={styles.inputIcon} />
-        <TextInput
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.inputField}
-          placeholder="Enter your Email"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <AntDesign name="lock1" size={24} style={styles.inputIcon} />
+          <TextInput
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            style={styles.inputField}
+            placeholder="Enter your Password"
+            placeholderTextColor="#888"
+            secureTextEntry
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <AntDesign name="lock1" size={24} style={styles.inputIcon} />
-        <TextInput
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          style={styles.inputField}
-          placeholder="Enter your Password"
-          secureTextEntry
-        />
-      </View>
+        <Pressable onPress={handleRegister} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+          <Text style={styles.buttonText}>Register</Text>
+        </Pressable>
 
-      <Pressable onPress={handleRegister} style={styles.button}>
-        <Text style={styles.buttonText}>Register</Text>
-      </Pressable>
-
-      <Pressable onPress={() => navigation.goBack()}>
-        <Text style={styles.footerText}>Already have an account? Sign In</Text>
-      </Pressable>
+        <Pressable onPress={() => navigation.goBack()} style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'center'}}>
+          <Text style={styles.footerText}>Already have an account? </Text><Text style={styles.footerTextlogin}>SignIn</Text>
+        </Pressable>
+      </KeyboardAvoidingView>
     </SafeAreaView>
-  )
+  );
 };
 
 export default RegisterScreen;
@@ -112,38 +97,46 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
+    backgroundColor: '#222f3e',
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   logoContainer: {
-    marginTop: 80,
     alignItems: 'center',
+    marginBottom: 30,
+
+    
   },
   logoImage: {
     width: 150,
     height: 150,
+    // borderRadius: 100,
+    marginBottom: 10,
   },
   titleText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#041E42',
-    marginVertical: 20,
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#c8d6e5',
+    marginBottom: 10,
     textAlign: 'center',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFEFEF',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    marginBottom: 15,
-    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
   },
   inputIcon: {
     marginRight: 10,
-    color: 'gray',
+    color: '#888',
   },
   inputField: {
     color: '#333',
@@ -151,24 +144,38 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   button: {
-    width: 200,
-    backgroundColor: '#FEBE10',
-    borderRadius: 6,
+    backgroundColor: '#0F70E6',
     paddingVertical: 15,
-    alignSelf: 'center',
-    marginTop: 40,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#FEBE10',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  buttonPressed: {
+    backgroundColor: '#FFD54F',
   },
   buttonText: {
-    textAlign: 'center',
-    color: 'white',
+    color: '#FFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   footerText: {
     textAlign: 'center',
-    color: 'gray',
+    color: '#888',
     fontSize: 16,
     marginTop: 20,
+    // textDecorationLine: 'underline',
+  },
+  footerTextlogin: {
+    textAlign: 'center',
+    color: '#c8d6e5',
+    fontSize: 16,
+    marginTop: 20,
+    fontWeight:'bold'
+    // textDecorationLine: 'underline',
   },
 });
-

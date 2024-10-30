@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { cleanCart } from '../redux/CartReducer';
 import { Alert } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const ConfirmationScreen = () => {
   const steps = [
@@ -33,7 +34,7 @@ const ConfirmationScreen = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.31.155:8000/addresses/${userId}`
+        `http://192.168.31.155:8800/addresses/${userId}`
       );
       const { addresses } = response.data;
       setAddresses(addresses);
@@ -52,13 +53,14 @@ const ConfirmationScreen = () => {
       const orderData = {
         userId: userId,
         cartItems: cart,
-        totalPrice: total,
+        totalPrice: total+2,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
+        orderStatus:false
       };
 
       const response = await axios.post(
-        'http://192.168.31.155:8000/orders',
+        'http://192.168.31.155:8800/orders',
         orderData
       );
 
@@ -145,7 +147,7 @@ const ConfirmationScreen = () => {
             Select Delivery Address
           </Text>
 
-          <Pressable>
+          {addresses.length !== 0 ? <View>
             {addresses.map((item, index) => (
               <Pressable
                 key={index}
@@ -269,7 +271,9 @@ const ConfirmationScreen = () => {
                 </View>
               </Pressable>
             ))}
-          </Pressable>
+          </View> : <TouchableOpacity style={{backgroundColor:"#2e86de",padding:20,borderRadius:10,marginTop:20}} onPress={()=>navigation.navigate('Add')}>
+            <Text style={{color:'#fff',textAlign:'center',fontWeight:'bold',fontSize:15}}>Add Address</Text>
+          </TouchableOpacity>}
         </View>
       )}
 
@@ -309,9 +313,9 @@ const ConfirmationScreen = () => {
 
             <Text style={{ flex: 1 }}>
               <Text style={{ color: 'green', fontWeight: '500' }}>
-                Tommorrow by 10pm
+                Delivery timing are 
               </Text>
-              - FREE Delivery with your Prime Membership
+               - From 6:00 AM to 10:00 AM
             </Text>
           </View>
 
@@ -340,13 +344,13 @@ const ConfirmationScreen = () => {
           <View
             style={{
               backgroundColor: '#fff',
-              padding: 8,
+              padding: 18,
               borderColor: '#D0D0D0',
               borderWidth: 1,
               flexDirection: 'row',
               alignItems: 'center',
               gap: 7,
-              marginTop: 12,
+              marginTop: 25,borderRadius:5,
             }}
           >
             {selectedOptions == 'cash' ? (
@@ -366,13 +370,13 @@ const ConfirmationScreen = () => {
           <View
             style={{
               backgroundColor: '#fff',
-              padding: 8,
+              padding: 18,
               borderColor: '#D0D0D0',
               borderWidth: 1,
               flexDirection: 'row',
               alignItems: 'center',
               gap: 7,
-              marginTop: 12,
+              marginTop: 12,borderRadius:5
             }}
           >
             {selectedOptions == 'card' ? (
@@ -411,7 +415,7 @@ const ConfirmationScreen = () => {
               marginTop: 15,
             }}
           >
-            <Text>Continue</Text>
+            <Text style={{fontSize:15,fontWeight:'bold'}}>Continue</Text>
           </Pressable>
         </View>
       )}
@@ -483,9 +487,9 @@ const ConfirmationScreen = () => {
               }}
             >
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
-                Delivery
+                Delivery charges
               </Text>
-              <Text style={{ color: 'gray', fontSize: 16 }}>₹0</Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹2</Text>
             </View>
 
             <View
@@ -502,7 +506,7 @@ const ConfirmationScreen = () => {
               <Text
                 style={{ color: '#c60c30', fontSize: 17, fontWeight: 'bold' }}
               >
-                ₹{total}
+                ₹{total+2}
               </Text>
             </View>
           </View>
@@ -532,7 +536,7 @@ const ConfirmationScreen = () => {
               marginTop: 20,
             }}
           >
-            <Text>Place your order</Text>
+            <Text style={{fontSize:15,fontWeight:'bold'}}>Place your order</Text>
           </Pressable>
         </View>
       )}

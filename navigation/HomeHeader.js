@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '100%',
-        height: 400,
+        height: 420,
     },
     modalHeader: {
         marginBottom: 8,
@@ -406,11 +406,20 @@ const styles = StyleSheet.create({
     },
     addressCard: {
         margin: 5,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#EAF0F1',
         borderRadius: 8,
         padding: 10,
         width: 200,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10, height: 110,
+
+        // Android shadow
+        elevation: 5,
+        // marginBottom:10,
     },
+    // 
     selectedCard: {
         borderColor: '#005aa8',
         borderWidth: 2,
@@ -433,7 +442,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#e0e0e0',
         borderRadius: 8,
-        marginVertical: 10,
+        marginVertical: 5, height: 112, shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10, height: 110,
+
+        // Android shadow
+        elevation: 5,
     },
     addAddressText: {
         fontWeight: 'bold',

@@ -25,6 +25,8 @@ const AddressScreen = () => {
 
   const { userId, setUserId } = useContext(UserType);
 
+
+  
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem('authToken');
@@ -54,7 +56,7 @@ const AddressScreen = () => {
     };
 
     axios
-      .post('http://192.168.31.155:8000/addresses', { userId, address })
+      .post('http://192.168.31.155:8800/addresses', { userId, address })
       .then((response) => {
         Alert.alert('Success', 'Address added successfully');
         resetForm();

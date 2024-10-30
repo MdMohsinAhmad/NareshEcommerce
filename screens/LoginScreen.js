@@ -38,7 +38,7 @@ const LoginScreen = () => {
     const user = { email, password };
 
     axios
-      .post(`http://192.168.31.155:8000/login`, user)
+      .post(`http://192.168.31.155:8800/login`, user)
       .then((response) => {
         const token = response.data.token;
         AsyncStorage.setItem('authToken', token);
@@ -54,7 +54,7 @@ const LoginScreen = () => {
       <View style={styles.logoContainer}>
         <Image
           style={styles.logo}
-          source={require('../assets/splashScreen.png')}
+          source={require('../assets/logo.png')}
         />
       </View>
 
@@ -87,16 +87,16 @@ const LoginScreen = () => {
         </View>
 
         <View style={styles.optionsContainer}>
-          <Text style={styles.rememberText}>Keep me logged in</Text>
-          <Text style={styles.forgotText}>Forgot Password</Text>
+          {/* <Text style={styles.rememberText}>Keep me logged in</Text> */}
+          <Text style={styles.forgotText}>Forgot Password ?</Text>
         </View>
 
         <Pressable style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </Pressable>
 
-        <Pressable style={styles.signupLink} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.signupText}>Don't have an account? Sign Up</Text>
+        <Pressable  style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'center'}} onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.signupText}>Don't have an account? </Text><Text style={styles.signupTextsignin}>Sign Up</Text>
         </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -108,10 +108,11 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f8fc',
+    backgroundColor: '#222f3e',
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   logoContainer: {
     marginBottom: 20,
   },
@@ -124,9 +125,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#041E42',
+    color: '#c8d6e5',
     marginBottom: 30,
   },
   inputContainer: {
@@ -135,13 +136,13 @@ const styles = StyleSheet.create({
   inputField: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e9ecef',
+    backgroundColor: '#fff',
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderRadius: 8,
     marginBottom: 15,
-    borderColor: '#6c757d',
-    borderWidth: 1,
+    // borderColor: '#6c757d',
+    // borderWidth: 1,
   },
   inputText: {
     color: '#343a40',
@@ -152,20 +153,20 @@ const styles = StyleSheet.create({
   optionsContainer: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
+    justifyContent: 'flex-end',
+    marginBottom: 15,
   },
   rememberText: {
     color: '#495057',
   },
   forgotText: {
-    color: '#007BFF',
+    color: '#c8d6e5',
     fontWeight: '500',
   },
   loginButton: {
-    backgroundColor: '#FF6B6B',
-    borderRadius: 8,
-    width: '60%',
+    backgroundColor: '#0F70E6',
+    borderRadius: 25,
+    width: '100%',
     paddingVertical: 12,
     alignItems: 'center',
     marginVertical: 20,
@@ -184,7 +185,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   signupText: {
-    color: '#6c757d',
+    color: '#888',
     fontSize: 16,
+  },
+  signupTextsignin: {
+    color: '#c8d6e5',
+    fontSize: 16,fontWeight:'bold'
   },
 });

@@ -262,7 +262,7 @@ const HomeScreen = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.31.155:8000/addresses/${userId}`
+        `http://192.168.31.155:8800/addresses/${userId}`
       );
       const { addresses } = response.data;
       setAddresses(addresses);
