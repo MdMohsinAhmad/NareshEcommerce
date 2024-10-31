@@ -16,7 +16,7 @@ const ProductItem = ({ product }) => {
     // Reset the addedToCart state after 1 minute
     setTimeout(() => {
       setAddedToCart(false);
-    }, 600000);
+    }, 6000);
   };
 
   return (

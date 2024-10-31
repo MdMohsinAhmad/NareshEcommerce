@@ -18,7 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SliderBox } from 'react-native-image-slider-box';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import React,{ useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductItem from '../components/ProductItem';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -68,9 +68,9 @@ const HomeScreen = () => {
   ];
 
   const images = [
-    'https://img.etimg.com/thumb/msid-93051525,width-1070,height-580,imgsize-2243475,overlay-economictimes/photo.jpg',
-    'https://images-eu.ssl-images-amazon.com/images/G/31/img22/Wireless/devjyoti/PD23/Launches/Updated_ingress1242x550_3.gif',
-    'https://images-eu.ssl-images-amazon.com/images/G/31/img23/Books/BB/JULY/1242x550_Header-BB-Jul23.jpg',
+    'https://www.shutterstock.com/image-vector/3d-liquid-yogurt-drink-ad-260nw-2131689241.jpg',
+    'https://www.shutterstock.com/image-vector/3d-fresh-milk-ad-template-260nw-2120388287.jpg',
+    'https://www.shutterstock.com/image-vector/3d-milk-farm-product-ad-600nw-2473341937.jpg',
   ];
 
   // const deals = [
@@ -413,14 +413,14 @@ const HomeScreen = () => {
                 </Pressable>
               ))}
             </View> */}
-            <Text
+            {/* <Text
               style={{
                 height: 1,
                 borderColor: '#D0D0D0',
                 borderWidth: 2,
                 marginTop: 15,
               }}
-            />
+            /> */}
 
             {/* <Text style={{ padding: 10, fontSize: 18, fontWeight: 'bold' }}>
               Today's Deals
@@ -477,14 +477,14 @@ const HomeScreen = () => {
               ))}
             </ScrollView> */}
 
-            <Text
+            {/* <Text
               style={{
                 height: 1,
                 borderColor: '#D0D0D0',
                 borderWidth: 2,
                 marginTop: 15,
               }}
-            />
+            /> */}
 
             <View
               style={{

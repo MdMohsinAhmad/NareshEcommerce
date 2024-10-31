@@ -9,11 +9,13 @@ import {
 import React, { useLayoutEffect } from 'react';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   decrementQuantity,
   incrementQuantity,
   removeFromCart,
 } from '../redux/CartReducer';
+
 import { useNavigation } from '@react-navigation/native';
 
 const CartScreen = () => {
@@ -51,8 +53,7 @@ const CartScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
   // console.log('from cart==',cart)
   // Calculate total price
-  const total = cart
-    ?.map((item) => item.price * item.quantity)
+  const total = cart?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0) || 0; // Added fallback to avoid NaN
 
   const dispatch = useDispatch();

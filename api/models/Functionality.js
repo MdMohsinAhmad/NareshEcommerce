@@ -8,8 +8,8 @@ const jwt = require('jsonwebtoken');
 const generateSecretKey = () => {
     const secretKey = crypto.randomBytes(32).toString('hex');
     return secretKey;
-  };
-  const secretKey = generateSecretKey();
+};
+const secretKey = generateSecretKey();
 
 const ADDTOCART = async (req, res) => {
     try {
@@ -59,9 +59,6 @@ const REGISTER = async (req, res) => {
 
         // Save the user to the database
         await newUser.save();
-
-        console.log('New User Registered:', newUser);
-
         // Send verification email
         sendVerificationEmail(newUser.email, newUser.verificationToken);
 
@@ -79,17 +76,17 @@ const sendVerificationEmail = async (email, verificationToken) => {
         // Configure the email service or SMTP details here
         service: 'gmail',
         auth: {
-            user: process.env.SENDER_EMAIL,
-            pass: process.env.SENDER_PASSWORD,
+            user: 'mdm01046@gmail.com',
+            pass: 'rhhevghabbyidrso',
         },
     });
 
     // componse the email message
     const mailOptions = {
-        from: 'amazon.com',
+        from: 'freshandfreshmilk@gmail.com',
         to: email,
         subject: 'Email Verification',
-        text: `Please click the following link to verify your email: http://localhost:8000/verify/${verificationToken}`,
+        text: `Please click the following link to verify your email: http://localhost:8800/verify/${verificationToken}`,
     };
 
     // send the email

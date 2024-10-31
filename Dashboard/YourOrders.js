@@ -11,7 +11,7 @@ const OrderHistory = () => {
         // Fetch order history when the component mounts
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`http://192.168.31.155:8000/orders/${userId}`);
+                const response = await axios.get(`http://192.168.31.155:8800/orders/${userId}`);
                 setOrders(response.data.orders); // Adjust based on your API response structure
             } catch (error) {
                 console.error('Error fetching orders:', error);
