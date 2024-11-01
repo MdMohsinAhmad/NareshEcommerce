@@ -10,21 +10,21 @@ import {
   View,
 } from 'react-native';
 import * as Location from 'expo-location';
-import { AntDesign } from '@expo/vector-icons';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
-import Entypo from '@expo/vector-icons/Entypo';
-import { Ionicons } from '@expo/vector-icons';
-// import { Entypo } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { MaterialIcons } from '@expo/vector-icons';
+// import { AntDesign } from '@expo/vector-icons';
+// import EvilIcons from '@expo/vector-icons/EvilIcons';
+// import Entypo from '@expo/vector-icons/Entypo';
+// import { Ionicons } from '@expo/vector-icons';
+//  import { Entypo } from '@expo/vector-icons';
+// import FontAwesome from '@expo/vector-icons/FontAwesome';
+// import { MaterialIcons } from '@expo/vector-icons';
 import { SliderBox } from 'react-native-image-slider-box';
 import React,{ useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductItem from '../components/ProductItem';
-import DropDownPicker from 'react-native-dropdown-picker';
+// import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { BottomModal, ModalContent, SlideAnimation } from 'react-native-modals';
+// import { BottomModal, ModalContent, SlideAnimation } from 'react-native-modals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserType } from '../UserContext';
 import jwt_decode from 'jwt-decode';
@@ -206,15 +206,9 @@ const HomeScreen = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState('jewelery');
+  // const [category, setCategory] = useState('jewelery');
   const [bars, setBars] = useState(false)
-  // console.log(selectedAddress);
-  const [items, setItems] = useState([
-    { label: "Men's clothing", value: "men's clothing" },
-    { label: 'jewelery', value: 'jewelery' },
-    { label: 'electronics', value: 'electronics' },
-    { label: "women's clothing", value: "women's clothing" },
-  ]);
+
 
 
   // handle onpress bars
@@ -328,14 +322,14 @@ const HomeScreen = () => {
           style={{
             paddingTop: Platform.OS === 'android' ? 30 : 10,
             flex: 1,
-            backgroundColor: 'white',
+            backgroundColor: '#ececec',
           }}
         >
           <ScrollView showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
 
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {list.map((item, index) => (
                 <Pressable
                   key={index}
@@ -364,161 +358,33 @@ const HomeScreen = () => {
                   </Text>
                 </Pressable>
               ))}
-            </ScrollView>
+            </ScrollView> */}
             <SliderBox
               images={images}
               autoPlay
               circleLoop
               dotColor={'#13274F'}
               inactiveDotColor="#90A4AE"
-              imageComponentStyle={{ width: '100%' }}
+              imageComponentStyle={{ width: '99%' }}
             />
 
-            {/* <Text style={{ padding: 10, fontSize: 18, fontWeight: 'bold' }}>
-            Trending Deals of the week
-          </Text> */}
-
-            {/* <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-              }}
-            >
-              {deals.map((item, index) => (
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate('Info', {
-                      id: item.id,
-                      title: item.title,
-                      price: item?.price,
-                      carouselImages: item.carouselImages,
-                      color: item?.color,
-                      size: item?.size,
-                      oldPrice: item?.oldPrice,
-                      item: item,
-                    })
-                  }
-                  key={index}
-                  style={{
-                    marginVertical: 10,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Image
-                    style={{ width: 180, height: 180, resizeMode: 'contain' }}
-                    source={{ uri: item?.image }}
-                  />
-                </Pressable>
-              ))}
-            </View> */}
-            {/* <Text
-              style={{
-                height: 1,
-                borderColor: '#D0D0D0',
-                borderWidth: 2,
-                marginTop: 15,
-              }}
-            /> */}
-
-            {/* <Text style={{ padding: 10, fontSize: 18, fontWeight: 'bold' }}>
-              Today's Deals
-            </Text> */}
-            {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {offers.map((item, index) => (
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate('Info', {
-                      id: item.id,
-                      title: item.title,
-                      price: item?.price,
-                      carouselImages: item.carouselImages,
-                      color: item?.color,
-                      size: item?.size,
-                      oldPrice: item?.oldPrice,
-                      item: item,
-                    })
-                  }
-                  key={index}
-                  style={{
-                    marginVertical: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Image
-                    style={{ width: 150, height: 150, resizeMode: 'contain' }}
-                    source={{ uri: item?.image }}
-                  />
-                  <View
-                    style={{
-                      backgroundColor: '#E31837',
-                      paddingVertical: 5,
-                      width: 130,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: 10,
-                      borderRadius: 4,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        color: '#fff',
-                        fontSize: 13,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Upto {item?.offer}
-                    </Text>
-                  </View>
-                </Pressable>
-              ))}
-            </ScrollView> */}
-
-            {/* <Text
-              style={{
-                height: 1,
-                borderColor: '#D0D0D0',
-                borderWidth: 2,
-                marginTop: 15,
-              }}
-            /> */}
+            
 
             <View
               style={{
                 marginHorizontal: 10,
                 marginTop: 20,
-                width: '45%',
+                width: '100%',
                 marginBottom: open ? 50 : 15,
               }}
             >
-              {/* <DropDownPicker
-                style={{
-                  borderColor: '#B7B7B7',
-                  height: 30,
-                  marginBottom: open ? 120 : 15,
-                }}
-                open={open}
-                value={category} //genderValue
-                items={items}
-                setOpen={setOpen}
-                setValue={setCategory}
-                setItems={setItems}
-                placeholder="choose category"
-                placeholderStyle={styles.placeholderStyles}
-                onOpen={onGenderOpen}
-                // onChangeValue={onChange}
-                zIndex={3000}
-                zIndexInverse={1000}
-              /> */}
+            <Text style={{fontSize:18,fontWeight:'bold',textAlign:'center',color:'gray'}}>Top Products</Text>
             </View>
 
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'center',
+                alignItems: 'center',justifyContent:'space-evenly',
                 flexWrap: 'wrap',
               }}
             >

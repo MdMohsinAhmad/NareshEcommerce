@@ -13,6 +13,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { UserType } from '../UserContext';
 import axios from 'axios';
+import * as Location from 'expo-location';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
 const AddressScreen = () => {
   const navigation = useNavigation();
@@ -22,11 +25,50 @@ const AddressScreen = () => {
   const [street, setStreet] = useState('');
   const [landmark, setLandmark] = useState('');
   const [postalCode, setPostalCode] = useState('');
+  const [country, setCountry] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
 
+
+  const [address, setAddress] = useState([]);
+  console.log('--', address)
   const { userId, setUserId } = useContext(UserType);
+  //  auto detect address 
+
+  const handleAutoFetch = () => {
+    setStreet(address?.city)
+    setPostalCode(address?.postalCode)
+    setCountry(address?.country)
+    setCity(address?.city)
+    setState(address?.region)
+    setLandmark(address?.city)
+  }
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  const getLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission Denied', 'Location access is needed to fetch your current location.');
+      return;
+    }
+
+    const currentLocation = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = currentLocation.coords;
+    const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+    if (result) {
+      // const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
+      setAddress(result);
+      console.log(result)
+    } else {
+      alert("Error", "Unable to retrieve address.");
+    }
+  };
 
 
-  
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem('authToken');
@@ -40,10 +82,9 @@ const AddressScreen = () => {
   }, []);
 
   const handleAddAddress = () => {
-    // Check for empty fields
-    if (!name || !mobileNo || !houseNo || !street || !postalCode) {
+    if (!name || !mobileNo || !houseNo || !street || !postalCode || !city || !state) {
       Alert.alert('Validation Error', 'Please fill in all required fields.');
-      return; // Exit early if validation fails
+      return;
     }
 
     const address = {
@@ -53,6 +94,8 @@ const AddressScreen = () => {
       street,
       landmark,
       postalCode,
+      city,
+      state,
     };
 
     axios
@@ -79,15 +122,24 @@ const AddressScreen = () => {
     setPostalCode('');
   };
 
+
+
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.header} />
       <View style={styles.container}>
-        <Text style={styles.title}>Add a New Address</Text>
-
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={styles.title}>Add a New Address</Text>
+          <TouchableOpacity onPress={handleAutoFetch} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <Ionicons name="location" size={28} color="#005aa8" ></Ionicons>
+            <Text style={{color:'blue',fontWeight:'bold'}}>AutoFetch </Text>
+          </TouchableOpacity>
+        </View>
         <TextInput
+          value={country}
           placeholder="Country (e.g., India)"
           placeholderTextColor="#A9A9A9"
+          onChange={setCountry}
           style={styles.input}
         />
 
@@ -135,9 +187,8 @@ const AddressScreen = () => {
             style={styles.input}
           />
         </View>
-
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Landmark</Text>
+          <Text style={styles.label}>landmark</Text>
           <TextInput
             value={landmark}
             onChangeText={setLandmark}
@@ -146,6 +197,29 @@ const AddressScreen = () => {
             style={styles.input}
           />
         </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>city</Text>
+          <TextInput
+            value={city}
+            onChangeText={setCity}
+            placeholderTextColor={'#A9A9A9'}
+            placeholder="E.g., near Apollo Hospital"
+            style={styles.input}
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>state</Text>
+          <TextInput
+            value={state}
+            onChangeText={setState}
+            placeholderTextColor={'#A9A9A9'}
+            placeholder="E.g., near Apollo Hospital"
+            style={styles.input}
+          />
+        </View>
+
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Pincode</Text>
@@ -208,11 +282,11 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 12,
-    borderColor: '#D0D0D0',
+    borderColor: 'gray',
     borderWidth: 1,
     marginTop: 8,
-    borderRadius: 8,
-    backgroundColor: '#F9F9F9', // Light gray input background for contrast
+    borderRadius: 8,fontWeight:'bold',
+    backgroundColor: '#F9F9F9',color:'green' // Light gray input background for contrast
   },
   button: {
     backgroundColor: '#FFC72C', // Highlighted button color

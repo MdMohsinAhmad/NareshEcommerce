@@ -6,11 +6,14 @@ import LottieView from 'lottie-react-native';
 
 const OrderScreen = () => {
   const navigation = useNavigation();
+
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('Main');
-    }, 60000);
-  }, []);
+    }, 2000);
+  }, []); 
+
+
   return (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
       <LottieView

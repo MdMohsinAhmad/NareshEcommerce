@@ -9,10 +9,10 @@ const AddAddressScreen = () => {
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
   const { userId } = useContext(UserType);
-  
-  // useEffect(() => {
-  //   fetchAddresses();
-  // }, []);
+  console.log(userId)
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
 
   const fetchAddresses = async () => {
     try {
@@ -27,7 +27,7 @@ const AddAddressScreen = () => {
   useFocusEffect(
     useCallback(() => {
       fetchAddresses();
-    }, [userId,addresses])
+    }, [userId])
   );
 
   return (
@@ -53,9 +53,10 @@ const AddAddressScreen = () => {
             </View>
             <Text style={styles.addressDetail}>{item.houseNo}, {item.landmark}</Text>
             <Text style={styles.addressDetail}>{item.street}</Text>
-            <Text style={styles.addressDetail}>India, Rajasthan</Text>
+            <Text style={styles.addressDetail}>India, {item.state}</Text>
             <Text style={styles.addressDetail}>Phone No: {item.mobileNo}</Text>
             <Text style={styles.addressDetail}>Pin code: {item.postalCode}</Text>
+
 
             <View style={styles.buttonContainer}>
               <Pressable style={styles.actionButton}><Text>Edit</Text></Pressable>

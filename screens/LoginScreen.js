@@ -9,7 +9,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
@@ -21,18 +20,20 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
-  const [tokenfound, setTokenFound] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
-          setTokenFound(false);
           navigation.replace('Main');
+        } else {
+          setIsLoading(false);
         }
       } catch (err) {
-        console.log('error message', err);
+        console.log('Error checking token:', err);
+        setIsLoading(false);
       }
     };
     checkLoginStatus();
@@ -53,7 +54,7 @@ const LoginScreen = () => {
       });
   };
 
-  if (tokenfound) {
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0F70E6" />
@@ -99,7 +100,7 @@ const LoginScreen = () => {
         </View>
 
         <View style={styles.optionsContainer}>
-          <Text style={styles.forgotText}>Forgot Password ?</Text>
+          <Text style={styles.forgotText}>Forgot Password?</Text>
         </View>
 
         <Pressable style={styles.loginButton} onPress={handleLogin}>

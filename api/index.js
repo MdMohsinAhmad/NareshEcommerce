@@ -3,9 +3,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-
+// const orderRoutes = require('./models/orderRoutes')
 const app = express();
 const port = 8800;
+const router = express.Router();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,7 +36,7 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 // User authentication endpoints
-const { ADDTOCART, GETFROMCART, REGISTER, VERIFYTOKEN, ADDRESS, GETADDRESS, DELETECART, ORDER, GETPROFILE, GETORDER, LOGIN } = require('./models/Functionality');
+const { ADDTOCART, GETFROMCART, REGISTER, VERIFYTOKEN, ADDRESS, GETADDRESS, DELETECART, ORDER, GETPROFILE, GETORDER, LOGIN ,cancelProduct} = require('./models/Functionality');
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -51,6 +52,7 @@ app.get('/api/products', async (req, res, next) => {
   }
 });
 
+// app.use('/orders', orderRoutes);
 app.post('/register', REGISTER);
 app.get('/verify/:token', VERIFYTOKEN);
 app.post('/login', LOGIN);
@@ -62,6 +64,7 @@ app.delete('/deletecartitem/:id', DELETECART);
 app.post('/orders', ORDER);
 app.get('/profile/:userId', GETPROFILE);
 app.get('/orders/:userId', GETORDER);
+app.patch('/orders/:orderId/cancel/:productId', cancelProduct);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

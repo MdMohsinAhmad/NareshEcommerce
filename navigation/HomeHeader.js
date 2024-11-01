@@ -13,7 +13,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { BottomModal, SlideAnimation, ModalContent } from 'react-native-modals';
 import Entypo from '@expo/vector-icons/Entypo';
-import { AntDesign } from '@expo/vector-icons';
+// import { AntDesign } from '@expo/vector-icons';
 
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -22,7 +22,7 @@ const HomeHeader = () => {
     const [open, setOpen] = useState(false);
     const navigation = useNavigation();
     const [address, setAddress] = useState('');
-    const [pincode, setPincode] = useState({});
+    const [pincode, setPincode] = useState([]);
     const [addresses, setAddresses] = useState([]);
 
     const toggleDrawer = () => {
@@ -109,7 +109,7 @@ const HomeHeader = () => {
         }
         if (num == 5) {
             setDrawerOpen(!drawerOpen);
-            navigation.navigate('addItem')
+            navigation.navigate('Address')
         }
     }
     return (
@@ -123,8 +123,8 @@ const HomeHeader = () => {
                         </Text>
                     ) : (
                         <View>
-                            <Text style={styles.postalCodeText}>{pincode?.postalCode}</Text>
-                            <Text style={styles.cityText}>{pincode.city}</Text>
+                            <Text style={styles.postalCodeText}>{pincode != 0 ? pincode.postalCode:'Auto fetching'}</Text>
+                            <Text style={styles.cityText}>{pincode != 0 ? pincode.city :'address ...'}</Text>
                         </View>
                     )}
                 </Pressable>
@@ -159,7 +159,7 @@ const HomeHeader = () => {
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {addresses?.map((item, index) => (
                             <Pressable
-                                onPress={() => setSelectedAddress(item)}
+                                // onPress={() => setSelectedAddress(item)}
                                 key={index}
                                 style={[styles.addressCard, selectedAddress === item && styles.selectedCard]}
                             >
@@ -174,7 +174,7 @@ const HomeHeader = () => {
                                     {item?.street}
                                 </Text>
                                 <Text style={styles.addressDetail} numberOfLines={1}>
-                                    India, Rajasthan
+                                    India, {item?.state}
                                 </Text>
                             </Pressable>
                         ))}
@@ -186,25 +186,25 @@ const HomeHeader = () => {
                             style={styles.addAddressCard}
                         >
                             <Text style={styles.addAddressText}>
-                                Add an Address or pick-up point
+                                Add an Address
                             </Text>
                         </Pressable>
                     </ScrollView>
                     <View style={styles.pincodeSection}>
-                        <View style={styles.pincodeRow}>
+                        {/* <View style={styles.pincodeRow}>
                             <Entypo name="location-pin" size={22} color="#0066B2" />
                             <Text style={styles.pincodeText}>Enter an Indian Pincode</Text>
-                        </View>
+                        </View> */}
                         <View style={styles.pincodeRow}>
                             <Ionicons name="locate-sharp" size={22} color="#0066B2" />
                             <Text style={styles.pincodeText} onPress={getLocation}>
                                 Use My Current Location
                             </Text>
                         </View>
-                        <View style={styles.pincodeRow}>
+                        {/* <View style={styles.pincodeRow}>
                             <AntDesign name="earth" size={22} color="#0066B2" />
                             <Text style={styles.pincodeText}>Deliver outside India</Text>
-                        </View>
+                        </View> */}
                     </View>
                 </ModalContent>
             </BottomModal>
@@ -254,8 +254,8 @@ const HomeHeader = () => {
                         </TouchableOpacity>
                         <View style={styles.underline} />
                         <TouchableOpacity onPress={() => handleBarsButton(5)} style={styles.menuItem}>
-                            <SimpleLineIcons name="handbag" size={24} color="#227093" />
-                            <Text style={styles.menuText}>Add Item to Database</Text>
+                            <Ionicons name="location" size={24} color="#227093" />
+                            <Text style={styles.menuText}>Add Address</Text>
                         </TouchableOpacity>
                         <View style={styles.underline} />
 
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     addAddressCard: {
         padding: 10,
         alignItems: 'center',
-        backgroundColor: '#e0e0e0',
+        backgroundColor: 'lightblue',
         borderRadius: 8,
         marginVertical: 5, height: 112, shadowColor: '#000',
         shadowOffset: { width: 0, height: 5 },

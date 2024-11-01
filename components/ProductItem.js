@@ -11,7 +11,7 @@ const ProductItem = ({ product }) => {
 
   const addItemToCart = (item) => {
     setAddedToCart(true);
-    dispatch(addToCart(item)); // Pass full product object here if expected by addToCart
+    dispatch(addToCart(item));
 
     // Reset the addedToCart state after 1 minute
     setTimeout(() => {
@@ -23,22 +23,27 @@ const ProductItem = ({ product }) => {
     <Pressable style={styles.container}>
       <Image
         source={{ uri: product?.image }}
-        style={styles.image}
+        style={styles.image} resizeMode='contain'
       />
       <Text style={styles.title} numberOfLines={1}>
         {product?.title}
       </Text>
+      <Text style={styles.description} numberOfLines={2}>
+        {product?.description}
+      </Text>
+
       <View style={styles.priceContainer}>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <Text style={styles.rupee}>  ₹ </Text>
+          <Text style={styles.rating}> {product?.MRP === null ? product.price + 12 : product.MRP} </Text>
+        </View>
         <Text style={styles.price}>₹{product?.price}</Text>
-        <Text style={styles.rating}>
-          {/* {product?.rating?.rate} ratings */}
-        </Text>
       </View>
 
       <Pressable
-        onPress={() => addItemToCart(product)} // Pass entire product instead of product._id
+        onPress={() => addItemToCart(product)}
         style={styles.button}
-        disabled={addedToCart} // Disable button when added to cart
+        disabled={addedToCart}
       >
         <Text style={styles.buttonText}>
           {addedToCart ? 'Added to Cart' : 'Add to Cart'}
@@ -48,32 +53,33 @@ const ProductItem = ({ product }) => {
   );
 };
 
-// Optional: Add PropTypes for better type-checking
-// ProductItem.propTypes = {
-//   product: PropTypes.shape({
-//     image: PropTypes.string.isRequired,
-//     title: PropTypes.string.isRequired,
-//     price: PropTypes.number.isRequired,
-//     rating: PropTypes.shape({
-//       rate: PropTypes.number,
-//     }),
-//   }).isRequired,
-// };
+
 
 export default ProductItem;
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
-    marginVertical: 25,
+    marginHorizontal: 0,
+    marginVertical: 10,
     alignItems: 'center',
+    backgroundColor: '#f2f1ef',
+    shadowColor: 'gray',
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 10,
+    elevation: 5,
+    borderRadius: 10, width: 180, paddingVertical: 10, height: 300
   },
+
   image: {
     width: 150,
-    height: 150,
-    resizeMode: 'contain',
+    height: 120,
+    // resizeMode: 'contain',
   },
   title: {
+    width: 150,
+    marginTop: 10, textAlign: 'center', fontWeight: 'bold'
+  },
+  description: {
     width: 150,
     marginTop: 10,
   },
@@ -81,24 +87,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly', width: '100%'
   },
   price: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: 'bold', color: '#00b894'
+  },
+  rupee: {
+    color: '#b2bec3',
+    fontWeight: 'bold', marginRight: -4,
+    textDecorationLine: 'line-through'
   },
   rating: {
-    color: '#FFC72C',
+    color: '#b2bec3',
     fontWeight: 'bold',
+    textDecorationLine: 'line-through'
   },
   button: {
     backgroundColor: '#FFC72C',
-    padding: 10,
+    paddingHorizontal: 15, paddingVertical: 10,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 10,
-    marginTop: 10,
+    marginHorizontal: 6,
+    marginTop: 10, position: 'absolute', bottom: 15,
   },
   buttonText: {
     fontWeight: 'bold',

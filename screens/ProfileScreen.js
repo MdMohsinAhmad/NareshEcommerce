@@ -46,22 +46,23 @@ const ProfileScreen = () => {
     });
   }, [navigation]);
 
-  const [user, setUser] = useState();
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/profile/${userId}`
-        );
-        const { user } = response.data;
-        setUser(user);
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
+  // const [user, setUser] = useState({});
+  // useEffect(() => {
+  //   const fetchUserProfile = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:8800/profile/${userId}`
+  //       );
+  //       const { user } = response.data;
+  //       setUser(user);
+  //       console.log(user)
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   };
 
-    fetchUserProfile();
-  }, []);
+  //   fetchUserProfile();
+  // }, []);
 
   const logout = () => {
     AsyncStorage.removeItem('authToken')
@@ -73,27 +74,27 @@ const ProfileScreen = () => {
     navigation.replace('Login');
   };
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/orders/${userId}`
-        );
-        const orders = response.data.orders;
-        setOrders(orders);
+  // useEffect(() => {
+  //   const fetchOrders = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:8800/orders/${userId}`
+  //       );
+  //       const orders = response.data.orders;
+  //       setOrders(orders);
 
-        setLoading(false);
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   };
 
-    fetchOrders();
-  }, []);
+  //   fetchOrders();
+  // }, []);
   return (
 
     <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Welcome {user?.name}</Text>
+      <Text style={styles.headerText}>Welcome</Text>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
         <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
@@ -115,7 +116,7 @@ const ProfileScreen = () => {
         </Pressable>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {loading ? (
           <Text></Text>
         ) : orders.length > 0 ? (
@@ -131,7 +132,7 @@ const ProfileScreen = () => {
         ) : (
           <Text style={styles.noOrdersText}>No orders found</Text>
         )}
-      </ScrollView>
+      </ScrollView> */}
     </ScrollView>
   );
 
