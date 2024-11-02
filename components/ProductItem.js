@@ -13,7 +13,7 @@ const ProductItem = ({ product }) => {
   const cart = useSelector((state) => state.cart.cart);
   const cartItem = cart.find((item) => item._id === product._id);
   const quantity = cartItem ? cartItem.quantity : 0;
-  console.log(quantity)
+
   useEffect(() => {
     if (quantity === 0) {
       setAddedToCart(false);
@@ -57,7 +57,7 @@ const ProductItem = ({ product }) => {
 
         <View style={styles.priceContainer}>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.rupee}>₹</Text>
+            <Text style={styles.rupee}>₹ </Text>
             <Text style={styles.rating}>
               {product?.MRP === null ? product.price + 12 : product.MRP}
             </Text>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   description: {
     width: 150,
     marginTop: 5,
-    color: '#555',
+    color: '#555',textAlign:'center'
   },
   priceContainer: {
     flexDirection: 'row',
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   price: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#00b894',
   },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   rating: {
     color: '#b2bec3',
     fontWeight: 'bold',
-    textDecorationLine: 'line-through',
+    textDecorationLine: 'line-through',fontSize:15
   },
   button: {
     backgroundColor: '#FFC72C',

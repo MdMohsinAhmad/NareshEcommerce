@@ -45,7 +45,7 @@ const GETFROMCART = async (req, res) => {
 
 const REGISTER = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, mobile, password } = req.body;
 
         // Check if the email is already registered
         const existingUser = await User.findOne({ email });
@@ -55,7 +55,7 @@ const REGISTER = async (req, res) => {
         }
 
         // Create a new user and generate verification token
-        const newUser = new User({ name, email, password });
+        const newUser = new User({ name, email, mobile, password });
         newUser.verificationToken = crypto.randomBytes(20).toString('hex');
 
         // Save the user to the database
@@ -139,7 +139,7 @@ const LOGIN = async (req, res) => {
         // generate a token
         const token = jwt.sign({ userId: user._id }, secretKey);
 
-        res.status(200).json({ token });
+        res.status(200).json({ token, user });
     } catch (error) {
         res.status(500).json({ message: 'Login Failed' });
     }
@@ -233,7 +233,7 @@ const ORDER = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        
+
         //create an array of product objects from the cart Items
         const products = await Promise.all(cartItems.map(async (item) => ({
             name: item?.title,

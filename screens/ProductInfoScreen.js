@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from '../redux/CartReducer';
 import { AntDesign, Feather } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 const ProductInfoScreen = ({ route }) => {
   const { product } = route.params;
@@ -21,7 +22,7 @@ const ProductInfoScreen = ({ route }) => {
   const [addedToCart, setAddedToCart] = useState(false);
   const height = (width * 100) / 100;
   const dispatch = useDispatch();
-
+  const [address, setAddress] = useState([]);
   const cart = useSelector((state) => state.cart.cart);
   const cartItem = cart.find((item) => item._id === product._id);
   const quantity = cartItem ? cartItem.quantity : 0;
@@ -54,27 +55,49 @@ const ProductInfoScreen = ({ route }) => {
     }
   }, [quantity]);
 
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  const getLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission Denied', 'Location access is needed to fetch your current location.');
+      return;
+    }
+
+    const currentLocation = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = currentLocation.coords;
+    const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+    if (result) {
+      const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
+      setAddress(result);
+    } else {
+      alert("Error", "Unable to retrieve address.");
+    }
+  };
   return (
-    <ScrollView style={{ marginTop: 55, flex: 1, backgroundColor: '#fff' }}>
+    <ScrollView style={{ marginTop: 0, flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <Image source={{ uri: product.image }} style={styles.image} />
         <Text style={styles.title}>{product.title}</Text>
-        <Text style={styles.description}>{product.description}</Text>
+        <Text style={styles.description} >{product.description}</Text>
       </View>
 
       <Text style={{ height: 1, borderColor: '#D0D0D0', borderWidth: 1 }} />
       <View style={{ padding: 10 }}>
-        <Text style={styles.price}>Total : ₹ {product.price}</Text>
+        <Text style={styles.price}>Total : ₹ <Text>{product.price}</Text> </Text>
         <Text style={styles.deliveryText}>
-          FREE Delivery Tomorrow between 6:00 AM to 9:00 AM. Order within 10hrs 30mins
+           Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM. Everyday
         </Text>
         <View style={styles.locationContainer}>
           <Ionicons name="location" size={24} color="black" />
-          <Text style={styles.locationText}>Deliver to Jignesh - Udaipur 301302</Text>
+          <Text style={styles.locationText}> Deliver to  {address.city} - {address.postalCode}</Text>
         </View>
       </View>
 
-      <Text style={styles.stockText}>In Stock</Text>
+      {/* <Text style={styles.stockText}>In Stock</Text> */}
 
       {quantity < 1 && (
         <Pressable onPress={() => addItemToCart(product)} style={styles.addToCartButton}>
@@ -84,7 +107,7 @@ const ProductInfoScreen = ({ route }) => {
         </Pressable>
       )}
 
-      {quantity > 0 &&  (
+      {quantity > 0 && (
         <View style={styles.quantityContainer}>
           <Pressable onPress={() => decreaseQuantity(product)} style={styles.iconContainer}>
             {quantity > 1 ? (
@@ -140,7 +163,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#00b894',
+    color: '#0a3d62',
     paddingHorizontal: 10,
   },
   deliveryText: {
@@ -176,6 +199,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   quantityContainer: {
+    display:'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
@@ -183,7 +207,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     backgroundColor: '#f5f5f5',
-    borderRadius: 10,
+    borderRadius: 10,justifyContent:'center'
   },
   iconContainer: {
     backgroundColor: '#fab1a0',

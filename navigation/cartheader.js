@@ -3,7 +3,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-const CustomHeader = ({ title }) => {
+
+const CartHeader = ({ title }) => {
 
     const navigation = useNavigation()
     return (
@@ -29,4 +30,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CustomHeader;
+export default CartHeader;

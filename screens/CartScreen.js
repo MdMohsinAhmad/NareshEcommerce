@@ -24,7 +24,7 @@ const CartScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350,height:20 }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350, height: 20 }}>
           <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 19 }}>
             Cart Section
           </Text>
@@ -51,7 +51,7 @@ const CartScreen = () => {
   }, [navigation]);
 
   const cart = useSelector((state) => state.cart.cart);
-  
+
   const total = cart?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0) || 0;
 
@@ -127,145 +127,106 @@ const CartScreen = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <View>
+              <View >
                 <Image
                   style={{ width: 140, height: 140, resizeMode: 'contain' }}
                   source={{ uri: item?.image }}
                 />
-              </View>
-              <View>
-                <Text numberOfLines={3} style={{ width: 150, marginTop: 10 }}>
+              </View >
+              <View >
+                <Text numberOfLines={3} style={{ width: 150, marginTop: 10,fontSize:15,fontWeight:'bold',color:'#0a3d62' }}>
                   {item?.title}
                 </Text>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 6 }}>
-                  ₹{item?.price}
+                <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 6 ,color:'#0a3d62'}}>
+                  Price : ₹ {item?.price}
                 </Text>
-                <Image
-                  style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                  source={{
-                    uri: 'https://assets.stickpng.com/thumbs/5f4924cc68ecc70004ae7065.png',
+                <Pressable
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 10,
                   }}
-                />
-                <Text style={{ color: 'green' }}>In Stock</Text>
-              </View>
-            </Pressable>
-
-            <Pressable
-              style={{
-                marginTop: 15,
-                marginBottom: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderRadius: 7,
-                }}
-              >
-                {item?.quantity > 1 ? (
-                  <Pressable
-                    onPress={() => decreaseQuantity(item)}
+                >
+                  <View
                     style={{
-                      backgroundColor: '#D8D8D8',
-                      padding: 7,
-                      borderTopLeftRadius: 6,
-                      borderBottomLeftRadius: 6,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      borderRadius: 7,
                     }}
                   >
-                    <AntDesign name="minus" size={24} color="black" />
-                  </Pressable>
-                ) : (
+                    {item?.quantity > 1 ? (
+                      <Pressable
+                        onPress={() => decreaseQuantity(item)}
+                        style={{
+                          backgroundColor: '#D8D8D8',
+                          padding: 7,
+                          borderTopLeftRadius: 6,
+                          borderBottomLeftRadius: 6,
+                        }}
+                      >
+                        <AntDesign name="minus" size={24} color="black" />
+                      </Pressable>
+                    ) : (
+                      <Pressable
+                        onPress={() => deleteItem(item)}
+                        style={{
+                          backgroundColor: '#D8D8D8',
+                          padding: 7,
+                          borderTopLeftRadius: 6,
+                          borderBottomLeftRadius: 6,
+                        }}
+                      >
+                        <AntDesign name="delete" size={24} color="black" />
+                      </Pressable>
+                    )}
+
+                    <Pressable>
+                      <Text
+                        style={{
+                          backgroundColor: 'white',
+                          paddingHorizontal: 18,
+                          paddingVertical: 6,
+                        }}
+                      >
+                        {item?.quantity}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => increaseQuantity(item)}
+                      style={{
+                        backgroundColor: '#D8D8D8',
+                        padding: 7,
+                        borderTopLeftRadius: 6,
+                        borderBottomLeftRadius: 6,
+                      }}
+                    >
+                      <Feather name="plus" size={24} color="black" />
+                    </Pressable>
+                  </View>
                   <Pressable
                     onPress={() => deleteItem(item)}
                     style={{
-                      backgroundColor: '#D8D8D8',
-                      padding: 7,
-                      borderTopLeftRadius: 6,
-                      borderBottomLeftRadius: 6,
-                    }}
-                  >
-                    <AntDesign name="delete" size={24} color="black" />
-                  </Pressable>
-                )}
-
-                <Pressable>
-                  <Text
-                    style={{
                       backgroundColor: 'white',
-                      paddingHorizontal: 18,
-                      paddingVertical: 6,
+                      paddingHorizontal: 8,
+                      paddingVertical: 10,
+                      borderRadius: 5,
+                      borderColor: '#0a3d62',
+                      borderWidth: 0.6,
                     }}
                   >
-                    {item?.quantity}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => increaseQuantity(item)}
-                  style={{
-                    backgroundColor: '#D8D8D8',
-                    padding: 7,
-                    borderTopLeftRadius: 6,
-                    borderBottomLeftRadius: 6,
-                  }}
-                >
-                  <Feather name="plus" size={24} color="black" />
+                    <Text style={{color:'#0a3d62'}}>Delete</Text>
+                  </Pressable>
                 </Pressable>
               </View>
-              <Pressable
-                onPress={() => deleteItem(item)}
-                style={{
-                  backgroundColor: 'white',
-                  paddingHorizontal: 8,
-                  paddingVertical: 10,
-                  borderRadius: 5,
-                  borderColor: '#C0C0C0',
-                  borderWidth: 0.6,
-                }}
-              >
-                <Text>Delete</Text>
-              </Pressable>
             </Pressable>
 
-            <Pressable
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-                marginBottom: 15,
-              }}
-            >
-              <Pressable
-                style={{
-                  backgroundColor: 'white',
-                  paddingHorizontal: 8,
-                  paddingVertical: 10,
-                  borderRadius: 5,
-                  borderColor: '#C0C0C0',
-                  borderWidth: 0.6,
-                }}
-              >
-                <Text>Save for Later</Text>
-              </Pressable>
 
-              <Pressable
-                style={{
-                  backgroundColor: 'white',
-                  paddingHorizontal: 8,
-                  paddingVertical: 10,
-                  borderRadius: 5,
-                  borderColor: '#C0C0C0',
-                  borderWidth: 0.6,
-                }}
-              >
-                <Text>See More Like This</Text>
-              </Pressable>
-            </Pressable>
+            {/* <Text style={{ color: 'green', textAlign: 'justify',marginHorizontal:10,marginBottom:4 }} numberOfLines={4}>{item?.description}</Text> */}
+
           </View>
         ))}
       </View>

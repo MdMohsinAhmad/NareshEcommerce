@@ -33,11 +33,11 @@ const StackNavigator = () => {
           component={HomeScreen}
           options={{
             tabBarLabel: 'Home',
-            tabBarLabelStyle: '#000E97',
-            header: () => <HomeHeader title="Order History" />, 
+            tabBarLabelStyle: '#0a3d62',
+            header: () => <HomeHeader title="Order History" />,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <Entypo name="home" size={24} color="#000E97" />
+                <Entypo name="home" size={24} color="#0a3d62" />
               ) : (
                 <AntDesign name="home" size={24} color="black" />
               ),
@@ -48,10 +48,10 @@ const StackNavigator = () => {
           component={ProfileScreen}
           options={{
             tabBarLabel: 'Profile',
-            tabBarLabelStyle: '#000E97',
+            tabBarLabelStyle: '#0a3d62',
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <Ionicons name="person" size={24} color="#000E97" />
+                <Ionicons name="person" size={24} color="#0a3d62" />
               ) : (
                 <Ionicons name="person-outline" size={24} color="black" />
               ),
@@ -62,11 +62,12 @@ const StackNavigator = () => {
           component={CartScreen}
           options={{
             tabBarLabel: 'Cart',
-            tabBarLabelStyle: '#000E97',
+            tabBarLabelStyle: '#0a3d62',
             headerShown: true,
+            header: () => <CustomHeader title="Cart" />,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <FontAwesome5 name="shopping-cart" size={20} color="black" />
+                <FontAwesome5 name="shopping-cart" size={20} color="#0a3d62" />
               ) : (
                 <AntDesign name="shoppingcart" size={24} color="black" />
               ),
@@ -96,7 +97,9 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Info"
           component={ProductInfoScreen}
-          options={{ headerShown: false }}
+          options={{
+            header: () => <CustomHeader title="Product Info" />,
+          }}
         />
         <Stack.Screen
           name="Address"
@@ -122,15 +125,15 @@ const StackNavigator = () => {
           name="yourOrder"
           component={OrderHistory}
           options={{
-            header: () => <CustomHeader title="Order History" />, 
-        }}
+            header: () => <CustomHeader title="Order History" />,
+          }}
         />
         <Stack.Screen
           name="yourAccount"
           component={YourAccount}
           options={{ headerShown: false }}
         />
-        
+
       </Stack.Navigator>
     </NavigationContainer>
   );

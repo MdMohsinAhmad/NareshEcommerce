@@ -16,28 +16,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [orders, setOrders] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState({});
+
+  console.log(user);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <View style={{ flex: 1, alignItems: 'center',justifyContent:'center',width:350 }}>
-        <Text style={{ color: 'black', fontWeight: 'bold',fontSize:19,fontWeight:'bold' }}>Dashboard</Text>
-      </View>
-            ),
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350 }}>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 19 }}>Dashboard</Text>
+        </View>
+      ),
       headerStyle: {
         backgroundColor: 'transparent',
       },
       headerRight: () => (
         <View
           style={{
-            display:'flex',
+            display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
             gap: 6,
-            marginRight: 12,fontSize:13
+            marginRight: 12, fontSize: 13
           }}
         >
           {/* Add any buttons or icons here */}
@@ -46,59 +49,55 @@ const ProfileScreen = () => {
     });
   }, [navigation]);
 
-  // const [user, setUser] = useState({});
-  // useEffect(() => {
-  //   const fetchUserProfile = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:8800/profile/${userId}`
-  //       );
-  //       const { user } = response.data;
-  //       setUser(user);
-  //       console.log(user)
-  //     } catch (error) {
-  //       console.log('error', error);
-  //     }
-  //   };
+  // Retrieve user
+  const userInfo = async () => {
+    try {
+      const user = await AsyncStorage.getItem('USER');
+      if (user) {
+        setUser(JSON.parse(user));
+      } else {
+        console.log('No user data found');
+      }
+    } catch (error) {
+      console.log('Error retrieving user data:', error);
+    }
+  };
 
-  //   fetchUserProfile();
-  // }, []);
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.31.155:8800/profile/${userId}`
+        );
+        setUser(response.data.user);
+        console.log(response.data.user);
+      } catch (error) {
+        console.log('Error fetching user profile:', error);
+      }
+    };
 
-  const logout = () => {
-    AsyncStorage.removeItem('authToken')
+    userInfo();
+    fetchUserProfile();
+  }, [userId]);
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('authToken');
     clearAuthToken();
   };
+
   const clearAuthToken = async () => {
     await AsyncStorage.removeItem('authToken');
-    console.log('auth token cleared');
+    console.log('Auth token cleared');
     navigation.replace('Login');
   };
 
-  // useEffect(() => {
-  //   const fetchOrders = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:8800/orders/${userId}`
-  //       );
-  //       const orders = response.data.orders;
-  //       setOrders(orders);
-
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log('error', error);
-  //     }
-  //   };
-
-  //   fetchOrders();
-  // }, []);
   return (
-
     <ScrollView style={styles.container}>
       <Text style={styles.headerText}>Welcome</Text>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
         <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Your orders</Text>
+          <Text style={styles.actionButtonText}>Your Orders</Text>
         </Pressable>
 
         <Pressable onPress={() => navigation.navigate('yourAccount')} style={styles.actionButton}>
@@ -115,31 +114,9 @@ const ProfileScreen = () => {
           <Text style={styles.actionButtonText}>Logout</Text>
         </Pressable>
       </View>
-
-      {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {loading ? (
-          <Text></Text>
-        ) : orders.length > 0 ? (
-          orders.map((order) => (
-            <Pressable style={styles.orderContainer} key={order._id}>
-              {order.products.slice(0, 1)?.map((product) => (
-                <View style={{ marginVertical: 10 }} key={product._id}>
-                  <Image source={{ uri: product.image }} style={styles.productImage} />
-                </View>
-              ))}
-            </Pressable>
-          ))
-        ) : (
-          <Text style={styles.noOrdersText}>No orders found</Text>
-        )}
-      </ScrollView> */}
     </ScrollView>
   );
-
-
 };
-
-// export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -170,36 +147,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  orderContainer: {
-    marginTop: 20,
-    padding: 15,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  productImage: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  noOrdersText: {
-    fontSize: 18,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 20,
-  },
 });
 
 export default ProfileScreen;
-

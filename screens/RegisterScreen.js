@@ -13,27 +13,31 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons, AntDesign, Ionicons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-
+// import Entypo from '@expo/vector-icons/Entypo';
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
   const handleRegister = () => {
-    const user = { name, email, password };
+    const user = { name, email,mobile, password };
 
     axios.post(`http://192.168.31.155:8800/register`, user)
       .then(() => {
         Alert.alert('Registration Successful', 'You have registered successfully');
         setName('');
         setEmail('');
+        setMobile('');
         setPassword('');
+        navigation.navigate('Login')
       })
       .catch(() => {
         Alert.alert('Registration Error', 'An error occurred during registration');
         setName('');
         setEmail('');
+        setMobile('');
         setPassword('');
       });
   };
@@ -64,6 +68,16 @@ const RegisterScreen = () => {
             onChangeText={(text) => setEmail(text)}
             style={styles.inputField}
             placeholder="Enter your Email"
+            placeholderTextColor="#888"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Entypo name="mobile" size={24} style={styles.inputIcon} />
+          <TextInput
+            value={mobile}
+            onChangeText={(text) => setMobile(text)}
+            style={styles.inputField}
+            placeholder="Enter your Mobile No"
             placeholderTextColor="#888"
           />
         </View>

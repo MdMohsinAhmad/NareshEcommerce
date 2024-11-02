@@ -13,7 +13,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { BottomModal, SlideAnimation, ModalContent } from 'react-native-modals';
 import Entypo from '@expo/vector-icons/Entypo';
-// import { AntDesign } from '@expo/vector-icons';
 
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -123,8 +122,8 @@ const HomeHeader = () => {
                         </Text>
                     ) : (
                         <View>
-                            <Text style={styles.postalCodeText}>{pincode != 0 ? pincode.postalCode:'Auto fetching'}</Text>
-                            <Text style={styles.cityText}>{pincode != 0 ? pincode.city :'address ...'}</Text>
+                            <Text style={styles.postalCodeText}>{pincode != 0 ? pincode.postalCode : 'Auto fetching'}</Text>
+                            <Text style={styles.cityText}>{pincode != 0 ? pincode.city : 'address ...'}</Text>
                         </View>
                     )}
                 </Pressable>
@@ -258,6 +257,11 @@ const HomeHeader = () => {
                             <Text style={styles.menuText}>Add Address</Text>
                         </TouchableOpacity>
                         <View style={styles.underline} />
+                        <TouchableOpacity style={styles.menuItem}>
+                            <MaterialIcons name="connect-without-contact" size={24} color="#227093" />
+                            <Text style={styles.menuText}>Contact Us</Text>
+                        </TouchableOpacity>
+                        <View style={styles.underline} />
 
                         <TouchableOpacity onPress={() => handleBarsButton(4)} style={[styles.menuItem, { marginTop: 40, }]}>
                             <MaterialCommunityIcons name="logout" size={24} color="red" />
@@ -333,11 +337,11 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 18,
-        color: '#227093',
+        color: '#227093',fontWeight:'bold'
     },
     menuText1: {
         fontSize: 18,
-        color: 'red',
+        color: 'red',fontWeight:'bold'
     },
     underline: {
         borderBottomColor: '#f3f3f3',
