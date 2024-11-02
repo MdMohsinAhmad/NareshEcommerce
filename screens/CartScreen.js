@@ -51,10 +51,9 @@ const CartScreen = () => {
   }, [navigation]);
 
   const cart = useSelector((state) => state.cart.cart);
-  // console.log('from cart==',cart)
-  // Calculate total price
+  
   const total = cart?.map((item) => item.price * item.quantity)
-    .reduce((curr, prev) => curr + prev, 0) || 0; // Added fallback to avoid NaN
+    .reduce((curr, prev) => curr + prev, 0) || 0;
 
   const dispatch = useDispatch();
 
