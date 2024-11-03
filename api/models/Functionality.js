@@ -223,10 +223,33 @@ async function generateUniqueId() {
 
     return uniqueId;
 }
+
+
+// Function to send notification to the delivery boy
+const sendNotificationToDeliveryBoy = async (token, title, body) => {
+    const message = {
+        to: token,
+        sound: 'default',
+        title,
+        body,
+    };
+
+    try {
+        await axios.post('https://exp.host/--/api/v2/push/send', message, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('Notification sent');
+    } catch (error) {
+        console.error('Error sending notification', error);
+    }
+};
 //endpoint to store all the orders
 const ORDER = async (req, res) => {
     try {
-        const { userId, cartItems, totalPrice, shippingAddress, paymentMethod } = req.body;
+        const { userId, cartItems, totalPrice, shippingAddress, paymentMethod, deliveryBoyToken } = req.body;
 
         const user = await User.findById(userId);
         if (!user) {
@@ -240,6 +263,7 @@ const ORDER = async (req, res) => {
             quantity: item.quantity,
             price: item.price,
             image: item?.image,
+            orderStatus: false,
             uniqueId: await generateUniqueId() // Generate a unique ID for each product
         })));
 
@@ -251,9 +275,11 @@ const ORDER = async (req, res) => {
             totalPrice: totalPrice,
             shippingAddress: shippingAddress,
             paymentMethod: paymentMethod,
+            deliveryBoyToken,
         });
 
         await order.save();
+        await sendNotificationToDeliveryBoy(deliveryBoyToken, 'New Order Received', 'A new order is available for delivery.');
 
         res.status(200).json({ message: 'Order created successfully!' });
     } catch (error) {

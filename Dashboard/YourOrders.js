@@ -53,7 +53,16 @@ const OrderHistory = () => {
         );
     };
 
-  
+    // const animateButton = () => {
+    //     Animated.spring(scaleValue, {
+    //         toValue: 0.95, // Scale down
+    //         friction: 3,
+    //         useNativeDriver: true,
+    //     }).start(() => {
+    //         scaleValue.setValue(1); // Scale back to normal
+    //     });
+    // };
+
     const renderOrderItem = ({ item }) => (
         <>
             {item.totalPrice !== 0 && (
