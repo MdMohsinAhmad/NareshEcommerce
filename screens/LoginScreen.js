@@ -45,7 +45,6 @@ const LoginScreen = () => {
     axios
       .post(`http://192.168.31.155:8800/login`, user)
       .then((response) => {
-        console.log(response.data.user)
         const token = response.data.token;
         AsyncStorage.setItem('authToken', token);
         navigation.replace('Main');

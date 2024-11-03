@@ -4,7 +4,6 @@ const User = require('./user');
 const Order = require('./order')
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
-// const Orders = require('./order');
 
 const generateSecretKey = () => {
     const secretKey = crypto.randomBytes(32).toString('hex');
@@ -71,6 +70,8 @@ const REGISTER = async (req, res) => {
         res.status(500).json({ message: 'Registration failed', error });
     }
 };
+
+const URL = 'http://localhost:8800/verify'
 const sendVerificationEmail = async (email, verificationToken) => {
     // Create a Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -87,7 +88,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
         from: 'freshandfreshmilk@gmail.com',
         to: email,
         subject: 'Email Verification',
-        text: `Please click the following link to verify your email: http://localhost:8800/verify/${verificationToken}`,
+        text: `Please click the following link to verify your email: ${URL}/${verificationToken}`,
     };
 
     // send the email
@@ -321,8 +322,47 @@ const GETORDER = async (req, res) => {
         res.status(500).json({ message: 'Error' });
     }
 }
+// retrive all orders
+const GETALLORDER = async (req, res) => {
+    try {
+        const Allorders = await Order.find()
+
+        if (!Allorders || Allorders.length === 0) {
+            return res.status(404).json({ message: 'No orders found for this user' });
+        }
+        res.status(200).json({ Allorders });
+    } catch (error) {
+        res.status(500).json({ message: 'Error' });
+    }
+}
 
 
+// Change the order status on deliver
+const CHANGEORDERSTATUS = async (req, res) => {
+    const { orderId, productId } = req.params;
+    console.log(orderId, productId)
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        // Find the specific product in the order and update its orderStatus
+        const product = order.products.find((p) => p._id.toString() === productId);
+        console.log(product)
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found in this order' });
+        }
+
+        product.orderStatus = true; // Update orderStatus to true
+        await order.save(); // Save the order with the updated product status
+
+        res.status(200).json({ message: 'Product order status updated to delivered' });
+    } catch (error) {
+        console.error('Error updating product status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 // cancel orders
 const cancelProduct = async (req, res) => {
     const { orderId, productId } = req.params;
@@ -360,4 +400,4 @@ const cancelProduct = async (req, res) => {
     }
 };
 
-module.exports = { GETORDER, GETPROFILE, ORDER, DELETECART, GETADDRESS, ADDRESS, ADDTOCART, GETFROMCART, REGISTER, VERIFYTOKEN, LOGIN, cancelProduct };
+module.exports = { GETORDER, GETPROFILE, ORDER, DELETECART, GETADDRESS, ADDRESS, ADDTOCART, GETFROMCART, REGISTER, VERIFYTOKEN, LOGIN, cancelProduct, CHANGEORDERSTATUS, GETALLORDER };
