@@ -6,7 +6,6 @@ import { Entypo, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { cleanCart } from '../redux/CartReducer';
-import { Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 
 const ConfirmationScreen = () => {
@@ -78,7 +77,7 @@ const ConfirmationScreen = () => {
         navigation.navigate('Order');
         dispatch(cleanCart());
       } else {
-        console.log('Error creating order', response.data.order);
+        console.log('Error creating order');
       }
     } catch (error) {
       console.log('Error', error);

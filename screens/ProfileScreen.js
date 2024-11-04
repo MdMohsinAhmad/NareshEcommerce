@@ -20,7 +20,6 @@ const ProfileScreen = () => {
   // const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
 
-  console.log(user);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -70,7 +69,7 @@ const ProfileScreen = () => {
           `http://192.168.31.155:8800/profile/${userId}`
         );
         setUser(response.data.user);
-        console.log(response.data.user);
+        // console.log(response.data.user);
       } catch (error) {
         console.log('Error fetching user profile:', error);
       }

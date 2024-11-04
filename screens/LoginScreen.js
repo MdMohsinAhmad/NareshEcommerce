@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons'; // Add Ionicons for the eye icon
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -19,6 +19,7 @@ import axios from 'axios';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -91,11 +92,18 @@ const LoginScreen = () => {
             <TextInput
               value={password}
               onChangeText={setPassword}
-              secureTextEntry
+              secureTextEntry={!passwordVisible} // Toggle password visibility
               placeholder="Enter your Password"
               placeholderTextColor="#6c757d"
               style={styles.inputText}
             />
+            <Pressable onPress={() => setPasswordVisible(!passwordVisible)}>
+              <Ionicons
+                name={passwordVisible ? "eye" : "eye-off"}
+                size={24}
+                color="#6c757d"
+              />
+            </Pressable>
           </View>
         </View>
 
