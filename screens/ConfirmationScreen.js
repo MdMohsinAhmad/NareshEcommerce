@@ -29,6 +29,9 @@ const ConfirmationScreen = () => {
 
   useEffect(() => {
     fetchAddresses();
+    setOptions(false)
+    setSelectedAddress('')
+    setSelectedOptions('')
   }, [cart]);
 
 
