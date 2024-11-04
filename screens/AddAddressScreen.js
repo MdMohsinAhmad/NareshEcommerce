@@ -9,7 +9,7 @@ const AddAddressScreen = () => {
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
   const { userId } = useContext(UserType);
-  console.log(userId)
+  // console.log(userId)
   useEffect(() => {
     fetchAddresses();
   }, []);

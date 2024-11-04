@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserType } from '../UserContext';
@@ -20,54 +20,63 @@ const ConfirmationScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [addresses, setAddresses] = useState([]);
   const { userId, setUserId } = useContext(UserType);
+  const [refreshing, setRefreshing] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart);
-
+  // console.log(cart.length)
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);
 
   useEffect(() => {
     fetchAddresses();
-  }, []);
+  }, [cart]);
+
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(
-        `http://192.168.31.155:8800/addresses/${userId}`
-      );
+      setRefreshing(true);
+      const response = await axios.get(`http://192.168.31.155:8800/addresses/${userId}`);
       const { addresses } = response.data;
       setAddresses(addresses);
     } catch (error) {
       console.log('Error', error);
+    } finally {
+      setRefreshing(false);
     }
+  };
+
+  const onRefresh = () => {
+    fetchAddresses();  // Trigger a refresh of addresses when user pulls down
   };
 
   const dispatch = useDispatch();
   const [selectedAddress, setSelectedAddress] = useState('');
   const [options, setOptions] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState('');
+  // const [paymentoption, setPaymentOption] = useState(false)
 
   const handlePlaceOrder = async () => {
     try {
       const orderData = {
         userId: userId,
         cartItems: cart,
-        totalPrice: total+2,
+        totalPrice: total + 2,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
-        orderStatus:false
+        orderStatus: false
       };
-
       const response = await axios.post(
         'http://192.168.31.155:8800/orders',
         orderData
       );
 
       if (response.status === 200) {
+        setOptions(false)
+        setAddresses('')
+        setSelectedOptions('')
         navigation.navigate('Order');
         dispatch(cleanCart());
-        // console.log('order created successfully', response.data.order);
       } else {
         console.log('Error creating order', response.data.order);
       }
@@ -84,7 +93,11 @@ const ConfirmationScreen = () => {
   };
 
   return (
-    <ScrollView style={{ marginTop: 55 }}>
+    <ScrollView style={{ marginTop: 55 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 40 }}>
         <View
           style={{
@@ -143,6 +156,13 @@ const ConfirmationScreen = () => {
       </View>
       {currentStep == 0 && (
         <View style={{ marginHorizontal: 20 }}>
+          <Pressable
+            onPress={() => navigation.navigate('Add')}
+            style={styles.addAddressButton}
+          >
+            <Text style={styles.addAddressText}>Add a new address</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={24} color="#000" />
+          </Pressable>
           <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
             Select Delivery Address
           </Text>
@@ -194,7 +214,7 @@ const ConfirmationScreen = () => {
                     {item.street}
                   </Text>
                   <Text style={{ fontSize: 15, color: '#181818' }}>
-                    India, Rajasthan
+                    {item.state}, India
                   </Text>
                   <Text style={{ fontSize: 15, color: '#181818' }}>
                     Phone No : {item.mobileNo}
@@ -202,7 +222,7 @@ const ConfirmationScreen = () => {
                   <Text style={{ fontSize: 15, color: '#181818' }} t>
                     Pin code : {item.postalCode}
                   </Text>
-                  <View
+                  {/* <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -248,7 +268,7 @@ const ConfirmationScreen = () => {
                     >
                       <Text>Set as Default</Text>
                     </Pressable>
-                  </View>
+                  </View> */}
                   <View>
                     {selectedAddress && selectedAddress._id === item?._id && (
                       <Pressable
@@ -271,8 +291,8 @@ const ConfirmationScreen = () => {
                 </View>
               </Pressable>
             ))}
-          </View> : <TouchableOpacity style={{backgroundColor:"#2e86de",padding:20,borderRadius:10,marginTop:20}} onPress={()=>navigation.navigate('Add')}>
-            <Text style={{color:'#fff',textAlign:'center',fontWeight:'bold',fontSize:15}}>Add Address</Text>
+          </View> : <TouchableOpacity style={{ backgroundColor: "#2e86de", padding: 20, borderRadius: 10, marginTop: 20 }} onPress={() => navigation.navigate('Add')}>
+            <Text style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold', fontSize: 15 }}>Add Address</Text>
           </TouchableOpacity>}
         </View>
       )}
@@ -313,24 +333,18 @@ const ConfirmationScreen = () => {
 
             <Text style={{ flex: 1 }}>
               <Text style={{ color: 'green', fontWeight: '500' }}>
-                Delivery timing are 
+                Delivery timing are
               </Text>
-               - From 6:00 AM to 10:00 AM
+              - From 6:00 AM to 10:00 AM and 6:00 PM to 8:00 PM
             </Text>
           </View>
 
           <Pressable
             onPress={() => setCurrentStep(2)}
-            style={{
-              backgroundColor: '#ffc72c',
-              padding: 10,
-              borderRadius: 20,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: 15,
-            }}
+            disabled={!options}
+            style={options ? styles.ontimingContinue : styles.timingContinue}
           >
-            <Text>Continue</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'white', paddingVertical: 4 }}>Continue</Text>
           </Pressable>
         </View>
       )}
@@ -350,7 +364,7 @@ const ConfirmationScreen = () => {
               flexDirection: 'row',
               alignItems: 'center',
               gap: 7,
-              marginTop: 25,borderRadius:5,
+              marginTop: 25, borderRadius: 5,
             }}
           >
             {selectedOptions == 'cash' ? (
@@ -376,7 +390,7 @@ const ConfirmationScreen = () => {
               flexDirection: 'row',
               alignItems: 'center',
               gap: 7,
-              marginTop: 12,borderRadius:5
+              marginTop: 12, borderRadius: 5
             }}
           >
             {selectedOptions == 'card' ? (
@@ -385,16 +399,6 @@ const ConfirmationScreen = () => {
               <Entypo
                 onPress={() => {
                   setSelectedOptions('card');
-                  Alert.alert('UPI/Debit cart', 'Pay Online', [
-                    {
-                      text: 'Cancel',
-                      onPress: () => console.log('Cancelled is pressed'),
-                    },
-                    {
-                      text: 'Ok',
-                      onPress: () => pay(),
-                    },
-                  ]);
                 }}
                 name="circle"
                 size={20}
@@ -406,52 +410,30 @@ const ConfirmationScreen = () => {
           </View>
           <Pressable
             onPress={() => setCurrentStep(3)}
-            style={{
-              backgroundColor: '#ffc72c',
-              padding: 10,
+            disabled={selectedOptions === ''}
+            style={selectedOptions === '' ? {
+              backgroundColor: 'gray',
               borderRadius: 20,
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 15,
+              marginTop: 15, paddingVertical: 15
+            } : {
+              backgroundColor: '#27ae60',
+              borderRadius: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 15, paddingVertical: 15
             }}
           >
-            <Text style={{fontSize:15,fontWeight:'bold'}}>Continue</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white' }}>Continue</Text>
           </Pressable>
         </View>
       )}
 
+      {/* on selected cash on delivery */}
       {currentStep == 3 && selectedOptions === 'cash' && (
         <View style={{ marginHorizontal: 20 }}>
           <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Order Now</Text>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 8,
-              backgroundColor: 'white',
-              padding: 8,
-              borderColor: '#D0D0D0',
-              borderWidth: 1,
-              marginTop: 10,
-            }}
-          >
-            <View>
-              <Text style={{ fontSize: 17, fontWeight: 'bold' }}>
-                Save 50% and never run out
-              </Text>
-              <Text style={{ fontSize: 15, color: 'gray', marginTop: 5 }}>
-                Turn on auto deliveries
-              </Text>
-            </View>
-
-            <MaterialIcons
-              name="keyboard-arrow-right"
-              size={24}
-              color="black"
-            />
-          </View>
 
           <View
             style={{
@@ -473,7 +455,7 @@ const ConfirmationScreen = () => {
               }}
             >
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
-                Items
+                Items (x{cart.length})
               </Text>
               <Text style={{ color: 'gray', fontSize: 16 }}>₹{total}</Text>
             </View>
@@ -506,7 +488,7 @@ const ConfirmationScreen = () => {
               <Text
                 style={{ color: '#c60c30', fontSize: 17, fontWeight: 'bold' }}
               >
-                ₹{total+2}
+                ₹{total + 2}
               </Text>
             </View>
           </View>
@@ -536,7 +518,100 @@ const ConfirmationScreen = () => {
               marginTop: 20,
             }}
           >
-            <Text style={{fontSize:15,fontWeight:'bold'}}>Place your order</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Place your order</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* on option selected pay with card */}
+      {currentStep == 3 && selectedOptions === 'card' && (
+        <View style={{ marginHorizontal: 20 }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Order Now</Text>
+
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 8,
+              borderColor: '#D0D0D0',
+              borderWidth: 1,
+              marginTop: 10,
+            }}
+          >
+            <Text>Shipping to {selectedAddress?.name}</Text>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 8,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
+                Items (x{cart.length})
+              </Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹{total}</Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 8,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
+                Delivery charges
+              </Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹2</Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 8,
+              }}
+            >
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                Order Total
+              </Text>
+              <Text
+                style={{ color: '#c60c30', fontSize: 17, fontWeight: 'bold' }}
+              >
+                ₹{total + 2}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 8,
+              borderColor: '#D0D0D0',
+              borderWidth: 1,
+              marginTop: 10,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: 'gray' }}>Pay with</Text>
+            <Text style={{ fontSize: 16, fontWeight: '600', marginTop: 7 }}>
+              Pay Online with any payment method
+            </Text>
+          </View>
+          <Pressable
+            onPress={handlePlaceOrder}
+            style={{
+              backgroundColor: '#FFC72C',
+              padding: 10,
+              borderRadius: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Place your order</Text>
           </Pressable>
         </View>
       )}
@@ -642,6 +717,36 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     marginTop: 15,
+  },
+  ontimingContinue: {
+    backgroundColor: '#27ae60',
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  timingContinue: {
+    backgroundColor: 'gray',
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15, color: 'white'
+  }, addAddressButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFC72C',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    marginVertical: 10,
+    elevation: 1,
+  },
+  addAddressText: {
+    fontWeight: 'bold',
+    color: '#000',
   },
 });
 

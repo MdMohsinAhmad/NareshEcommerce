@@ -87,9 +87,9 @@ const ProductInfoScreen = ({ route }) => {
 
       <Text style={{ height: 1, borderColor: '#D0D0D0', borderWidth: 1 }} />
       <View style={{ padding: 10 }}>
-        <Text style={styles.price}>Total : ₹ <Text>{product.price}</Text> </Text>
+        <Text style={styles.price}>Price : ₹ <Text>{product.price}</Text> </Text>
         <Text style={styles.deliveryText}>
-           Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM. Everyday
+           Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM. 
         </Text>
         <View style={styles.locationContainer}>
           <Ionicons name="location" size={24} color="black" />

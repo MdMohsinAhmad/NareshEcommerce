@@ -31,7 +31,7 @@ const AddressScreen = () => {
 
 
   const [address, setAddress] = useState([]);
-  console.log('--', address)
+  // console.log('--', address)
   const { userId, setUserId } = useContext(UserType);
   //  auto detect address 
 
@@ -60,9 +60,7 @@ const AddressScreen = () => {
     const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
 
     if (result) {
-      // const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
       setAddress(result);
-      console.log(result)
     } else {
       alert("Error", "Unable to retrieve address.");
     }
