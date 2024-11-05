@@ -63,6 +63,17 @@ const OrderHistory = () => {
                     <Text style={styles.orderStatus}>Order Status: {item.orderStatus ? "Delivered" : "Pending"}</Text>
                     <Text style={styles.orderDate}>Ordered on: {new Date(item.createdAt).toLocaleDateString()}</Text>
                     <Text style={styles.total}>Total Price : ₹ {item.totalPrice}</Text>
+                    <Text style={item.paymentMethod === 'cash' ? {
+                        fontSize: 18,
+                        color: '#e67e22',
+                        marginBottom: 15,
+                        fontWeight: 'bold',
+                    } : {
+                        fontSize: 18,
+                        color: '#27ae60',
+                        marginBottom: 15,
+                        fontWeight: 'bold',
+                    }}>Payment Mode : {item.paymentMethod === 'cash' ? 'Cash on delivery' : "Payment done"}</Text>
 
                     {item.products.map((product, index) => (
                         <View key={index} style={styles.productContainer}>
@@ -74,23 +85,23 @@ const OrderHistory = () => {
                                 <Text style={styles.itemDetails}>Total: ₹ {product.price * product.quantity}</Text>
                                 <Text style={styles.itemDetails}>Order ID : {product.uniqueId}</Text>
                                 <Text style={product.orderStatus === 'pending' ? {
-                                    fontSize: 16,
-                                    color: 'red',
+                                    fontSize: 18,
+                                    color: '#f1c40f',
                                     marginVertical: 2,
                                     fontWeight: 'bold',
                                 } : product.orderStatus === 'canceled' ? {
-                                    fontSize: 16,
-                                    color: 'black',
+                                    fontSize: 18,
+                                    color: '#e74c3c',
                                     marginVertical: 2,
                                     fontWeight: 'bold',
                                 } : product.orderStatus === 'packed' ? {
-                                    fontSize: 16,
+                                    fontSize: 18,
                                     color: '#1abc9c',
                                     marginVertical: 2,
                                     fontWeight: 'bold',
                                 } : {
-                                    fontSize: 16,
-                                    color: '#2ecc71',
+                                    fontSize: 18,
+                                    color: '#27ae60',
                                     marginVertical: 2,
                                     fontWeight: 'bold',
                                 }}>Status : {product.orderStatus}</Text>
@@ -199,6 +210,12 @@ const styles = StyleSheet.create({
     total: {
         fontSize: 17,
         color: 'gray',
+        marginBottom: 15,
+        fontWeight: 'bold',
+    },
+    paymentMethod: {
+        fontSize: 18,
+        color: '#3498db',
         marginBottom: 15,
         fontWeight: 'bold',
     },
