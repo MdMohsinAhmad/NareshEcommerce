@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 
-const OrderScreen = () => {
+const OrderFailureScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -17,10 +17,10 @@ const OrderScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
       <LottieView
-        source={require('../assets/thumbs.json')}
+        source={require('../assets/paymentfailed.json')}
         style={{
-          height: 260,
-          width: 300,
+          height: 280,
+          width: 320,
           alignSelf: 'center',
           marginTop: 40,
           justifyContent: 'center',
@@ -37,25 +37,13 @@ const OrderScreen = () => {
           textAlign: 'center',
         }}
       >
-        Your Order Has been Recieved
+        Your Order Has been Failed
       </Text>
-      <LottieView
-        source={require('../assets/sparkle.json')}
-        style={{
-          height: 300,
-          position: 'absolute',
-          top: 100,
-          width: 300,
-          alignSelf: 'center',
-        }}
-        autoPlay
-        loop={false}
-        speed={0.7}
-      />
+      
     </SafeAreaView>
   );
 };
 
-export default OrderScreen;
+export default OrderFailureScreen;
 
 const styles = StyleSheet.create({});

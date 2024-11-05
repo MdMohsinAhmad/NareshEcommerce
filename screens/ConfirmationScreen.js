@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { cleanCart } from '../redux/CartReducer';
 import { TouchableOpacity } from 'react-native';
+import RazorpayCheckout from 'react-native-razorpay'
 
 const ConfirmationScreen = () => {
   const steps = [
@@ -39,16 +40,16 @@ const ConfirmationScreen = () => {
       const response = await axios.get('http://192.168.31.155:8800/deliveryboy/token');
       // Assuming the response has a structure like { data: { All_Push_Tokens: [{ pushToken: "..." }, ...] } }
       const tokens = response.data.All_Push_Tokens.map(item => item.pushToken);
-       setPushToken(tokens);
+      setPushToken(tokens);
     } catch (error) {
       console.error('Error fetching tokens', error);
     }
   };
-  
+
   useEffect(() => {
     FetchALLDeliveryTOKEN();
   }, []);
-  
+
 
   const fetchAddresses = async () => {
     try {
@@ -71,7 +72,6 @@ const ConfirmationScreen = () => {
   const [selectedAddress, setSelectedAddress] = useState('');
   const [options, setOptions] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState('');
-  // const [paymentoption, setPaymentOption] = useState(false)
 
   const handlePlaceOrder = async () => {
     try {
@@ -82,7 +82,7 @@ const ConfirmationScreen = () => {
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
         orderStatus: false,
-        PushToken:PushToken
+        PushToken: PushToken
       };
       const response = await axios.post(
         'http://192.168.31.155:8800/orders',
@@ -104,11 +104,31 @@ const ConfirmationScreen = () => {
   };
 
   // pay with card or UPI
-  const pay = async () => {
-    try {
-    } catch (error) {
-      console.log('Error', error);
-    }
+  const initiatePayment = () => {
+    const options = {
+      description: 'Payment for product',
+      image: './assets/splashScreen.png', // Optional, can be customized
+      currency: 'INR',
+      key: 'rzp_test_iTNeVvGBP2UtGJ', // Replace with your Razorpay Key ID
+      amount: (total + 2) * 100, // Amount in paise (e.g., 5000 paise = INR 50)
+      name: 'Fresh and Fresh',
+      prefill: {
+        email: 'customer@example.com', // Prefilled email
+        contact: '1234567890', // Prefilled phone number
+        name: 'Customer Name' // Prefilled name
+      },
+      theme: { color: '#0a3d62' } // Customize the theme color
+    };
+
+    RazorpayCheckout.open(options)
+      .then((data) => {
+        handlePlaceOrder()
+        Alert.alert(`Success: ${data.razorpay_payment_id}`);
+      })
+      .catch((error) => {
+        navigation.replace('OrderFailure')
+        Alert.alert(`Error: ${error.code} | ${error.description}`);
+      });
   };
 
   return (
@@ -620,7 +640,7 @@ const ConfirmationScreen = () => {
             </Text>
           </View>
           <Pressable
-            onPress={handlePlaceOrder}
+            onPress={initiatePayment}
             style={{
               backgroundColor: '#FFC72C',
               padding: 10,

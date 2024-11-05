@@ -22,6 +22,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import ResetPassword from '../screens/ResetPassword';
 import RequestResetPassword from '../screens/RequestResetPassword';
 import { useSelector } from 'react-redux';
+import OrderFailureScreen from '../screens/OrderFailureScreen';
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -139,6 +140,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Order"
           component={OrderScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OrderFailure"
+          component={OrderFailureScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

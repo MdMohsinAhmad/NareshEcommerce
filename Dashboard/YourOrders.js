@@ -51,12 +51,11 @@ const OrderHistory = () => {
 
     const filteredOrders = orders
         .sort((a, b) => a.orderStatus - b.orderStatus) // Sort by status: pending (false) on top
-        .filter(order => 
+        .filter(order =>
             filter === 'All' ||
             (filter === 'Pending' && !order.orderStatus) ||
             (filter === 'Delivered' && order.orderStatus)
         );
-
     const renderOrderItem = ({ item }) => (
         <>
             {item.totalPrice !== 0 && (
