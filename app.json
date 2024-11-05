@@ -2,6 +2,7 @@
   "expo": {
     "name": "ecommerce-project",
     "slug": "ecommerce-project",
+    "scheme": "myapp",
     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/auth"

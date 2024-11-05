@@ -107,9 +107,9 @@ const LoginScreen = () => {
           </View>
         </View>
 
-        <View style={styles.optionsContainer}>
+        <Pressable style={styles.optionsContainer} onPress={()=>navigation.navigate('RequestPassword')}>
           <Text style={styles.forgotText}>Forgot Password?</Text>
-        </View>
+        </Pressable>
 
         <Pressable style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>

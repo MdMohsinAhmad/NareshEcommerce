@@ -21,6 +21,8 @@ import OrderHistory from '../Dashboard/YourOrders';
 import CustomHeader from './orderHeader';
 import HomeHeader from './HomeHeader';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import ResetPassword from '../screens/ResetPassword';
+import RequestResetPassword from '../screens/RequestResetPassword';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -82,6 +84,16 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ResetPassword"
+          component={ResetPassword}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RequestPassword"
+          component={RequestResetPassword}
           options={{ headerShown: false }}
         />
         <Stack.Screen

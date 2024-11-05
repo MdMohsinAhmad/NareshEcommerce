@@ -20,7 +20,7 @@ const ConfirmationScreen = () => {
   const [addresses, setAddresses] = useState([]);
   const { userId, setUserId } = useContext(UserType);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [PushToken, setPushToken] = useState([])
   const cart = useSelector((state) => state.cart.cart);
   // console.log(cart.length)
   const total = cart
@@ -34,6 +34,21 @@ const ConfirmationScreen = () => {
     setSelectedOptions('')
   }, [cart]);
 
+  const FetchALLDeliveryTOKEN = async () => {
+    try {
+      const response = await axios.get('http://192.168.31.155:8800/deliveryboy/token');
+      // Assuming the response has a structure like { data: { All_Push_Tokens: [{ pushToken: "..." }, ...] } }
+      const tokens = response.data.All_Push_Tokens.map(item => item.pushToken);
+       setPushToken(tokens);
+    } catch (error) {
+      console.error('Error fetching tokens', error);
+    }
+  };
+  
+  useEffect(() => {
+    FetchALLDeliveryTOKEN();
+  }, []);
+  
 
   const fetchAddresses = async () => {
     try {
@@ -66,7 +81,8 @@ const ConfirmationScreen = () => {
         totalPrice: total + 2,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
-        orderStatus: false
+        orderStatus: false,
+        PushToken:PushToken
       };
       const response = await axios.post(
         'http://192.168.31.155:8800/orders',
@@ -87,6 +103,7 @@ const ConfirmationScreen = () => {
     }
   };
 
+  // pay with card or UPI
   const pay = async () => {
     try {
     } catch (error) {
