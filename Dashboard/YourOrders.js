@@ -34,7 +34,7 @@ const OrderHistory = () => {
                     text: "OK",
                     onPress: async () => {
                         try {
-                            const response = await axios.patch(`http://192.168.31.155:8800/orders/${orderId}/cancel/${productId}`);
+                            const response = await axios.put(`http://192.168.31.155:8800/orders/${orderId}/cancel/${productId}`);
                             Alert.alert('Success', response.data.message);
                             const updatedOrders = await axios.get(`http://192.168.31.155:8800/orders/${userId}`);
                             setOrders(updatedOrders.data.orders);
@@ -73,8 +73,28 @@ const OrderHistory = () => {
                                 <Text style={styles.itemDetails}>Price: ₹ {product.price}</Text>
                                 <Text style={styles.itemDetails}>Total: ₹ {product.price * product.quantity}</Text>
                                 <Text style={styles.itemDetails}>Order ID : {product.uniqueId}</Text>
-                                <Text style={styles.itemStatus}>Status : {!product.orderStatus ? 'Pending' : 'Delivered'}</Text>
-                                {!product.orderStatus && (
+                                <Text style={product.orderStatus === 'pending' ? {
+                                    fontSize: 16,
+                                    color: 'red',
+                                    marginVertical: 2,
+                                    fontWeight: 'bold',
+                                } : product.orderStatus === 'canceled' ? {
+                                    fontSize: 16,
+                                    color: 'black',
+                                    marginVertical: 2,
+                                    fontWeight: 'bold',
+                                } : product.orderStatus === 'packed' ? {
+                                    fontSize: 16,
+                                    color: '#1abc9c',
+                                    marginVertical: 2,
+                                    fontWeight: 'bold',
+                                } : {
+                                    fontSize: 16,
+                                    color: '#2ecc71',
+                                    marginVertical: 2,
+                                    fontWeight: 'bold',
+                                }}>Status : {product.orderStatus}</Text>
+                                {product.orderStatus === 'pending' && (
                                     <TouchableOpacity onPress={() => handleCancelProduct(item._id, product._id)}>
                                         <Animated.View style={[styles.cancelButton, { transform: [{ scale: scaleValue }] }]}>
                                             <Text style={styles.cancelButtonText}>Cancel order</Text>
