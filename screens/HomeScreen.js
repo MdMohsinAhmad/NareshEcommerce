@@ -1,22 +1,12 @@
 import {
-  Image,
   Platform,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import * as Location from 'expo-location';
-// import { AntDesign } from '@expo/vector-icons';
-// import EvilIcons from '@expo/vector-icons/EvilIcons';
-// import Entypo from '@expo/vector-icons/Entypo';
-// import { Ionicons } from '@expo/vector-icons';
-//  import { Entypo } from '@expo/vector-icons';
-// import FontAwesome from '@expo/vector-icons/FontAwesome';
-// import { MaterialIcons } from '@expo/vector-icons';
 import { SliderBox } from 'react-native-image-slider-box';
 import React,{ useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -45,7 +35,6 @@ const HomeScreen = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [open, setOpen] = useState(false);
-  // const [category, setCategory] = useState('jewelery');
   const [bars, setBars] = useState(false)
 
 

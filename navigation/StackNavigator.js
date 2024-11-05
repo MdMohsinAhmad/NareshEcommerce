@@ -6,9 +6,7 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Entypo } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { Entypo, AntDesign, Ionicons } from '@expo/vector-icons';
 import ProductInfoScreen from '../screens/ProductInfoScreen';
 import AddAddressScreen from '../screens/AddAddressScreen';
 import AddressScreen from '../screens/AddressScreen';
@@ -23,11 +21,15 @@ import HomeHeader from './HomeHeader';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import ResetPassword from '../screens/ResetPassword';
 import RequestResetPassword from '../screens/RequestResetPassword';
+import { useSelector } from 'react-redux';
+
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
 
   function BottomTabs() {
+    const cart = useSelector((state) => state.cart.cart);
+
     return (
       <Tab.Navigator>
         <Tab.Screen
@@ -35,8 +37,8 @@ const StackNavigator = () => {
           component={HomeScreen}
           options={{
             tabBarLabel: 'Home',
-            tabBarLabelStyle: '#0a3d62',
-            header: () => <HomeHeader title="Order History" />,
+            tabBarLabelStyle: { color: '#0a3d62' },
+            header: () => <HomeHeader title="Home" />,
             tabBarIcon: ({ focused }) =>
               focused ? (
                 <Entypo name="home" size={24} color="#0a3d62" />
@@ -50,7 +52,7 @@ const StackNavigator = () => {
           component={ProfileScreen}
           options={{
             tabBarLabel: 'Profile',
-            tabBarLabelStyle: '#0a3d62',
+            tabBarLabelStyle: { color: '#0a3d62' },
             tabBarIcon: ({ focused }) =>
               focused ? (
                 <Ionicons name="person" size={24} color="#0a3d62" />
@@ -64,20 +66,26 @@ const StackNavigator = () => {
           component={CartScreen}
           options={{
             tabBarLabel: 'Cart',
-            tabBarLabelStyle: '#0a3d62',
-            headerShown: true,
+            tabBarLabelStyle: { color: '#0a3d62' },
             header: () => <CustomHeader title="Cart" />,
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <FontAwesome5 name="shopping-cart" size={20} color="#0a3d62" />
-              ) : (
-                <AntDesign name="shoppingcart" size={24} color="black" />
-              ),
+            tabBarIcon: ({ focused }) => (
+              <View style={{ alignItems: 'center', position: 'relative' }}>
+                {cart.length > 0 && (
+                  <Text style={{ color: 'white', fontSize: 13, position: 'absolute',top:-5,right:-10,fontWeight:'bold',backgroundColor:'gray',borderRadius:50,width:18,textAlign:'center' }}>{cart.length}</Text>
+                )}
+                {focused ? (
+                  <FontAwesome5 name="shopping-cart" size={20} color="#0a3d62" />
+                ) : (
+                  <AntDesign name="shoppingcart" size={24} color="black" />
+                )}
+              </View>
+            ),
           }}
         />
       </Tab.Navigator>
     );
   }
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -145,7 +153,6 @@ const StackNavigator = () => {
           component={YourAccount}
           options={{ headerShown: false }}
         />
-
       </Stack.Navigator>
     </NavigationContainer>
   );

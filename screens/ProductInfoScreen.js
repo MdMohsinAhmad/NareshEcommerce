@@ -71,12 +71,17 @@ const ProductInfoScreen = ({ route }) => {
     const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
 
     if (result) {
-      const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
       setAddress(result);
     } else {
       alert("Error", "Unable to retrieve address.");
     }
   };
+
+  const handleBututton = () => {
+    dispatch(addToCart(product));
+    navigation.navigate('Cart')
+  }
+
   return (
     <ScrollView style={{ marginTop: 0, flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
@@ -89,7 +94,7 @@ const ProductInfoScreen = ({ route }) => {
       <View style={{ padding: 10 }}>
         <Text style={styles.price}>Price : ₹ <Text>{product.price}</Text> </Text>
         <Text style={styles.deliveryText}>
-           Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM. 
+          Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM.
         </Text>
         <View style={styles.locationContainer}>
           <Ionicons name="location" size={24} color="black" />
@@ -123,7 +128,7 @@ const ProductInfoScreen = ({ route }) => {
         </View>
       )}
 
-      <Pressable onPress={() => navigation.navigate('Cart')} style={styles.buyNowButton}>
+      <Pressable onPress={() => handleBututton(product)} style={styles.buyNowButton}>
         <Text style={styles.buttonText}>Buy Now</Text>
       </Pressable>
     </ScrollView>
@@ -199,7 +204,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   quantityContainer: {
-    display:'flex',
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
@@ -207,7 +212,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     backgroundColor: '#f5f5f5',
-    borderRadius: 10,justifyContent:'center'
+    borderRadius: 10, justifyContent: 'center'
   },
   iconContainer: {
     backgroundColor: '#fab1a0',
