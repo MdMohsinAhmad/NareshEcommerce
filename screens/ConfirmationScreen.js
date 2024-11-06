@@ -73,7 +73,7 @@ const ConfirmationScreen = () => {
   const [options, setOptions] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState('');
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (paymentId) => {
     try {
       const orderData = {
         userId: userId,
@@ -82,7 +82,8 @@ const ConfirmationScreen = () => {
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
         orderStatus: false,
-        PushToken: PushToken
+        PushToken: PushToken,
+        paymentId: paymentId || null
       };
       const response = await axios.post(
         'http://192.168.31.155:8800/orders',
@@ -122,12 +123,12 @@ const ConfirmationScreen = () => {
 
     RazorpayCheckout.open(options)
       .then((data) => {
-        handlePlaceOrder()
-        Alert.alert(`Success: ${data.razorpay_payment_id}`);
+        handlePlaceOrder(data.razorpay_payment_id)
+        // Alert.alert(`Success: ${data.razorpay_payment_id}`);
       })
       .catch((error) => {
         navigation.replace('OrderFailure')
-        Alert.alert(`Error: ${error.code} | ${error.description}`);
+        // Alert.alert(`Error: ${error.code} | ${error.description}`);
       });
   };
 

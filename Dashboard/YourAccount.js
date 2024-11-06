@@ -58,7 +58,7 @@ const YourAccount = () => {
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
         <Image
-          source={{ uri: user?.avatar || 'https://wallpapers.com/images/hd/profile-picture-spirit-knight-k2ar09ggd5uvxwi1.jpg' }}
+          source={{ uri: user?.avatar || 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small/man-avatar-image-for-profile-png.png' }}
           style={styles.avatar}
         />
         <Text style={styles.userName}>{user?.name}</Text>
@@ -80,9 +80,9 @@ const YourAccount = () => {
         </View>
       </View>
 
-      <Pressable style={styles.actionButton}>
+      {/* <Pressable style={styles.actionButton}>
         <Text style={styles.actionButtonText}>Edit Profile</Text>
-      </Pressable>
+      </Pressable> */}
       <Pressable style={[styles.actionButton, styles.logoutButton]} onPress={logout}>
         <Text style={styles.actionButtonText}>Logout</Text>
       </Pressable>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: '#007AFF',
+    borderColor: '#007AFF',resizeMode:'contain'
   },
   userName: {
     fontSize: 24,

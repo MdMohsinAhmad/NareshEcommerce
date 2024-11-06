@@ -128,7 +128,7 @@ const ProductInfoScreen = ({ route }) => {
         </View>
       )}
 
-      <Pressable onPress={() => handleBututton(product)} style={styles.buyNowButton}>
+      <Pressable onPress={() => { cart.length === 0 ? handleBututton(product) : navigation.navigate('Cart') }} style={styles.buyNowButton}>
         <Text style={styles.buttonText}>Buy Now</Text>
       </Pressable>
     </ScrollView>

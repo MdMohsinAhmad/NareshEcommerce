@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Alert, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, Alert, Animated, TouchableOpacity, RefreshControl } from 'react-native';
 import axios from 'axios';
 import { UserType } from '../UserContext';
 
@@ -7,18 +7,29 @@ const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const { userId } = useContext(UserType);
     const [scaleValue] = useState(new Animated.Value(1));
-    const [filter, setFilter] = useState('All'); // New state for filtering orders
+    const [currentStatus, setCurrentStatus] = useState('All');
+    const [refreshing, setRefreshing] = useState(false);
+
+    const filterOrders = (status) => {
+        setCurrentStatus(status);
+    };
+
+    const filteredOrders = currentStatus === 'All'
+        ? orders
+        : orders.filter(order =>
+            order.products.some(product => product.orderStatus === currentStatus.toLowerCase())
+        );
+
+    const fetchOrders = async () => {
+        try {
+            const response = await axios.get(`http://192.168.31.155:8800/orders/${userId}`);
+            setOrders(response.data.orders);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const response = await axios.get(`http://192.168.31.155:8800/orders/${userId}`);
-                setOrders(response.data.orders);
-            } catch (error) {
-                console.error('Error fetching orders:', error);
-            }
-        };
-
         if (userId) {
             fetchOrders();
         }
@@ -36,8 +47,7 @@ const OrderHistory = () => {
                         try {
                             const response = await axios.put(`http://192.168.31.155:8800/orders/${orderId}/cancel/${productId}`);
                             Alert.alert('Success', response.data.message);
-                            const updatedOrders = await axios.get(`http://192.168.31.155:8800/orders/${userId}`);
-                            setOrders(updatedOrders.data.orders);
+                            fetchOrders();
                         } catch (error) {
                             console.error('Error canceling product:', error);
                             Alert.alert('Error', 'Unable to cancel the product. Please try again later.');
@@ -49,31 +59,22 @@ const OrderHistory = () => {
         );
     };
 
-    const filteredOrders = orders
-        .sort((a, b) => a.orderStatus - b.orderStatus) // Sort by status: pending (false) on top
-        .filter(order =>
-            filter === 'All' ||
-            (filter === 'Pending' && !order.orderStatus) ||
-            (filter === 'Delivered' && order.orderStatus)
-        );
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchOrders();
+        setRefreshing(false);
+    };
+
     const renderOrderItem = ({ item }) => (
         <>
             {item.totalPrice !== 0 && (
                 <View style={styles.orderCard}>
                     <Text style={styles.orderStatus}>Order Status: {item.orderStatus ? "Delivered" : "Pending"}</Text>
                     <Text style={styles.orderDate}>Ordered on: {new Date(item.createdAt).toLocaleDateString()}</Text>
-                    <Text style={styles.total}>Total Price : ₹ {item.totalPrice}</Text>
-                    <Text style={item.paymentMethod === 'cash' ? {
-                        fontSize: 18,
-                        color: '#e67e22',
-                        marginBottom: 15,
-                        fontWeight: 'bold',
-                    } : {
-                        fontSize: 18,
-                        color: '#27ae60',
-                        marginBottom: 15,
-                        fontWeight: 'bold',
-                    }}>Payment Mode : {item.paymentMethod === 'cash' ? 'Cash on delivery' : "Payment done"}</Text>
+                    {/* <Text style={styles.total}>Total Price : ₹ {item.totalPrice}</Text> */}
+                    <Text style={item.paymentMethod === 'cash' ? styles.cashPayment : styles.onlinePayment}>
+                        Payment Mode : {item.paymentMethod === 'cash' ? 'Cash on delivery' : "Paid Online"}
+                    </Text>
 
                     {item.products.map((product, index) => (
                         <View key={index} style={styles.productContainer}>
@@ -82,29 +83,11 @@ const OrderHistory = () => {
                                 <Text style={styles.itemName}>{product.name}</Text>
                                 <Text style={styles.itemDetails}>Qty: {product.quantity}</Text>
                                 <Text style={styles.itemDetails}>Price: ₹ {product.price}</Text>
-                                <Text style={styles.itemDetails}>Total: ₹ {product.price * product.quantity}</Text>
+                                <Text style={styles.total}>Total: ₹ {product.price * product.quantity}</Text>
                                 <Text style={styles.itemDetails}>Order ID : {product.uniqueId}</Text>
-                                <Text style={product.orderStatus === 'pending' ? {
-                                    fontSize: 18,
-                                    color: '#f1c40f',
-                                    marginVertical: 2,
-                                    fontWeight: 'bold',
-                                } : product.orderStatus === 'canceled' ? {
-                                    fontSize: 18,
-                                    color: '#e74c3c',
-                                    marginVertical: 2,
-                                    fontWeight: 'bold',
-                                } : product.orderStatus === 'packed' ? {
-                                    fontSize: 18,
-                                    color: '#1abc9c',
-                                    marginVertical: 2,
-                                    fontWeight: 'bold',
-                                } : {
-                                    fontSize: 18,
-                                    color: '#27ae60',
-                                    marginVertical: 2,
-                                    fontWeight: 'bold',
-                                }}>Status : {product.orderStatus}</Text>
+                                <Text style={styles.getStatusStyle(product.orderStatus)}>
+                                    Status : {product.orderStatus}
+                                </Text>
                                 {product.orderStatus === 'pending' && (
                                     <TouchableOpacity onPress={() => handleCancelProduct(item._id, product._id)}>
                                         <Animated.View style={[styles.cancelButton, { transform: [{ scale: scaleValue }] }]}>
@@ -124,20 +107,20 @@ const OrderHistory = () => {
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                    style={[styles.filterButton, filter === 'All' && styles.activeButton]}
-                    onPress={() => setFilter('All')}
+                    style={[styles.filterButton, currentStatus === 'All' && styles.activeButton]}
+                    onPress={() => filterOrders('All')}
                 >
                     <Text style={styles.buttonText}>All Orders</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[styles.filterButton, filter === 'Pending' && styles.activeButton]}
-                    onPress={() => setFilter('Pending')}
+                    style={[styles.filterButton, currentStatus === 'pending' && styles.activeButton]}
+                    onPress={() => filterOrders('pending')}
                 >
                     <Text style={styles.buttonText}>Pending</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[styles.filterButton, filter === 'Delivered' && styles.activeButton]}
-                    onPress={() => setFilter('Delivered')}
+                    style={[styles.filterButton, currentStatus === 'delivered' && styles.activeButton]}
+                    onPress={() => filterOrders('delivered')}
                 >
                     <Text style={styles.buttonText}>Delivered</Text>
                 </TouchableOpacity>
@@ -150,6 +133,9 @@ const OrderHistory = () => {
                 contentContainerStyle={styles.listContainer}
                 ListEmptyComponent={<Text style={styles.emptyText}>No orders found.</Text>}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
             />
         </View>
     );
@@ -209,13 +195,19 @@ const styles = StyleSheet.create({
     },
     total: {
         fontSize: 17,
-        color: 'gray',
+        color: '#3498db',
+        // marginBottom: 15,
+        fontWeight: 'bold',
+    },
+    cashPayment: {
+        fontSize: 18,
+        color: '#e67e22',
         marginBottom: 15,
         fontWeight: 'bold',
     },
-    paymentMethod: {
+    onlinePayment: {
         fontSize: 18,
-        color: '#3498db',
+        color: '#27ae60',
         marginBottom: 15,
         fontWeight: 'bold',
     },
@@ -248,12 +240,14 @@ const styles = StyleSheet.create({
         color: '#666',
         marginVertical: 2,
     },
-    itemStatus: {
-        fontSize: 16,
-        color: 'black',
+    getStatusStyle: (status) => ({
+        fontSize: 18,
+        color: status === 'pending' ? '#f1c40f' :
+            status === 'canceled' ? '#e74c3c' :
+                status === 'packed' ? '#1abc9c' : '#27ae60',
         marginVertical: 2,
         fontWeight: 'bold',
-    },
+    }),
     cancelButton: {
         marginTop: 10,
         paddingVertical: 12,
@@ -269,12 +263,11 @@ const styles = StyleSheet.create({
     cancelButtonText: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 16,
     },
     emptyText: {
-        fontSize: 16,
-        color: '#999',
         textAlign: 'center',
+        fontSize: 18,
+        color: '#aaa',
         marginTop: 20,
     },
 });

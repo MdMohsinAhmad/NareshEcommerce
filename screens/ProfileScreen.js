@@ -15,10 +15,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  const { userId, setUserId } = useContext(UserType);
-  // const [orders, setOrders] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({});
 
 
   useLayoutEffect(() => {
@@ -49,35 +45,35 @@ const ProfileScreen = () => {
   }, [navigation]);
 
   // Retrieve user
-  const userInfo = async () => {
-    try {
-      const user = await AsyncStorage.getItem('USER');
-      if (user) {
-        setUser(JSON.parse(user));
-      } else {
-        console.log('No user data found');
-      }
-    } catch (error) {
-      console.log('Error retrieving user data:', error);
-    }
-  };
+  // const userInfo = async () => {
+  //   try {
+  //     const user = await AsyncStorage.getItem('USER');
+  //     if (user) {
+  //       setUser(JSON.parse(user));
+  //     } else {
+  //       console.log('No user data found');
+  //     }
+  //   } catch (error) {
+  //     console.log('Error retrieving user data:', error);
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(
-          `http://192.168.31.155:8800/profile/${userId}`
-        );
-        setUser(response.data.user);
-        // console.log(response.data.user);
-      } catch (error) {
-        console.log('Error fetching user profile:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserProfile = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://192.168.31.155:8800/profile/${userId}`
+  //       );
+  //       setUser(response.data.user);
+  //       // console.log(response.data.user);
+  //     } catch (error) {
+  //       console.log('Error fetching user profile:', error);
+  //     }
+  //   };
 
-    userInfo();
-    fetchUserProfile();
-  }, [userId]);
+  //   userInfo();
+  //   fetchUserProfile();
+  // }, [userId]);
 
   const logout = async () => {
     await AsyncStorage.removeItem('authToken');
@@ -105,7 +101,7 @@ const ProfileScreen = () => {
       </View>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-        <Pressable style={styles.actionButton}>
+        <Pressable style={styles.actionButton} onPress={()=>navigation.replace('Main')}>
           <Text style={styles.actionButtonText}>Buy Again</Text>
         </Pressable>
 

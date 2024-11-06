@@ -15,6 +15,7 @@ import {
   incrementQuantity,
   removeFromCart,
 } from '../redux/CartReducer';
+import LottieView from 'lottie-react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -75,36 +76,47 @@ const CartScreen = () => {
       showsHorizontalScrollIndicator={false}
       style={{ marginTop: 0, flex: 1, backgroundColor: 'white' }}
     >
-      <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ fontSize: 18, fontWeight: '400' }}>Subtotal: </Text>
-        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>₹{total}</Text>
-      </View>
+      {cart.length > 0 ? <>
+        <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, fontWeight: '400' }}>Subtotal: </Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>₹{total}</Text>
+        </View>
 
-      {/* <Text style={{ marginHorizontal: 10 }}>EMI details available</Text> */}
+        <Pressable
+          onPress={() => navigation.navigate('Confirm')}
+          style={{
+            backgroundColor: '#FFC72C',
+            padding: 10,
+            borderRadius: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginHorizontal: 10,
+            marginTop: 10,
+          }}
+        >
+          <Text>Proceed to Buy ({cart.length}) item</Text>
+        </Pressable></>
+        :
+        <>
+          <Text style={{ textAlign: 'center', position: 'absolute', top: 90, left: 90, fontSize: 20, fontWeight: 'bold', color: 'gray' }}>No items in the Cart 😔</Text>
+          <LottieView
+            source={require('../assets/emptycart.json')}
+            style={{
+              height: 280,
+              width: 320,
+              alignSelf: 'center',
+              marginTop: 150,
+              justifyContent: 'center',
+            }}
+            autoPlay
+            loop={true}
+            speed={0.7}
+          />
+        </>
 
-      <Pressable
-        onPress={() => navigation.navigate('Confirm')}
-        style={{
-          backgroundColor: '#FFC72C',
-          padding: 10,
-          borderRadius: 5,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginHorizontal: 10,
-          marginTop: 10,
-        }}
-      >
-        <Text>Proceed to Buy ({cart.length}) item</Text>
-      </Pressable>
+      }
 
-      <Text
-        style={{
-          height: 1,
-          borderColor: '#D0D0D0',
-          borderWidth: 1,
-          marginTop: 16,
-        }}
-      />
+
 
       <View style={{ marginHorizontal: 10 }}>
         {cart?.map((item, index) => (
@@ -134,10 +146,10 @@ const CartScreen = () => {
                 />
               </View >
               <View >
-                <Text numberOfLines={3} style={{ width: 150, marginTop: 10,fontSize:15,fontWeight:'bold',color:'#0a3d62' }}>
+                <Text numberOfLines={3} style={{ width: 150, marginTop: 10, fontSize: 15, fontWeight: 'bold', color: '#0a3d62' }}>
                   {item?.title}
                 </Text>
-                <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 6 ,color:'#0a3d62'}}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 6, color: '#0a3d62' }}>
                   Price : ₹ {item?.price}
                 </Text>
                 <Pressable
@@ -218,7 +230,7 @@ const CartScreen = () => {
                       borderWidth: 0.6,
                     }}
                   >
-                    <Text style={{color:'#0a3d62'}}>Delete</Text>
+                    <Text style={{ color: '#0a3d62' }}>Delete</Text>
                   </Pressable>
                 </Pressable>
               </View>
