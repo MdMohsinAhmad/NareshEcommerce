@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
-
+import URL_path from '../URL';
 const RequestResetPassword = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false)
@@ -10,7 +10,7 @@ const RequestResetPassword = ({ navigation }) => {
     const handleRequestReset = async () => {
         setLoading(true)
         try {
-            await axios.post('http://192.168.31.155:8800/requestpassword/token', { email });
+            await axios.post(`${URL_path}/requestpassword/token`, { email });
             Alert.alert('Success', 'Check your email for the reset link.');
             setTimeout(() => {
                 navigation.navigate('Login')

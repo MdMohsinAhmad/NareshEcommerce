@@ -4,7 +4,7 @@ import { AntDesign, Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { UserType } from '../UserContext';
-
+import URL_path from '../URL'
 const AddAddressScreen = () => {
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
@@ -16,7 +16,7 @@ const AddAddressScreen = () => {
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(`http://192.168.31.155:8800/addresses/${userId}`);
+      const response = await axios.get(`${URL_path}/addresses/${userId}`);
       const { addresses } = response.data;
       setAddresses(addresses);
     } catch (error) {

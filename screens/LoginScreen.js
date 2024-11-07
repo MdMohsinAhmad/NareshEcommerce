@@ -15,7 +15,7 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons'; // Add 
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import URL_path from '../URL';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,7 +44,7 @@ const LoginScreen = () => {
     const user = { email, password };
 
     axios
-      .post(`http://192.168.31.155:8800/login`, user)
+      .post(`${URL_path}/login`, user)
       .then((response) => {
         const token = response.data.token;
         AsyncStorage.setItem('authToken', token);

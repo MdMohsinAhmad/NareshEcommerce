@@ -14,6 +14,7 @@ import axios from 'axios';
 import ProductItem from '../components/ProductItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
+import URL_path from '../URL'
 
 const HomeScreen = () => {
   const images = [
@@ -28,7 +29,7 @@ const HomeScreen = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://192.168.31.155:8800/api/products');
+      const response = await axios.get(`${URL_path}/api/products`);
       setProducts(response.data);
     } catch (error) {
       console.log('Error fetching products:', error);
@@ -68,7 +69,7 @@ const HomeScreen = () => {
           dotColor={'#13274F'}
           inactiveDotColor="#90A4AE"
           imageComponentStyle={styles.imageComponentStyle}
-          sliderBoxHeight={250} // You can adjust the height as needed
+          sliderBoxHeight={200}
         />
         <View style={styles.topProductsContainer}>
           <Text style={styles.topProductsTitle}>Top Products</Text>

@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { UserType } from '../UserContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import URL_path from '../URL';
 const YourAccount = () => {
   const navigation = useNavigation();
   const { userId } = useContext(UserType);
@@ -32,7 +32,7 @@ const YourAccount = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`http://192.168.31.155:8800/profile/${userId}`);
+        const response = await axios.get(`${URL_path}/profile/${userId}`);
         const { user } = response.data;
         setUser(user);
         // console.log(user)

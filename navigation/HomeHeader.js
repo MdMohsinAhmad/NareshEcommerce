@@ -13,7 +13,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { BottomModal, SlideAnimation, ModalContent } from 'react-native-modals';
 import Entypo from '@expo/vector-icons/Entypo';
-
+import URL_path from '../URL';
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState('');
@@ -63,7 +63,7 @@ const HomeHeader = () => {
 
     const fetchAddresses = async () => {
         try {
-            const response = await axios.get(`http://192.168.31.155:8800/addresses/${userId}`);
+            const response = await axios.get(`${URL_path}/addresses/${userId}`);
             const { addresses } = response.data;
             setAddresses(addresses);
             // console.log(addresses)

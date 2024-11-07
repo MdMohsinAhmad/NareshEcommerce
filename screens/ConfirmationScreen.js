@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { cleanCart } from '../redux/CartReducer';
 import { TouchableOpacity } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay'
+import URL_path from '../URL'
 
 const ConfirmationScreen = () => {
   const steps = [
@@ -37,7 +38,7 @@ const ConfirmationScreen = () => {
 
   const FetchALLDeliveryTOKEN = async () => {
     try {
-      const response = await axios.get('http://192.168.31.155:8800/deliveryboy/token');
+      const response = await axios.get(`${URL_path}/deliveryboy/token`);
       // Assuming the response has a structure like { data: { All_Push_Tokens: [{ pushToken: "..." }, ...] } }
       const tokens = response.data.All_Push_Tokens.map(item => item.pushToken);
       setPushToken(tokens);
@@ -54,7 +55,7 @@ const ConfirmationScreen = () => {
   const fetchAddresses = async () => {
     try {
       setRefreshing(true);
-      const response = await axios.get(`http://192.168.31.155:8800/addresses/${userId}`);
+      const response = await axios.get(`${URL_path}/addresses/${userId}`);
       const { addresses } = response.data;
       setAddresses(addresses);
     } catch (error) {
@@ -86,7 +87,7 @@ const ConfirmationScreen = () => {
         paymentId:null
       };
       const response = await axios.post(
-        'http://192.168.31.155:8800/orders',
+        `${URL_path}/orders`,
         orderData
       );
 
@@ -116,7 +117,7 @@ const ConfirmationScreen = () => {
         paymentId: paymentId || null
       };
       const response = await axios.post(
-        'http://192.168.31.155:8800/orders',
+        `${URL_path}/orders`,
         orderData
       );
 
@@ -137,7 +138,7 @@ const ConfirmationScreen = () => {
   // create order and send to backend
   const createOrder = async (amount, currency) => {
     try {
-      const response = await fetch('http://192.168.31.155:8800/create-order', {
+      const response = await fetch(`${URL_path}/create-order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

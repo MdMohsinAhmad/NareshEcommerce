@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, Alert, Animated, TouchableOpacity, RefreshControl } from 'react-native';
 import axios from 'axios';
 import { UserType } from '../UserContext';
-
+import URL_path from '../URL';
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const { userId } = useContext(UserType);
@@ -22,7 +22,7 @@ const OrderHistory = () => {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get(`http://192.168.31.155:8800/orders/${userId}`);
+            const response = await axios.get(`${URL_path}/orders/${userId}`);
             setOrders(response.data.orders);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -45,7 +45,7 @@ const OrderHistory = () => {
                     text: "OK",
                     onPress: async () => {
                         try {
-                            const response = await axios.put(`http://192.168.31.155:8800/orders/${orderId}/cancel/${productId}`);
+                            const response = await axios.put(`${URL_path}/orders/${orderId}/cancel/${productId}`);
                             Alert.alert('Success', response.data.message);
                             fetchOrders();
                         } catch (error) {

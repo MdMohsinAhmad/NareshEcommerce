@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
-
+import URL_path from '../URL';
 const ResetPassword = ({ route }) => {
   const { token } = route.params; // Get the reset token from the navigation params
   const [newPassword, setNewPassword] = useState('');
@@ -14,7 +14,7 @@ const ResetPassword = ({ route }) => {
       return;
     }
     try {
-      await axios.post('http://192.168.31.155:8800/resetpassword', { token, newPassword });
+      await axios.post(`${URL_path}/resetpassword`, { token, newPassword });
       Alert.alert('Success', 'Your password has been reset successfully.');
     } catch (error) {
       Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');

@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons, AntDesign, Ionicons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-// import Entypo from '@expo/vector-icons/Entypo';
+import URL_path from '../URL';
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -24,7 +24,7 @@ const RegisterScreen = () => {
   const handleRegister = () => {
     const user = { name, email,mobile, password };
 
-    axios.post(`http://192.168.31.155:8800/register`, user)
+    axios.post(`${URL_path}/register`, user)
       .then(() => {
         Alert.alert('Registration Successful', 'You have registered successfully');
         setName('');

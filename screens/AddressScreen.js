@@ -16,6 +16,7 @@ import axios from 'axios';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
+import URL_path from '../URL'
 
 const AddressScreen = () => {
   const navigation = useNavigation();
@@ -97,7 +98,7 @@ const AddressScreen = () => {
     };
 
     axios
-      .post('http://192.168.31.155:8800/addresses', { userId, address })
+      .post(`${URL_path}/addresses`, { userId, address })
       .then((response) => {
         Alert.alert('Success', 'Address added successfully');
         resetForm();
