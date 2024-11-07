@@ -5,17 +5,14 @@ import {
   StyleSheet,
   Text,
   View,
-  RefreshControl,
+  RefreshControl,Dimensions 
 } from 'react-native';
 import * as Location from 'expo-location';
 import { SliderBox } from 'react-native-image-slider-box';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductItem from '../components/ProductItem';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserType } from '../UserContext';
 import jwt_decode from 'jwt-decode';
 
 const HomeScreen = () => {
@@ -24,18 +21,10 @@ const HomeScreen = () => {
     'https://www.shutterstock.com/image-vector/3d-fresh-milk-ad-template-260nw-2120388287.jpg',
     'https://www.shutterstock.com/image-vector/3d-milk-farm-product-ad-600nw-2473341937.jpg',
   ];
+  const { width } = Dimensions.get('window');  // To make the slider responsive
 
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  // const navigation = useNavigation();
-  // const [addresses, setAddresses] = useState([]);
-  // const [selectedAddress, setSelectedAddress] = useState('');
-  // const [open, setOpen] = useState(false);
-  const [bars, setBars] = useState(false);
-
-  // const handleBars = () => {
-  //   setBars(!bars);
-  // };
 
   const fetchProducts = async () => {
     try {
@@ -61,7 +50,6 @@ const HomeScreen = () => {
       const token = await AsyncStorage.getItem('authToken');
       const decodedToken = jwt_decode(token);
       const userId = decodedToken.userId;
-      // setUserId(userId);
     };
     fetchUser();
   }, []);
@@ -75,11 +63,12 @@ const HomeScreen = () => {
       <SafeAreaView style={styles.container}>
         <SliderBox
           images={images}
-          autoPlay
+          autoplay
           circleLoop
           dotColor={'#13274F'}
           inactiveDotColor="#90A4AE"
-          imageComponentStyle={{ width: '99%' }}
+          imageComponentStyle={styles.imageComponentStyle}
+          sliderBoxHeight={250} // You can adjust the height as needed
         />
         <View style={styles.topProductsContainer}>
           <Text style={styles.topProductsTitle}>Top Products</Text>
@@ -119,5 +108,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     flexWrap: 'wrap',
+  }, imageComponentStyle: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
   },
 });

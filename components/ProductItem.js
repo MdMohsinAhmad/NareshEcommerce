@@ -54,7 +54,7 @@ const ProductItem = ({ product }) => {
         <Text style={styles.description} numberOfLines={2}>
           {product?.description}
         </Text>
-
+        <Text style={styles.description}>Quantity : {product.Quantity}</Text>
         <View style={styles.priceContainer}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.rupee}>₹ </Text>
@@ -72,7 +72,7 @@ const ProductItem = ({ product }) => {
         </Pressable>
       )}
 
-      {quantity > 0 &&  (
+      {quantity > 0 && (
         <Pressable style={styles.quantityContainer}>
           <Pressable onPress={() => decreaseQuantity(product)} style={styles.iconContainer}>
             {quantity > 1 ? (
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 180,
     paddingVertical: 10,
-    height: 300,
+    height: 330,
   },
   containerAdded: {
     marginVertical: 10,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 180,
     paddingVertical: 10,
-    height: 300,
+    height: 330,
     borderColor: '#00bcd4',
     borderWidth: 2,
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   description: {
     width: 150,
     marginTop: 5,
-    color: '#555',textAlign:'center'
+    color: '#555', textAlign: 'center'
   },
   priceContainer: {
     flexDirection: 'row',
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   rating: {
     color: '#b2bec3',
     fontWeight: 'bold',
-    textDecorationLine: 'line-through',fontSize:15
+    textDecorationLine: 'line-through', fontSize: 15
   },
   button: {
     backgroundColor: '#FFC72C',

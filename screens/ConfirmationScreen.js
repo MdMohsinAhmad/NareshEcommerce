@@ -73,6 +73,36 @@ const ConfirmationScreen = () => {
   const [options, setOptions] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState('');
 
+  const handlePlaceOrderCod = async () => {
+    try {
+      const orderData = {
+        userId: userId,
+        cartItems: cart,
+        totalPrice: total + 2,
+        shippingAddress: selectedAddress,
+        paymentMethod: selectedOptions,
+        orderStatus: false,
+        PushToken: PushToken,
+        paymentId:null
+      };
+      const response = await axios.post(
+        'http://192.168.31.155:8800/orders',
+        orderData
+      );
+
+      if (response.status === 200) {
+        setOptions(false)
+        setAddresses('')
+        setSelectedOptions('')
+        navigation.navigate('Order');
+        dispatch(cleanCart());
+      } else {
+        console.log('Error creating order');
+      }
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
   const handlePlaceOrder = async (paymentId) => {
     try {
       const orderData = {
@@ -104,15 +134,45 @@ const ConfirmationScreen = () => {
     }
   };
 
+  // create order and send to backend
+  const createOrder = async (amount, currency) => {
+    try {
+      const response = await fetch('http://192.168.31.155:8800/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount, currency }),
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating order:', error);
+    }
+  };
+
   // pay with card or UPI
-  const initiatePayment = () => {
+  const initiatePayment = async () => {
+
+    // Amount in INR, e.g., 500 INR
+    const amount = total + 2
+    const currency = 'INR';
+
+    const order = await createOrder(amount, currency);
+
+    if (!order?.id) {
+      Alert.alert('Order Creation Failed');
+      return;
+    }
+
     const options = {
-      description: 'Payment for product',
+      description: 'payment for all about milk packet',
       image: './assets/splashScreen.png', // Optional, can be customized
-      currency: 'INR',
+      currency: order.currency,
       key: 'rzp_test_iTNeVvGBP2UtGJ', // Replace with your Razorpay Key ID
-      amount: (total + 2) * 100, // Amount in paise (e.g., 5000 paise = INR 50)
+      amount: order.amount, // Amount in paise (e.g., 5000 paise = INR 50)
       name: 'Fresh and Fresh',
+      order_id: order.id,//Replace this with an order_id created using Orders API.
+
       prefill: {
         email: 'customer@example.com', // Prefilled email
         contact: '1234567890', // Prefilled phone number
@@ -124,11 +184,12 @@ const ConfirmationScreen = () => {
     RazorpayCheckout.open(options)
       .then((data) => {
         handlePlaceOrder(data.razorpay_payment_id)
-        // Alert.alert(`Success: ${data.razorpay_payment_id}`);
+     
       })
       .catch((error) => {
         navigation.replace('OrderFailure')
-        // Alert.alert(`Error: ${error.code} | ${error.description}`);
+        alert(`Error: ${error.code} | ${error.description}`);
+        console.log('failed')
       });
   };
 
@@ -548,7 +609,7 @@ const ConfirmationScreen = () => {
             </Text>
           </View>
           <Pressable
-            onPress={handlePlaceOrder}
+            onPress={handlePlaceOrderCod}
             style={{
               backgroundColor: '#FFC72C',
               padding: 10,

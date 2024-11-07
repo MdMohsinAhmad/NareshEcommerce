@@ -9,10 +9,10 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/splashScreen.png",
+    "icon": "./assets/playstore.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splashScreen.png",
+      "image": "./assets/playstore.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -25,13 +25,13 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/splashScreen.png",
+        "foregroundImage": "./assets/playstore.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.mdmohsin9701.ecommerceproject"
     },
     "web": {
-      "favicon": "./assets/splashScreen.png"
+      "favicon": "./assets/playstore.png"
     },
     "extra": {
       "eas": {

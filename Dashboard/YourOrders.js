@@ -71,10 +71,10 @@ const OrderHistory = () => {
                 <View style={styles.orderCard}>
                     <Text style={styles.orderStatus}>Order Status: {item.orderStatus ? "Delivered" : "Pending"}</Text>
                     <Text style={styles.orderDate}>Ordered on: {new Date(item.createdAt).toLocaleDateString()}</Text>
-                    {/* <Text style={styles.total}>Total Price : ₹ {item.totalPrice}</Text> */}
                     <Text style={item.paymentMethod === 'cash' ? styles.cashPayment : styles.onlinePayment}>
                         Payment Mode : {item.paymentMethod === 'cash' ? 'Cash on delivery' : "Paid Online"}
                     </Text>
+                    {item?.paymentId && <Text style={styles.total}>Payment ID :  {item?.paymentId}</Text>}
 
                     {item.products.map((product, index) => (
                         <View key={index} style={styles.productContainer}>
@@ -88,7 +88,7 @@ const OrderHistory = () => {
                                 <Text style={styles.getStatusStyle(product.orderStatus)}>
                                     Status : {product.orderStatus}
                                 </Text>
-                                {product.orderStatus === 'pending' && (
+                                {product.orderStatus === 'pending' && item.paymentMethod === 'cash' && (
                                     <TouchableOpacity onPress={() => handleCancelProduct(item._id, product._id)}>
                                         <Animated.View style={[styles.cancelButton, { transform: [{ scale: scaleValue }] }]}>
                                             <Text style={styles.cancelButtonText}>Cancel order</Text>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     total: {
-        fontSize: 17,
+        fontSize: 14,
         color: '#3498db',
         // marginBottom: 15,
         fontWeight: 'bold',

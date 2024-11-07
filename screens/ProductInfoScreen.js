@@ -91,8 +91,9 @@ const ProductInfoScreen = ({ route }) => {
       </View>
 
       <Text style={{ height: 1, borderColor: '#D0D0D0', borderWidth: 1 }} />
+      <Text style={{ textAlign: 'left', marginLeft: 20, fontSize: 16, fontWeight: 'bold' }} >Quantity :{product.Quantity}</Text>
       <View style={{ padding: 10 }}>
-        <Text style={styles.price}>Price : ₹ <Text>{product.price}</Text> </Text>
+        <Text style={styles.price}><Text style={{marginRight:40,}}>MRP : <Text style={{textDecorationLine:'line-through',color:'gray'}}>₹ {product.MRP}</Text></Text> Price : ₹ <Text>{product.price}</Text> </Text>
         <Text style={styles.deliveryText}>
           Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM.
         </Text>
