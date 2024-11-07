@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from '../redux/CartReducer';
@@ -44,52 +44,55 @@ const ProductItem = ({ product }) => {
   };
 
   return (
-    <Pressable style={quantity > 0 ? styles.containerAdded : styles.container} key={product._id}>
-      <TouchableOpacity onPress={() => navigation.navigate('Info', { product })}>
-        <Image source={{ uri: product?.image }} style={styles.image} resizeMode="contain" />
+    <ScrollView>
 
-        <Text style={styles.title} numberOfLines={1}>
-          {product?.title}
-        </Text>
-        <Text style={styles.description} numberOfLines={2}>
-          {product?.description}
-        </Text>
-        <Text style={styles.description}>Quantity : {product.Quantity}</Text>
-        <View style={styles.priceContainer}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.rupee}>₹ </Text>
-            <Text style={styles.rating}>
-              {product?.MRP === null ? product.price + 12 : product.MRP}
-            </Text>
+      <Pressable style={quantity > 0 ? styles.containerAdded : styles.container} key={product._id}>
+        <TouchableOpacity onPress={() => navigation.navigate('Info', { product })}>
+          <Image source={{ uri: product?.image }} style={styles.image} resizeMode="contain" />
+
+          <Text style={styles.title} numberOfLines={1}>
+            {product?.title}
+          </Text>
+          <Text style={styles.description} numberOfLines={2}>
+            {product?.description}
+          </Text>
+          <Text style={styles.description}>Quantity : {product.Quantity}</Text>
+          <View style={styles.priceContainer}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.rupee}>₹ </Text>
+              <Text style={styles.rating}>
+                {product?.MRP === null ? product.price + 12 : product.MRP}
+              </Text>
+            </View>
+            <Text style={styles.price}>₹{product?.price}</Text>
           </View>
-          <Text style={styles.price}>₹{product?.price}</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
 
-      {quantity < 1 && !addedToCart && (
-        <Pressable onPress={() => addItemToCart(product)} style={styles.button} disabled={addedToCart}>
-          <Text style={styles.buttonText}>Add to Cart</Text>
-        </Pressable>
-      )}
-
-      {quantity > 0 && (
-        <Pressable style={styles.quantityContainer}>
-          <Pressable onPress={() => decreaseQuantity(product)} style={styles.iconContainer}>
-            {quantity > 1 ? (
-              <AntDesign name="minus" size={20} color="black" />
-            ) : (
-              <AntDesign name="delete" size={20} color="red" />
-            )}
+        {quantity < 1 && !addedToCart && (
+          <Pressable onPress={() => addItemToCart(product)} style={styles.button} disabled={addedToCart}>
+            <Text style={styles.buttonText}>Add to Cart</Text>
           </Pressable>
+        )}
 
-          <Text style={styles.quantityText}>{quantity}</Text>
+        {quantity > 0 && (
+          <Pressable style={styles.quantityContainer}>
+            <Pressable onPress={() => decreaseQuantity(product)} style={styles.iconContainer}>
+              {quantity > 1 ? (
+                <AntDesign name="minus" size={20} color="black" />
+              ) : (
+                <AntDesign name="delete" size={20} color="red" />
+              )}
+            </Pressable>
 
-          <Pressable onPress={() => increaseQuantity(product)} style={styles.iconContainerAdd}>
-            <Feather name="plus" size={20} color="white" />
+            <Text style={styles.quantityText}>{quantity}</Text>
+
+            <Pressable onPress={() => increaseQuantity(product)} style={styles.iconContainerAdd}>
+              <Feather name="plus" size={20} color="white" />
+            </Pressable>
           </Pressable>
-        </Pressable>
-      )}
-    </Pressable>
+        )}
+      </Pressable>
+    </ScrollView>
   );
 };
 
