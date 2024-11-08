@@ -23,7 +23,7 @@ import ResetPassword from '../screens/ResetPassword';
 import RequestResetPassword from '../screens/RequestResetPassword';
 import { useSelector } from 'react-redux';
 import OrderFailureScreen from '../screens/OrderFailureScreen';
-
+import { StatusBar } from 'react-native';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -72,7 +72,7 @@ const StackNavigator = () => {
             tabBarIcon: ({ focused }) => (
               <View style={{ alignItems: 'center', position: 'relative' }}>
                 {cart.length > 0 && (
-                  <Text style={{ color: 'white', fontSize: 13, position: 'absolute',top:-5,right:-10,fontWeight:'bold',backgroundColor:'gray',borderRadius:50,width:18,textAlign:'center' }}>{cart.length}</Text>
+                  <Text style={{ color: 'white', fontSize: 13, position: 'absolute', top: -5, right: -10, fontWeight: 'bold', backgroundColor: 'gray', borderRadius: 50, width: 18, textAlign: 'center' }}>{cart.length}</Text>
                 )}
                 {focused ? (
                   <FontAwesome5 name="shopping-cart" size={20} color="#0a3d62" />
