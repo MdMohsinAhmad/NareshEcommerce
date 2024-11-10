@@ -58,11 +58,11 @@ const AddAddressScreen = () => {
             <Text style={styles.addressDetail}>Pin code: {item.postalCode}</Text>
 
 
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
               <Pressable style={styles.actionButton}><Text>Edit</Text></Pressable>
               <Pressable style={styles.actionButton}><Text>Remove</Text></Pressable>
               <Pressable style={styles.actionButton}><Text>Set as Default</Text></Pressable>
-            </View>
+            </View> */}
           </Pressable>
         ))}
       </View>

@@ -23,8 +23,8 @@ const ConfirmationScreen = () => {
   const { userId, setUserId } = useContext(UserType);
   const [refreshing, setRefreshing] = useState(false);
   const [PushToken, setPushToken] = useState([])
+
   const cart = useSelector((state) => state.cart.cart);
-  // console.log(cart.length)
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);
@@ -166,7 +166,7 @@ const ConfirmationScreen = () => {
     }
 
     const options = {
-      description: 'payment for all about milk packet',
+      description: cart[0]?.description || "You have added some items to buy",
       image: './assets/splashScreen.png', // Optional, can be customized
       currency: order.currency,
       key: 'rzp_test_iTNeVvGBP2UtGJ', // Replace with your Razorpay Key ID
@@ -175,9 +175,9 @@ const ConfirmationScreen = () => {
       order_id: order.id,//Replace this with an order_id created using Orders API.
 
       prefill: {
-        email: 'customer@example.com', // Prefilled email
-        contact: '1234567890', // Prefilled phone number
-        name: 'Customer Name' // Prefilled name
+        email: `${selectedAddress.name}@example.com`, // Prefilled email
+        contact: selectedAddress.mobileNo, // Prefilled phone number
+        name: selectedAddress.name // Prefilled name
       },
       theme: { color: '#0a3d62' } // Customize the theme color
     };
@@ -187,10 +187,8 @@ const ConfirmationScreen = () => {
         handlePlaceOrder(data.razorpay_payment_id)
      
       })
-      .catch((error) => {
+      .catch(() => {
         navigation.replace('OrderFailure')
-        alert(`Error: ${error.code} | ${error.description}`);
-        console.log('failed')
       });
   };
 
