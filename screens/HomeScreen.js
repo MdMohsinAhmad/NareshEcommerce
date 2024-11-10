@@ -10,6 +10,7 @@ import {
   Image,
   Text,
   ActivityIndicator,
+  FlatList
 } from 'react-native';
 import { SliderBox } from 'react-native-image-slider-box';
 import React, { useEffect, useState } from 'react';
@@ -24,18 +25,19 @@ const HomeScreen = () => {
     'https://www.shutterstock.com/image-vector/3d-fresh-milk-ad-template-260nw-2120388287.jpg',
     'https://www.shutterstock.com/image-vector/3d-milk-farm-product-ad-600nw-2473341937.jpg',
   ];
-  const { width } = Dimensions.get('window');
 
   const [products, setProducts] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state for filtering
+  const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All'); // Track selected category
 
-  // Fetch products from the API
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${URL_path}/api/products`);
       setProducts(response.data);
+      setLoading(false);
     } catch (error) {
       console.log('Error fetching products:', error);
     }
@@ -55,28 +57,27 @@ const HomeScreen = () => {
     setRefreshing(false);
   };
 
-  // Function to filter items based on name
   const filterItems = async (category) => {
-    setLoading(true); // Start loading when filter is applied
+    setSelectedCategory(category); // Set the selected category
+    setLoading(true);
     if (category === 'All') {
       setFilteredItems(products);
+      setLoading(false);
     } else {
       const result = products.filter((product) => product.category === category);
       setFilteredItems(result);
+      setLoading(false);
     }
-    setLoading(false); // Stop loading after filter is applied
+    setLoading(false);
   };
 
-
-  
-
   return (
-    <ScrollView
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
-    >
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        showsVerticalScrollIndicator={false}
+      >
         <SliderBox
           images={images}
           autoplay
@@ -86,51 +87,51 @@ const HomeScreen = () => {
           imageComponentStyle={styles.imageComponentStyle}
           sliderBoxHeight={200}
         />
-
-        <ScrollView horizontal style={styles.topProductsContainer} showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal style={styles.categoryScroll} showsHorizontalScrollIndicator={false}>
           <View style={styles.categoryButtonsContainer}>
-            <Pressable onPress={() => filterItems('All')} style={styles.categoryButton}>
-              <Image source={require('../assets/order.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>All Items</Text>
-            </Pressable>
-            <Pressable onPress={() => filterItems('Sweet items')} style={styles.categoryButton}>
-              <Image source={require('../assets/sweets.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>Sweets</Text>
-            </Pressable>
-            <Pressable onPress={() => filterItems('Milk')} style={styles.categoryButton}>
-              <Image source={require('../assets/milk.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>Milk</Text>
-            </Pressable>
-            <Pressable onPress={() => filterItems('Groceries')} style={styles.categoryButton}>
-              <Image source={require('../assets/groceries.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>Groceries</Text>
-            </Pressable>
-            <Pressable onPress={() => filterItems('Cool drinks')} style={styles.categoryButton}>
-              <Image source={require('../assets/soda.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>Drinks</Text>
-            </Pressable>
-            <Pressable onPress={() => filterItems('Fruits')} style={styles.categoryButton}>
-              <Image source={require('../assets/fruits.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>Fruits</Text>
-            </Pressable>
-            <Pressable onPress={() => filterItems('Vegetables')} style={styles.categoryButton}>
-              <Image source={require('../assets/vegetable.png')} style={styles.categoryIcon} />
-              <Text style={styles.categoryText}>Vegetables</Text>
-            </Pressable>
+            {[
+              { label: 'All Items', icon: require('../assets/order.png'), category: 'All' },
+              { label: 'Sweets', icon: require('../assets/sweets.png'), category: 'Sweet items' },
+              { label: 'Milk', icon: require('../assets/milk.png'), category: 'Milk' },
+              { label: 'Groceries', icon: require('../assets/groceries.png'), category: 'Groceries' },
+              { label: 'Drinks', icon: require('../assets/soda.png'), category: 'Cool drinks' },
+              { label: 'Fruits', icon: require('../assets/fruits.png'), category: 'Fruits' },
+              { label: 'Vegetables', icon: require('../assets/vegetable.png'), category: 'Vegetables' },
+            ].map((item, index) => (
+              <Pressable
+                key={index}
+                onPress={() => filterItems(item.category)}
+                style={[
+                  styles.categoryButton,
+                  selectedCategory === item.category && styles.selectedCategoryButton, // Add underline if selected
+                ]}
+              >
+                <Image source={item.icon} style={styles.categoryIcon} />
+                <Text style={[styles.categoryText, selectedCategory === item.category && styles.selectedCategoryText]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
           </View>
         </ScrollView>
 
-        {loading ? ( // Show loading indicator if loading is true
+        {loading ? (
           <ActivityIndicator size="large" color="#13274F" style={styles.loadingIndicator} />
         ) : (
-          <View style={styles.productList}>
-            {filteredItems.map((product) => (
-              <ProductItem key={product._id} product={product} />
-            ))}
+          <View style={styles.productListContainer}>
+            <FlatList
+              data={filteredItems}
+              renderItem={({ item }) => <ProductItem product={item} />}
+              keyExtractor={(item) => item._id.toString()}
+              numColumns={2}
+              scrollEnabled={false} // Disable FlatList scrolling
+              initialNumToRender={6} // Adjust based on screen
+              getItemLayout={(data, index) => ({ length: 150, offset: 150 * index, index })}
+            />
           </View>
         )}
-      </SafeAreaView>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -138,37 +139,44 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === 'android' ? 1 : 10,
     flex: 1,
     backgroundColor: '#ececec',
+    paddingTop: Platform.OS === 'android' ? 10 : 0,
   },
-  topProductsContainer: {
-    marginHorizontal: 10,
-    marginTop: 20,
-    marginBottom: 15,
+  scrollView: {
+    flex: 1,
+  },
+  categoryScroll: {
+    marginTop: 15,
+    marginBottom: 10,
+    paddingHorizontal: 10,
   },
   categoryButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    justifyContent: 'space-between',gap:5
   },
   categoryButton: {
     alignItems: 'center',
-    marginHorizontal: 10,
+    marginLeft: 10,marginRight:6
   },
   categoryIcon: {
     height: 40,
     width: 40,
+    borderRadius: 8,
   },
   categoryText: {
     marginTop: 5,
     fontSize: 12,
     textAlign: 'center',
+    color: '#333',
   },
-  productList: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    flexWrap: 'wrap',
+  selectedCategoryButton: {
+    padding:2,
+     backgroundColor:'#22a6b3',borderRadius:6,color:'white'
+  },
+  selectedCategoryText: {
+    color: 'white', // Text color when selected
   },
   imageComponentStyle: {
     width: '100%',
@@ -177,7 +185,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   loadingIndicator: {
-    marginTop: 20,
-    alignSelf: 'center',
+    marginTop: 40,
+    height: 200,
+  },
+  productListContainer: {
+    paddingBottom: 20,
+    paddingHorizontal: 10,
   },
 });

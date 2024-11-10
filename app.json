@@ -35,7 +35,8 @@
     },
     "extra": {
       "eas": {
-        "projectId": "0d1495f0-af2a-492d-8133-1c0fe88ed08d"
+        "projectId": "0d1495f0-af2a-492d-8133-1c0fe88ed08d",
+        "URL_path": "https://freshandfreshbackend-j98njjva.b4a.run"
       }
     }
   }

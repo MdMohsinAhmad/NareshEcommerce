@@ -5,7 +5,7 @@ import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from 
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const ProductItem = ({ product }) => {
+const ProductItem = React.memo(({ product }) => {
   const [addedToCart, setAddedToCart] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -94,7 +94,7 @@ const ProductItem = ({ product }) => {
       </Pressable>
     </ScrollView>
   );
-};
+})
 
 export default ProductItem;
 
