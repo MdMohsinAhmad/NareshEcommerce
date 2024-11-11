@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { AntDesign, Feather, MaterialIcons, Entypo } from '@expo/vector-icons';
+import {  MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { UserType } from '../UserContext';

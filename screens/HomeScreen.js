@@ -25,7 +25,15 @@ const HomeScreen = () => {
     'https://www.shutterstock.com/image-vector/3d-fresh-milk-ad-template-260nw-2120388287.jpg',
     'https://www.shutterstock.com/image-vector/3d-milk-farm-product-ad-600nw-2473341937.jpg',
   ];
-
+  const [sliderImages, setSliderImages] = useState([])
+  const GetSliderImages = async () => {
+    try {
+      const response = await axios.get(`${URL_path}/sliderimages`)
+      setSliderImages(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const [products, setProducts] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -154,11 +162,11 @@ const styles = StyleSheet.create({
   categoryButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',gap:5
+    justifyContent: 'space-between', gap: 5
   },
   categoryButton: {
     alignItems: 'center',
-    marginLeft: 10,marginRight:6
+    marginLeft: 10, marginRight: 6
   },
   categoryIcon: {
     height: 40,
@@ -172,8 +180,8 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   selectedCategoryButton: {
-    padding:2,
-     backgroundColor:'#22a6b3',borderRadius:6,color:'white'
+    padding: 2,
+    backgroundColor: '#22a6b3', borderRadius: 6, color: 'white'
   },
   selectedCategoryText: {
     color: 'white', // Text color when selected

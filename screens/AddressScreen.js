@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 8,
     borderRadius: 8,fontWeight:'bold',
-    backgroundColor: '#F9F9F9',color:'green' // Light gray input background for contrast
+    backgroundColor: '#F9F9F9',color:'black' // Light gray input background for contrast
   },
   button: {
     backgroundColor: '#FFC72C', // Highlighted button color
