@@ -8,7 +8,7 @@ const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const { userId } = useContext(UserType);
     const [scaleValue] = useState(new Animated.Value(1));
-    const [currentStatus, setCurrentStatus] = useState('All');
+    const [currentStatus, setCurrentStatus] = useState('pending');
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -84,21 +84,23 @@ const OrderHistory = () => {
                     <View style={styles.infoContainer}>
                         <Text style={styles.itemName}>{product.name}</Text>
                         <Text style={styles.itemDetails}>Qty: {product.quantity}</Text>
-                        <Text style={styles.itemDetails}>Price: ₹ {product.price}</Text>
-                        <Text style={styles.total}>Total: ₹ {product.price * product.quantity}</Text>
+                        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly'}}>
+                            <Text style={styles.itemDetails}>Price : ₹ {product.price}</Text>
+                            <Text style={styles.total}>Total: ₹ {product.price * product.quantity}</Text>
+                        </View>
                         <Text style={styles.itemDetails}>Order ID: {product.uniqueId}</Text>
                         <Text style={styles.getStatusStyle(product.orderStatus)}>
                             Status: {product.orderStatus}
                         </Text>
-                       {item.paymentMethod === 'card' && <Text style={{marginTop:4,color:'orange',fontWeight:'bold'}}>* Online payment order cannot be cancelled</Text>}
+                        {item.paymentMethod === 'card' && <Text style={{ marginTop: 4, color: 'orange', fontWeight: 'bold' }}>* Online payment order cannot be cancelled</Text>}
 
                         {product.orderStatus === 'pending' && item.paymentMethod === 'cash' && (
-                           <> 
-                           <TouchableOpacity onPress={() => handleCancelProduct(item._id, product._id)}>
-                                <Animated.View style={[styles.cancelButton, { transform: [{ scale: scaleValue }] }]}>
-                                    <Text style={styles.cancelButtonText}>Cancel order</Text>
-                                </Animated.View>
-                            </TouchableOpacity>
+                            <>
+                                <TouchableOpacity onPress={() => handleCancelProduct(item._id, product._id)}>
+                                    <Animated.View style={[styles.cancelButton, { transform: [{ scale: scaleValue }] }]}>
+                                        <Text style={styles.cancelButtonText}>Cancel order</Text>
+                                    </Animated.View>
+                                </TouchableOpacity>
                             </>
                         )}
                     </View>

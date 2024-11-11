@@ -23,7 +23,7 @@ const ConfirmationScreen = () => {
   const { userId, setUserId } = useContext(UserType);
   const [refreshing, setRefreshing] = useState(false);
   const [PushToken, setPushToken] = useState([])
-
+  const [paying, setPaying] = useState(false)
   const cart = useSelector((state) => state.cart.cart);
   const total = cart
     ?.map((item) => item.price * item.quantity)
@@ -84,7 +84,7 @@ const ConfirmationScreen = () => {
         paymentMethod: selectedOptions,
         orderStatus: false,
         PushToken: PushToken,
-        paymentId:null
+        paymentId: null
       };
       const response = await axios.post(
         `${URL_path}/orders`,
@@ -125,13 +125,16 @@ const ConfirmationScreen = () => {
         setOptions(false)
         setAddresses('')
         setSelectedOptions('')
+        setPaying(false)
         navigation.navigate('Order');
         dispatch(cleanCart());
       } else {
         console.log('Error creating order');
+        setPaying(false)
       }
     } catch (error) {
       console.log('Error', error);
+      setPaying(false)
     }
   };
 
@@ -153,7 +156,7 @@ const ConfirmationScreen = () => {
 
   // pay with card or UPI
   const initiatePayment = async () => {
-
+    setPaying(true)
     // Amount in INR, e.g., 500 INR
     const amount = total + 2
     const currency = 'INR';
@@ -166,7 +169,7 @@ const ConfirmationScreen = () => {
     }
 
     const options = {
-      description: cart[0]?.description || "You have added some items to buy",
+      description: cart[0]?.title || "You have added some items to buy",
       image: './assets/splashScreen.png', // Optional, can be customized
       currency: order.currency,
       key: 'rzp_test_iTNeVvGBP2UtGJ', // Replace with your Razorpay Key ID
@@ -185,10 +188,11 @@ const ConfirmationScreen = () => {
     RazorpayCheckout.open(options)
       .then((data) => {
         handlePlaceOrder(data.razorpay_payment_id)
-     
+
       })
       .catch(() => {
         navigation.replace('OrderFailure')
+        setPaying(false)
       });
   };
 
@@ -711,7 +715,7 @@ const ConfirmationScreen = () => {
               marginTop: 20,
             }}
           >
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Place your order</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{paying ? "Please wait..." : "Place your order"}</Text>
           </Pressable>
         </View>
       )}
