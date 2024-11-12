@@ -20,20 +20,7 @@ import ProductItem from '../components/ProductItem';
 import URL_path from '../URL';
 
 const HomeScreen = () => {
-  const images = [
-    'https://www.shutterstock.com/image-vector/3d-liquid-yogurt-drink-ad-260nw-2131689241.jpg',
-    'https://www.shutterstock.com/image-vector/3d-fresh-milk-ad-template-260nw-2120388287.jpg',
-    'https://www.shutterstock.com/image-vector/3d-milk-farm-product-ad-600nw-2473341937.jpg',
-  ];
-  const [sliderImages, setSliderImages] = useState([])
-  const GetSliderImages = async () => {
-    try {
-      const response = await axios.get(`${URL_path}/sliderimages`)
-      setSliderImages(response.data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+ 
   const [products, setProducts] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,7 +37,21 @@ const HomeScreen = () => {
       console.log('Error fetching products:', error);
     }
   };
+  const [images, setImages] = useState([])
+  const fetchImages = async () => {
+    try {
+      const response = await axios.get('https://freshandfreshbackend-j98njjva.b4a.run/api/sliderimages');
+      const imageUrls = response.data.map(item => item.image);
+      setImages(imageUrls);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      setError('Error fetching images');
+    }
+  };
 
+  useEffect(() => {
+    fetchImages();
+  }, []);
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -105,6 +106,7 @@ const HomeScreen = () => {
               { label: 'Drinks', icon: require('../assets/soda.png'), category: 'Cool drinks' },
               { label: 'Fruits', icon: require('../assets/fruits.png'), category: 'Fruits' },
               { label: 'Vegetables', icon: require('../assets/vegetable.png'), category: 'Vegetables' },
+              { label: 'Meat', icon: require('../assets/meat.gif'), category: 'Meat' },
             ].map((item, index) => (
               <Pressable
                 key={index}
