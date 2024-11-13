@@ -24,6 +24,7 @@ import RequestResetPassword from '../screens/RequestResetPassword';
 import { useSelector } from 'react-redux';
 import OrderFailureScreen from '../screens/OrderFailureScreen';
 import { StatusBar } from 'react-native';
+import SelectedItems from '../screens/SelectedItems';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -157,6 +158,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="yourAccount"
           component={YourAccount}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="selecteditems"
+          component={SelectedItems}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
