@@ -25,6 +25,7 @@ import { useSelector } from 'react-redux';
 import OrderFailureScreen from '../screens/OrderFailureScreen';
 import { StatusBar } from 'react-native';
 import SelectedItems from '../screens/SelectedItems';
+import RestaurantFood from '../screens/RestaurantFood';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -33,7 +34,7 @@ const StackNavigator = () => {
     const cart = useSelector((state) => state.cart.cart);
 
     return (
-      <Tab.Navigator>
+      <Tab.Navigator >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
@@ -163,6 +164,11 @@ const StackNavigator = () => {
         <Stack.Screen
           name="selecteditems"
           component={SelectedItems}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="restaurants"
+          component={RestaurantFood}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
