@@ -23,6 +23,7 @@ const LoginScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -41,17 +42,26 @@ const LoginScreen = () => {
     checkLoginStatus();
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault()
+    setLoading(true)
+    if (!email || !password) {
+      Alert.alert('Notice', 'Enter Email and Password')
+      setLoading(false)
+      return
+    }
     const user = { email, password };
 
     axios
       .post(`${URL_path}/login`, user)
       .then((response) => {
+        setLoading(false)
         const token = response.data.token;
         AsyncStorage.setItem('authToken', token);
         navigation.replace('Main');
       })
       .catch(() => {
+        setLoading(false)
         Alert.alert('Login Error', 'Invalid Email or Password');
       });
   };
@@ -69,7 +79,7 @@ const LoginScreen = () => {
       <View style={styles.logoContainer}>
         <Image
           style={styles.logo}
-          source={require('../assets/logo.png')}
+          source={require('../assets/logo-color.png')}
         />
       </View>
 
@@ -108,12 +118,12 @@ const LoginScreen = () => {
           </View>
         </View>
 
-        <Pressable style={styles.optionsContainer} onPress={()=>navigation.navigate('RequestPassword')}>
+        <Pressable style={styles.optionsContainer} onPress={() => navigation.navigate('RequestPassword')}>
           <Text style={styles.forgotText}>Forgot Password?</Text>
         </Pressable>
 
         <Pressable style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Text style={styles.loginButtonText}>{loading ? "Logging In..." : 'Login'}</Text>
         </Pressable>
 
         <Pressable
@@ -152,7 +162,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 150,
-    height: 150,
+    height: 150, borderRadius: 100,
   },
   keyboardContainer: {
     width: '90%',

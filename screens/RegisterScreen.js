@@ -14,18 +14,27 @@ import { MaterialIcons, AntDesign, Ionicons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import URL_path from '../URL';
+
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false)
 
   const handleRegister = () => {
-    const user = { name, email,mobile, password };
+    setLoading(true)
+    if (!email || !password) {
+      Alert.alert('Notice', 'Enter All details')
+      setLoading(false)
+      return
+    }
+    const user = { name, email, mobile, password };
 
     axios.post(`${URL_path}/register`, user)
       .then(() => {
+        setLoading(false)
         Alert.alert('Registration Successful', 'You have registered successfully');
         setName('');
         setEmail('');
@@ -34,6 +43,7 @@ const RegisterScreen = () => {
         navigation.navigate('Login')
       })
       .catch(() => {
+        setLoading(false)
         Alert.alert('Registration Error', 'An error occurred during registration');
         setName('');
         setEmail('');
@@ -46,7 +56,7 @@ const RegisterScreen = () => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
         <View style={styles.logoContainer}>
-          <Image style={styles.logoImage} source={require('../assets/logo.png')} />
+          <Image style={styles.logoImage} source={require('../assets/logo-color.png')} />
           <Text style={styles.titleText}>Register to Your Account</Text>
         </View>
 
@@ -95,10 +105,10 @@ const RegisterScreen = () => {
         </View>
 
         <Pressable onPress={handleRegister} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>{loading ? 'Registering...':'Register'}</Text>
         </Pressable>
 
-        <Pressable onPress={() => navigation.goBack()} style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'center'}}>
+        <Pressable onPress={() => navigation.goBack()} style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
           <Text style={styles.footerText}>Already have an account? </Text><Text style={styles.footerTextlogin}>SignIn</Text>
         </Pressable>
       </KeyboardAvoidingView>
@@ -119,12 +129,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
 
-    
+
   },
   logoImage: {
     width: 150,
     height: 150,
-    // borderRadius: 100,
+    borderRadius: 100,
     marginBottom: 10,
   },
   titleText: {
@@ -189,7 +199,7 @@ const styles = StyleSheet.create({
     color: '#c8d6e5',
     fontSize: 16,
     marginTop: 20,
-    fontWeight:'bold'
+    fontWeight: 'bold'
     // textDecorationLine: 'underline',
   },
 });

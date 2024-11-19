@@ -26,6 +26,8 @@ import OrderFailureScreen from '../screens/OrderFailureScreen';
 import { StatusBar } from 'react-native';
 import SelectedItems from '../screens/SelectedItems';
 import RestaurantFood from '../screens/RestaurantFood';
+import SplashScreen from '../screens/SplashScreen';
+import FoodDetails from '../screens/FoodDetails';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -91,7 +93,7 @@ const StackNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName='splashscreen'>
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -169,6 +171,16 @@ const StackNavigator = () => {
         <Stack.Screen
           name="restaurants"
           component={RestaurantFood}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="splashscreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="fooddetails"
+          component={FoodDetails}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
