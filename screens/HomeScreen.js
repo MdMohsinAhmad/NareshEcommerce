@@ -24,30 +24,7 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   // const [restaurants, setRestaurants] = useState([]);
-  console.log(restaurants)
   const [selectedCategory, setSelectedCategory] = useState('All'); // Track selected category
-  const restaurants = [
-    {
-      _id: "1",
-      name: "Taj Drive",
-      address: "Moinabad",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ7ma8M0MI7yL5V7i8PzSwNmqCSUDzSy1QEA&s",
-      rating: 4.5,
-    },
-    {
-      _id: "2",
-      name: "Palm Grove",
-      address: "Banjara Hills",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLwTWixFrsbbEYkjTVjuAHy4hVrpgtzy5RLg&s",
-      rating: 4.2,
-    }, {
-      _id: "4",
-      name: "Taj Drive",
-      address: "Moinabad",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ7ma8M0MI7yL5V7i8PzSwNmqCSUDzSy1QEA&s",
-      rating: 4.5,
-    },
-  ];
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -93,6 +70,7 @@ const HomeScreen = ({ navigation }) => {
   // fetch restaurant 
 
   const [restaurant, setRestaurant] = useState([]);
+  const [showAll, setShowAll] = useState(false);  // To control showing all or limited restaurants
 
   useEffect(() => {
     axios.get('https://freshandfreshbackend-j98njjva.b4a.run/api/restaurants')
@@ -103,6 +81,10 @@ const HomeScreen = ({ navigation }) => {
         console.error('Error fetching restaurants:', error);
       });
   }, []);
+
+  // Get the first 4 restaurants if showAll is false, otherwise show all
+  const displayedRestaurants = showAll ? restaurant : restaurant.slice(0, 4);
+
 
 
 
@@ -177,7 +159,7 @@ const HomeScreen = ({ navigation }) => {
         >
           <Text style={{ fontFamily: 'sans', marginLeft: 12, fontSize: 20, fontWeight: 'bold', color: 'gray', marginTop: 12 }}>Hotels and Restaurant Food</Text>
           <FlatList
-            data={restaurant}
+            data={displayedRestaurants}
             keyExtractor={(item) => item._id.toString()} // Ensure unique keys
             horizontal
             showsHorizontalScrollIndicator={false} // Hide the horizontal scroll indicator
@@ -188,7 +170,7 @@ const HomeScreen = ({ navigation }) => {
               >
                 <Image source={{ uri: item.image }} style={styles.image} />
                 <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.address}>{item.address}</Text>
+                <Text numberOfLines={1} style={styles.address}>{item.address}</Text>
                 <Text style={styles.rating}>Rating: {item.rating} ⭐</Text>
               </TouchableOpacity>
             )}
