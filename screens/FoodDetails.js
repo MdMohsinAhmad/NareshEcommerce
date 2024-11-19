@@ -1,17 +1,39 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from '../redux/CartReducer';
+import { AntDesign, Feather } from '@expo/vector-icons';
 
-const FoodDetails = ({ route }) => {
+const FoodDetails = ({ route, navigation }) => {
     const { item } = route.params; // Destructure params
+    const dispatch = useDispatch();
+    const cart = useSelector((state) => state.cart.cart);
+    const cartItem = cart.find((cartItem) => cartItem._id === item._id); // Correctly identify the cart item
+    const quantity = cartItem ? cartItem.quantity : 0;
 
-    const handleAddToCart = () => {
-        // Logic to add the item to the cart
-        alert(`${item.name} added to cart!`);
+    const addItemToCart = (item) => {
+        dispatch(addToCart(item));
     };
 
-    const handleBuyNow = () => {
-        // Logic to proceed to the checkout or purchase the item
-        alert(`Proceeding to buy ${item.name}!`);
+    const increaseQuantity = () => {
+        dispatch(incrementQuantity(item));
+    };
+
+    const decreaseQuantity = () => {
+        if (quantity > 1) {
+            dispatch(decrementQuantity(item));
+        } else {
+            dispatch(removeFromCart(item));
+        }
+    };
+
+    const handleBuyItem = (item) => {
+        if (quantity > 0) {
+            navigation.navigate('Cart');
+            return
+        }
+        addItemToCart(item);
+        navigation.navigate('Cart');
     };
 
     return (
@@ -22,12 +44,28 @@ const FoodDetails = ({ route }) => {
             <Text style={styles.description}>{item.description}</Text>
 
             {/* Add to Cart Button */}
-            <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-                <Text style={styles.buttonText}>Add to Cart</Text>
-            </TouchableOpacity>
+            {quantity === 0 ? (
+                <TouchableOpacity style={styles.button} onPress={() => addItemToCart(item)}>
+                    <Text style={styles.buttonText}>Add to Cart</Text>
+                </TouchableOpacity>
+            ) : (
+                <View style={styles.quantityContainer}>
+                    <Pressable onPress={decreaseQuantity} style={styles.iconContainer}>
+                        {quantity > 1 ? (
+                            <AntDesign name="minus" size={20} color="black" />
+                        ) : (
+                            <AntDesign name="delete" size={20} color="red" />
+                        )}
+                    </Pressable>
+                    <Text style={styles.quantityText}>{quantity}</Text>
+                    <Pressable onPress={increaseQuantity} style={styles.iconContainerAdd}>
+                        <Feather name="plus" size={20} color="white" />
+                    </Pressable>
+                </View>
+            )}
 
             {/* Buy Now Button */}
-            <TouchableOpacity style={[styles.button, styles.buyNowButton]} onPress={handleBuyNow}>
+            <TouchableOpacity style={[styles.button, styles.buyNowButton]} onPress={() => handleBuyItem(item)}>
                 <Text style={styles.buttonText}>Buy Now</Text>
             </TouchableOpacity>
         </View>
@@ -41,7 +79,29 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#fff',
-        alignItems: 'center',marginTop:25
+        alignItems: 'center',
+        marginTop: 25,
+    },
+    quantityContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10,
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 10,
+        justifyContent: 'center',width:150
+    },
+    iconContainer: {
+        backgroundColor: '#fab1a0',
+        padding: 7,
+        borderRadius: 5,marginRight:8
+    },
+    iconContainerAdd: {
+        backgroundColor: '#00b894',
+        padding: 7,
+        borderRadius: 5,marginLeft:8
     },
     image: {
         width: '100%',
@@ -58,7 +118,7 @@ const styles = StyleSheet.create({
     },
     price: {
         fontSize: 20,
-        color: '#FF6347', // Tomato color for price
+        color: '#FF6347',
         marginBottom: 10,
     },
     description: {
@@ -71,16 +131,22 @@ const styles = StyleSheet.create({
         width: '80%',
         padding: 15,
         marginVertical: 10,
-        backgroundColor: '#4CAF50', // Green color for add to cart
+        backgroundColor: '#4CAF50',
         borderRadius: 8,
         alignItems: 'center',
     },
     buyNowButton: {
-        backgroundColor: '#FF6347', // Tomato red color for buy now
+        backgroundColor: '#FF6347',
     },
     buttonText: {
         fontSize: 18,
         color: '#fff',
         fontWeight: 'bold',
     },
+    quantityText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginHorizontal: 10,
+    },
 });
+

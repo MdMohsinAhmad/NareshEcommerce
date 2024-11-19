@@ -1,10 +1,23 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addToCart
+} from '../redux/CartReducer';
 
-const RestaurantFood = ({ route,navigation }) => {
-
+const RestaurantFood = ({ route, navigation }) => {
     const { restaurantId } = route.params; // Destructure params
     const { name, address, image, rating, items } = restaurantId; // Extract items as well
+    const dispatch = useDispatch();
+
+    const addItemToCart = (item) => {
+        dispatch(addToCart(item));
+    };
+
+    const handleOrder = (item) => {
+        addItemToCart(item)
+        navigation.navigate('Cart')
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{name}</Text>
@@ -26,7 +39,7 @@ const RestaurantFood = ({ route,navigation }) => {
                             <View style={styles.itemActions}>
 
                                 <TouchableOpacity
-                                    // onPress={() => handleEditItem(item)}
+                                    onPress={() => handleOrder(item)}
                                     style={styles.editButton}
                                 >
                                     <Text style={styles.buttonText}>Order</Text>

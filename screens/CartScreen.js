@@ -142,12 +142,12 @@ const CartScreen = () => {
               <View >
                 <Image
                   style={{ width: 140, height: 140, resizeMode: 'contain' }}
-                  source={{ uri: item?.image }}
+                  source={{ uri: item?.image ? item?.image :item?.imageurl  }}
                 />
               </View >
               <View >
                 <Text numberOfLines={3} style={{ width: 150, marginTop: 10, fontSize: 15, fontWeight: 'bold', color: '#0a3d62' }}>
-                  {item?.title}
+                  {item?.title ? item?.title : item?.name}
                 </Text>
                 <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 6, color: '#0a3d62' }}>
                   Price : ₹ {item?.price}

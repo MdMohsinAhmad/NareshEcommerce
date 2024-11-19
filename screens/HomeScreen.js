@@ -23,7 +23,6 @@ const HomeScreen = ({ navigation }) => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const [restaurants, setRestaurants] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All'); // Track selected category
 
   const fetchProducts = async () => {
