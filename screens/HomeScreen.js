@@ -8,14 +8,15 @@ import {
   Pressable,
   Image,
   Text,
-  Dimensions, FlatList, TouchableOpacity
+  Dimensions, FlatList, TouchableOpacity, Animated,
+  ActivityIndicator
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+// import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import URL_path from '../URL';
 import Carousel from 'react-native-snap-carousel';
-
+import { useRef } from 'react';
 const HomeScreen = ({ navigation }) => {
   const { width } = Dimensions.get('window');
 
@@ -84,9 +85,6 @@ const HomeScreen = ({ navigation }) => {
   // Get the first 4 restaurants if showAll is false, otherwise show all
   const displayedRestaurants = showAll ? restaurant : restaurant.slice(0, 4);
 
-
-
-
   const renderItem = ({ item }) => {
     return (
       <View style={styles.sliderItem}>
@@ -94,6 +92,33 @@ const HomeScreen = ({ navigation }) => {
       </View>
     );
   };
+
+  const shimmerValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(shimmerValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shimmerValue, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [shimmerValue]);
+
+  const shimmerStyle = {
+    opacity: shimmerValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.5, 1],
+    }),
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -103,77 +128,109 @@ const HomeScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ paddingVertical: 12 }}>
-          <Carousel
-            data={images}
-            renderItem={renderItem}
-            sliderWidth={width}
-            itemWidth={width - 60}
-            inactiveSlideOpacity={0.7}
-            inactiveSlideScale={0.95}
-            loop={true}
-            autoplay={true}
-            autoplayInterval={2000}
-            autoplayDelay={1000}
-            enableSnap={true}
-          />
+          {loading ? <View style={styles.container}>
+            <Animated.View style={[styles.skeletonBox, shimmerStyle]} />
+
+          </View>
+            :
+            <Carousel
+              data={images}
+              renderItem={renderItem}
+              sliderWidth={width}
+              itemWidth={width - 60}
+              inactiveSlideOpacity={0.7}
+              inactiveSlideScale={0.95}
+              loop={true}
+              autoplay={true}
+              autoplayInterval={2000}
+              autoplayDelay={1000}
+              enableSnap={true}
+            />}
 
         </View>
-        <View style={styles.categoryButtonsContainer}>
-          {[
-            { label: 'Sweets', icon: require('../assets/sweets.png'), category: 'Sweet items' },
-            { label: 'Milk ', icon: require('../assets/milk.png'), category: 'Milk' },
-            { label: 'Cool Drinks', icon: require('../assets/soda.png'), category: 'Cool drinks' },
-            { label: 'Fresh Fruits', icon: require('../assets/fruits.png'), category: 'Fruits' },
-            { label: 'Vegetables', icon: require('../assets/vegetable.png'), category: 'Vegetables' },
-            { label: 'Chicken & Meat', icon: require('../assets/meat.png'), category: 'meat' },
-            { label: 'Dry fruits & seads', icon: require('../assets/dry fruits.png'), category: 'dry fruits' },
-            { label: 'Gree and Oils', icon: require('../assets/ghee and oils.png'), category: 'Ghee and oils' },
-            { label: 'Dal,Atta & More', icon: require('../assets/dal.png'), category: 'Dal atta' },
-            { label: 'Suji,Poha & More', icon: require('../assets/poha.jpg'), category: 'Suji Poha' },
-            { label: 'Masala & Spices', icon: require('../assets/masala.png'), category: 'Masala and Spices' },
-            { label: 'Salt & Sugar', icon: require('../assets/salt sugar.png'), category: 'Salt and Sugar' },
-            { label: 'Tea &Coffee', icon: require('../assets/tea.png'), category: 'Tea and Coffee' },
-            { label: 'Under ₹99 & Below', icon: require('../assets/under99.png'), category: 'Under 99' },
-            { label: 'Other', icon: require('../assets/other.png'), category: 'Other' },
-
-          ].map((item, index) => (
-            <Pressable
-              key={index}
-              onPress={() => navigation.navigate('selecteditems', item.category)}
-              style={[
-                styles.categoryButton,
-              ]}
-            >
-              <Image source={item.icon} style={styles.categoryIcon} />
-              <Text style={[styles.categoryText, selectedCategory === item.category]}>
-                {item.label}
-              </Text>
-            </Pressable>
-          ))}
+        {loading ? <View style={styles.container}>
+          <Animated.View style={[{ height: 500, backgroundColor: '#d2d7d3', borderRadius: 10, marginBottom: 10, }, shimmerStyle]} />
+          <Animated.View style={[{
+            height: 20,
+            backgroundColor: '#ececec',
+            borderRadius: 4,
+            marginBottom: 6,
+          }, shimmerStyle]} />
+          <Animated.View style={[{
+            height: 20,
+            backgroundColor: '#ececec',
+            borderRadius: 4,
+            marginBottom: 6,
+          }, shimmerStyle, { width: 150 }]} />
         </View>
+          :
+          <View style={styles.categoryButtonsContainer}>
+            {[
+              { label: 'Sweets', icon: require('../assets/sweets.png'), category: 'Sweet items' },
+              { label: 'Milk ', icon: require('../assets/milk.png'), category: 'Milk' },
+              { label: 'Cool Drinks', icon: require('../assets/soda.png'), category: 'Cool drinks' },
+              { label: 'Fresh Fruits', icon: require('../assets/fruits.png'), category: 'Fruits' },
+              { label: 'Vegetables', icon: require('../assets/vegetable.png'), category: 'Vegetables' },
+              { label: 'Chicken & Meat', icon: require('../assets/meat.png'), category: 'meat' },
+              { label: 'Dry fruits & seads', icon: require('../assets/dry fruits.png'), category: 'dry fruits' },
+              { label: 'Gree and Oils', icon: require('../assets/ghee and oils.png'), category: 'Ghee and oils' },
+              { label: 'Dal,Atta & More', icon: require('../assets/dal.png'), category: 'Dal atta' },
+              { label: 'Suji,Poha & More', icon: require('../assets/poha.jpg'), category: 'Suji Poha' },
+              { label: 'Masala & Spices', icon: require('../assets/masala.png'), category: 'Masala and Spices' },
+              { label: 'Salt & Sugar', icon: require('../assets/salt sugar.png'), category: 'Salt and Sugar' },
+              { label: 'Tea &Coffee', icon: require('../assets/tea.png'), category: 'Tea and Coffee' },
+              { label: 'Under ₹99 & Below', icon: require('../assets/under99.png'), category: 'Under 99' },
+              { label: 'Other', icon: require('../assets/other.png'), category: 'Other' },
+
+            ].map((item, index) => (
+              <Pressable
+                key={index}
+                onPress={() => navigation.navigate('selecteditems', item.category)}
+                style={[
+                  styles.categoryButton,
+                ]}
+              >
+                <Image source={item.icon} style={styles.categoryIcon} />
+                <Text style={[styles.categoryText, selectedCategory === item.category]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>}
         <View style={{ borderStyle: 'dashed', borderWidth: 1, borderColor: 'gray', marginHorizontal: 58, }}></View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: '#fff' }}
         >
-          <Text style={{ fontFamily: 'sans', marginLeft: 12, fontSize: 20, fontWeight: 'bold', color: 'gray', marginTop: 12 }}>Hotels and Restaurant Food</Text>
-          <FlatList
-            data={displayedRestaurants}
-            keyExtractor={(item) => item._id.toString()} // Ensure unique keys
-            horizontal
-            showsHorizontalScrollIndicator={false} // Hide the horizontal scroll indicator
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.card}
-                onPress={() => navigation.navigate('restaurants', { restaurantId: item })}
-              >
-                <Image source={{ uri: item.image }} style={styles.image} />
-                <Text style={styles.name}>{item.name}</Text>
-                <Text numberOfLines={1} style={styles.address}>{item.address}</Text>
-                <Text style={styles.rating}>Rating: {item.rating} ⭐</Text>
-              </TouchableOpacity>
-            )}
-          />
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
+            <Text style={{ fontFamily: 'sans', marginLeft: 12, fontSize: 18, fontWeight: 'bold', color: 'gray', marginTop: 12 }}>Hotels and Restaurant Food</Text>
+            <Pressable onPress={() => navigation.navigate('restaurantlist', restaurant)}>
+              <Text style={{ fontFamily: 'sans', marginRight: 9, fontSize: 15, fontWeight: 'bold', color: '#74b9ff', marginTop: 12 }}>view all</Text>
+            </Pressable>
+          </View>
+          {loading ? <View style={styles.container}>
+            <Animated.View style={[styles.skeletonBox, shimmerStyle]} />
+            <Animated.View style={[styles.skeletonLine, shimmerStyle]} />
+            <Animated.View style={[styles.skeletonLine, shimmerStyle, { width: 150 }]} />
+          </View>
+            :
+            <FlatList
+              data={displayedRestaurants}
+              keyExtractor={(item) => item._id.toString()} // Ensure unique keys
+              horizontal
+              showsHorizontalScrollIndicator={false} // Hide the horizontal scroll indicator
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.card}
+                  onPress={() => navigation.navigate('restaurants', { restaurantId: item })}
+                >
+                  <Image source={{ uri: item.image }} style={styles.image} />
+                  <Text style={styles.name}>{item.name}</Text>
+                  <Text numberOfLines={1} style={styles.address}>{item.address}</Text>
+                  <Text style={styles.rating}>Rating: {item.rating} ⭐</Text>
+                </TouchableOpacity>
+              )}
+            />}
         </ScrollView>
       </ScrollView>
     </SafeAreaView>
@@ -284,5 +341,20 @@ const styles = StyleSheet.create({
     height: 170,
     borderRadius: 10,
     // marginBottom: 20,
+  },
+  containerske: {
+    padding: 16,
+  },
+  skeletonBox: {
+    height: 200,
+    backgroundColor: '#d2d7d3',
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  skeletonLine: {
+    height: 20,
+    backgroundColor: '#ececec',
+    borderRadius: 4,
+    marginBottom: 6,
   },
 });

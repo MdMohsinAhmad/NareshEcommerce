@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#fff',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop:0,
     },
     title: {
         fontSize: 24,

@@ -28,6 +28,7 @@ import SelectedItems from '../screens/SelectedItems';
 import RestaurantFood from '../screens/RestaurantFood';
 import SplashScreen from '../screens/SplashScreen';
 import FoodDetails from '../screens/FoodDetails';
+import RestaurentList from '../screens/RestaurentList';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -166,12 +167,12 @@ const StackNavigator = () => {
         <Stack.Screen
           name="selecteditems"
           component={SelectedItems}
-          options={{ headerShown: false }}
+          options={{ headerShown: true,headerTitle:'Items List'  }}
         />
         <Stack.Screen
           name="restaurants"
           component={RestaurantFood}
-          options={{ headerShown: false }}
+          options={{ headerShown: true,headerTitle:'Restaurent Items'  }}
         />
         <Stack.Screen
           name="splashscreen"
@@ -181,7 +182,12 @@ const StackNavigator = () => {
         <Stack.Screen
           name="fooddetails"
           component={FoodDetails}
-          options={{ headerShown: false }}
+          options={{ headerShown: true,headerTitle:'Food Details'  }}
+        />
+        <Stack.Screen
+          name="restaurantlist"
+          component={RestaurentList}
+          options={{ headerShown: true,headerTitle:'Restaurents List' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

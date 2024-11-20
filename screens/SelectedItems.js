@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import URL_path from '../URL';
 import { useDispatch, useSelector } from 'react-redux';
-import { FlatList, TouchableOpacity, Image, ScrollView, Pressable, ActivityIndicator, Platform } from 'react-native';
+import { FlatList, TouchableOpacity, Image, Pressable, ActivityIndicator, Platform } from 'react-native';
 import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from '../redux/CartReducer';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -21,7 +21,7 @@ const SelectedItems = ({ route }) => {
     const quantity = cart.find((item) => item._id === item._id)?.quantity || 0;
 
     const fetchProducts = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
             const response = await axios.get(`${URL_path}/api/products`);
             setProducts(response.data);
@@ -37,7 +37,7 @@ const SelectedItems = ({ route }) => {
         setLoading(true);
         const filter = products.filter((product) => product.category === selecteditem);
         if (filter.length > 0) {
-            setFilteredItems(filter)
+            setFilteredItems(filter);
             setLoading(false);
         }
     };
@@ -47,7 +47,7 @@ const SelectedItems = ({ route }) => {
     }, []);
 
     useEffect(() => {
-        filterItems()
+        filterItems();
     }, [products]);
 
     useEffect(() => {
@@ -118,10 +118,9 @@ const SelectedItems = ({ route }) => {
 
     return (
         <View style={styles.container}>
-
-            {loading ?
+            {loading ? (
                 <ActivityIndicator size="large" color="#13274F" style={styles.loadingIndicator} />
-                :
+            ) : (
                 <FlatList
                     data={filteredItems}
                     renderItem={renderItem}
@@ -129,21 +128,34 @@ const SelectedItems = ({ route }) => {
                     contentContainerStyle={styles.listContainer}
                     numColumns={2}
                 />
-            }
+            )}
 
-            {!loading && filteredItems.length == 0 && <Text style={{ textAlign: 'center',  position: 'absolute', top: '50%', left: '6%', fontSize: 22 }}>No Items Found. It will be listed soon.</Text>
-            }
+            {!loading && filteredItems.length === 0 && (
+                <Text style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '6%', fontSize: 22 }}>
+                    No Items Found. It will be listed soon.
+                </Text>
+            )}
+
+            {cart.length > 0 && (
+                <View style={styles.cartButtonContainer}>
+                    <TouchableOpacity
+                        style={styles.cartButton}
+                        onPress={() => navigation.navigate('Cart')}
+                    >
+                        <Text style={styles.cartButtonText}>Go to Cart</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </View>
     );
 };
-
-export default SelectedItems;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        paddingHorizontal: 4, paddingTop: Platform.OS === 'android' ? 40 : 0,
+        paddingHorizontal: 4,
+        paddingTop: Platform.OS === 'android' ? 10 : 0,
     },
     listContainer: {
         paddingBottom: 13,
@@ -158,7 +170,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         height: 330,
         borderColor: 'white',
-        borderWidth: 2, shadowColor: '#00acc1',
+        borderWidth: 2,
+        shadowColor: '#00acc1',
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 15,
         elevation: 10,
@@ -181,7 +194,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         height: 330,
         borderColor: '#00bcd4',
-        borderWidth: 2, justifyContent: 'space-between', marginHorizontal: 8
+        borderWidth: 2,
+        justifyContent: 'space-between',
+        marginHorizontal: 8,
     },
     title: {
         width: 150,
@@ -250,22 +265,38 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 6,
     },
     iconContainerAdd: {
-        backgroundColor: '#00b894',
+        backgroundColor: '#55efc4',
         padding: 7,
         borderTopRightRadius: 6,
         borderBottomRightRadius: 6,
     },
     quantityText: {
-        backgroundColor: 'white',
-        paddingHorizontal: 18,
-        fontSize: 25,
-        paddingVertical: 2,
+        marginHorizontal: 10,
         fontWeight: 'bold',
-        borderRadius: 10,
-        color: '#333',
-        marginHorizontal: 5,
+    },
+    cartButtonContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#00b894',
+        padding: 15,
+        alignItems: 'center',
+    },
+    cartButton: {
+        // backgroundColor: '#2d3436',
+        paddingHorizontal: 20,
+        paddingVertical: 5,
+        borderRadius: 30,
+    },
+    cartButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 18,
     },
     loadingIndicator: {
-        position: 'absolute', top: '50%', left: '46%'
-    }
+        marginTop: '50%',
+    },
 });
+
+export default SelectedItems;
