@@ -6,41 +6,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, { useLayoutEffect, } from 'react';
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-
+import { MaterialIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-
-
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerTitle: () => (
-  //       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350 }}>
-  //         <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 19 }}>Dashboard</Text>
-  //       </View>
-  //     ),
-  //     headerStyle: {
-  //       backgroundColor: 'transparent',
-  //     },
-  //     headerRight: () => (
-  //       <View
-  //         style={{
-  //           display: 'flex',
-  //           flexDirection: 'row',
-  //           alignItems: 'center',
-  //           justifyContent: 'center',
-  //           gap: 6,
-  //           marginRight: 12, fontSize: 13
-  //         }}
-  //       >
-  //       </View>
-  //     ),
-  //   });
-  // }, [navigation]);
-
 
   const logout = async () => {
     await AsyncStorage.removeItem('authToken');
@@ -55,39 +27,41 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Welcome to dashboard</Text>
-
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-        <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Your Orders</Text>
-        </Pressable>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Welcome to Dashboard</Text>
       </View>
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-        <Pressable onPress={() => navigation.navigate('yourAccount')} style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Your Account</Text>
-        </Pressable>
-      </View>
-
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-        <Pressable style={styles.actionButton} onPress={() => navigation.replace('Main')}>
-          <Text style={styles.actionButtonText}>Buy Again</Text>
+      <View style={styles.cardContainer}>
+        <Pressable
+          onPress={() => navigation.navigate('yourOrder')}
+          style={styles.card}
+        >
+          <FontAwesome5 name="box-open" size={36} color="#0984e3" />
+          <Text style={styles.cardText}>Your Orders</Text>
         </Pressable>
 
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-        <Pressable onPress={logout} style={{
-          padding: 15,
-          backgroundColor: '#d63031',
-          borderRadius: 14,
-          flex: 1,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 3 },
-          shadowOpacity: 0.3,
-          shadowRadius: 5,
-          elevation: 4, height: 140, alignItems: 'center', justifyContent: 'center'
-        }}>
-          <Text style={styles.actionButtonText}>Logout</Text>
+        <Pressable
+          onPress={() => navigation.navigate('yourAccount')}
+          style={styles.card}
+        >
+          <AntDesign name="user" size={36} color="#6c5ce7" />
+          <Text style={styles.cardText}>Your Account</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => navigation.replace('Main')}
+          style={styles.card}
+        >
+          <MaterialIcons name="shopping-cart" size={36} color="#e17055" />
+          <Text style={styles.cardText}>Buy Again</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={logout}
+          style={[styles.card, styles.logoutCard]}
+        >
+          <AntDesign name="logout" size={36} color="#d63031" />
+          <Text style={styles.cardText}>Logout</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -96,32 +70,47 @@ const ProfileScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
     flex: 1,
     backgroundColor: '#f7f8fa',
+    padding: 20,
+  },
+  header: {
+    marginBottom: 30,marginTop:30
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2d3436',
+    textAlign: 'center',
+  },
+  cardContainer: {
+    flex:1,
+    display:'flex',flexDirection:'column',
+    justifyContent: 'space-between',
+    gap: 15,alignItems:'center',height:'100%'
+  },
+  card: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  logoutCard: {
+    backgroundColor: '#ffeaea',marginBottom:20
+  },
+  cardText: {
+    marginTop: 10,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
-    marginVertical: 40,
-  },
-  actionButton: {
-    padding: 15,
-    backgroundColor: '#0984e3',
-    borderRadius: 14,
-    flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 4, height: 140, alignItems: 'center', justifyContent: 'center'
-  },
-  actionButtonText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold', fontSize: 20
   },
 });
 

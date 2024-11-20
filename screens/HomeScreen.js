@@ -8,7 +8,7 @@ import {
   Pressable,
   Image,
   Text,
-  Dimensions, FlatList, TouchableOpacity, Animated,
+  Dimensions, FlatList, TouchableOpacity, Animated,BackHandler,Alert
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -16,6 +16,8 @@ import axios from 'axios';
 import URL_path from '../URL';
 import Carousel from 'react-native-snap-carousel';
 import { useRef } from 'react';
+import { useIsFocused } from '@react-navigation/native'; // To detect if the current screen is focused
+
 const HomeScreen = ({ navigation }) => {
   const { width } = Dimensions.get('window');
 
@@ -117,6 +119,39 @@ const HomeScreen = ({ navigation }) => {
       outputRange: [0.5, 1],
     }),
   };
+  const isFocused = useIsFocused(); // Checks if the current screen is active
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (isFocused) { // Only handle back press if this screen is focused
+        Alert.alert(
+          'Exit App',
+          'Are you sure you want to exit?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel',
+            },
+            {
+              text: 'Yes',
+              onPress: () => BackHandler.exitApp(),
+            },
+          ],
+          { cancelable: false }
+        );
+        return true; // Prevent default behavior
+      }
+      return false; // Allow default behavior on other screens
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [isFocused]);
 
 
   return (
