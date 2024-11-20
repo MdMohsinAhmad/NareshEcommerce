@@ -7,21 +7,24 @@ const ContactUs = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-
+    const [loading, setLoading] = useState(false)
     const handleSubmit = async () => {
+        setLoading(true)
         if (!name || !email || !message) {
             Alert.alert('Error', 'Please fill out all fields!');
+            setLoading(false)
             return;
         }
-
         await axios.post(`${URL_path}/contactus`, { name, email, message })
             .then(() => {
-                Alert.alert("Congrats", "Your message sent ")
+                setLoading(false)
                 setName('');
                 setEmail('');
                 setMessage('');
+                Alert.alert("Congrats", "Your message sent ")
             })
             .catch(() => {
+                setLoading(false)
                 Alert.alert("Error", "Please try again ")
 
             })
@@ -65,8 +68,8 @@ const ContactUs = () => {
                 numberOfLines={4}
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Submit</Text>
+            <TouchableOpacity disabled={loading} style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>{loading ? 'Sending...' : 'Send'}</Text>
             </TouchableOpacity>
         </ScrollView>
     );

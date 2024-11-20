@@ -457,7 +457,7 @@ const ConfirmationScreen = () => {
               <Text style={{ color: 'green', fontWeight: '500' }}>
                 Delivery timing are
               </Text>
-              - From 6:00 AM to 10:00 AM and 6:00 PM to 8:00 PM
+              - From 6:00 AM to 10:00 AM and 6:00 PM to 8:00 PM for Diary products and for other items it will be deliverd soon.
             </Text>
           </View>
 
@@ -466,7 +466,7 @@ const ConfirmationScreen = () => {
             disabled={!options}
             style={options ? styles.ontimingContinue : styles.timingContinue}
           >
-            <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'white', paddingVertical: 4 }}>Continue</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#2d3436', paddingVertical: 4 }}>Continue</Text>
           </Pressable>
         </View>
       )}
@@ -841,7 +841,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   ontimingContinue: {
-    backgroundColor: '#27ae60',
+    backgroundColor: '#fdcb6e',
     padding: 10,
     borderRadius: 20,
     justifyContent: 'center',
