@@ -9,7 +9,6 @@ import {
   Image,
   Text,
   Dimensions, FlatList, TouchableOpacity, Animated,
-  ActivityIndicator
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';

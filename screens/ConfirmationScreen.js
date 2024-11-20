@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View, RefreshControl } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View, RefreshControl, ActivityIndicator } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserType } from '../UserContext';
@@ -195,9 +195,27 @@ const ConfirmationScreen = () => {
         setPaying(false)
       });
   };
+  const [refresh, setRefresh] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRefresh(false)
+    }, 1000)
+  }, [])
+  if (refresh) {
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        <ActivityIndicator size="large" color="#0F70E6" />
+      </View>
+    )
+  }
 
   return (
-    <ScrollView style={{ marginTop: 55 }}
+    <ScrollView style={{ marginTop: 15 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
