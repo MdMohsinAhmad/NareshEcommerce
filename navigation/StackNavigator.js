@@ -29,6 +29,7 @@ import RestaurantFood from '../screens/RestaurantFood';
 import SplashScreen from '../screens/SplashScreen';
 import FoodDetails from '../screens/FoodDetails';
 import RestaurentList from '../screens/RestaurentList';
+import ContactUs from '../screens/ContactUs';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -188,6 +189,11 @@ const StackNavigator = () => {
           name="restaurantlist"
           component={RestaurentList}
           options={{ headerShown: true, headerTitle: 'Restaurents List' }}
+        />
+        <Stack.Screen
+          name="contactUs"
+          component={ContactUs}
+          options={{ headerShown: true, headerTitle: 'Contact Us' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

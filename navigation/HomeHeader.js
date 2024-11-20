@@ -91,24 +91,34 @@ const HomeHeader = () => {
         if (num == 1) {
             setDrawerOpen(!drawerOpen);
             navigation.navigate('Cart')
+            return
         }
         if (num == 2) {
             setDrawerOpen(!drawerOpen);
             navigation.navigate('yourAccount')
-
+            return
+            
         }
         if (num == 3) {
             setDrawerOpen(!drawerOpen);
             navigation.navigate('yourOrder')
-
+            return
+            
         }
         if (num == 4) {
             setDrawerOpen(!drawerOpen);
             clearAuthToken();
+            return
         }
         if (num == 5) {
             setDrawerOpen(!drawerOpen);
             navigation.navigate('Address')
+            return
+        }
+        if (num == 6) {
+            setDrawerOpen(!drawerOpen);
+            navigation.navigate('contactUs')
+            return
         }
     }
     return (
@@ -257,7 +267,8 @@ const HomeHeader = () => {
                             <Text style={styles.menuText}>Add Address</Text>
                         </TouchableOpacity>
                         <View style={styles.underline} />
-                        <TouchableOpacity style={styles.menuItem}>
+                        <TouchableOpacity onPress={() => handleBarsButton(6)}  style={styles.menuItem}>
+                        {/* contactUs */}
                             <MaterialIcons name="connect-without-contact" size={24} color="#227093" />
                             <Text style={styles.menuText}>Contact Us</Text>
                         </TouchableOpacity>

@@ -204,7 +204,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
             <Text style={{ fontFamily: 'sans', marginLeft: 12, fontSize: 18, fontWeight: 'bold', color: 'gray', marginTop: 12 }}>Hotels and Restaurant Food</Text>
             <Pressable onPress={() => navigation.navigate('restaurantlist', restaurant)}>
-              <Text style={{ fontFamily: 'sans', marginRight: 9, fontSize: 15, fontWeight: 'bold', color: '#74b9ff', marginTop: 12 }}>view all</Text>
+              <Text style={{ fontFamily: 'sans', marginRight: 9, fontSize: 15, fontWeight: 'bold', color: '#0984e3', marginTop: 12 }}>view all</Text>
             </Pressable>
           </View>
           {loading ? <View style={styles.container}>

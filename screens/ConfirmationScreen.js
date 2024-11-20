@@ -170,15 +170,15 @@ const ConfirmationScreen = () => {
 
     const options = {
       description: cart[0]?.title || "You have added some items to buy",
-      image: './assets/splashScreen.png', // Optional, can be customized
+      image: './assets/nobglogo.png', // Optional, can be customized
       currency: order.currency,
       key: 'rzp_test_iTNeVvGBP2UtGJ', // Replace with your Razorpay Key ID
       amount: order.amount, // Amount in paise (e.g., 5000 paise = INR 50)
-      name: 'Fresh and Fresh',
+      name: 'Order Karo',
       order_id: order.id,//Replace this with an order_id created using Orders API.
 
       prefill: {
-        email: `${selectedAddress.name}@example.com`, // Prefilled email
+        email: `${selectedAddress.name}@gmail.com`, // Prefilled email
         contact: selectedAddress.mobileNo, // Prefilled phone number
         name: selectedAddress.name // Prefilled name
       },
