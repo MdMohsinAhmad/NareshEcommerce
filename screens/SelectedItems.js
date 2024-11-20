@@ -70,13 +70,11 @@ const SelectedItems = ({ route }) => {
 
     const renderItem = ({ item }) => {
         const itemQuantity = cart.find((cartItem) => cartItem._id === item._id)?.quantity || 0;
-
         return (
-            <Pressable style={itemQuantity > 0 ? styles.containerAdded : styles.itemContainer} key={item._id}>
+            <Pressable style={itemQuantity > 0 ? styles.containerAdded : (filteredItems.length == 1 ? styles.singleitemContainer : styles.itemContainer)} key={item._id}>
                 <TouchableOpacity onPress={() => navigation.navigate('Info', { product: item })}>
                     <Image source={{ uri: item?.image }} style={styles.image} resizeMode="contain" />
                     <Text style={styles.title} numberOfLines={1}>{item?.title}</Text>
-                    {/* <Text style={styles.description} numberOfLines={2}>{item?.description}</Text> */}
                     <Text style={styles.quantity}>Qty: {item?.Quantity}</Text>
                     <View style={styles.priceContainer}>
                         <View style={{ flexDirection: 'row' }}>
@@ -176,6 +174,22 @@ const styles = StyleSheet.create({
         shadowRadius: 15,
         elevation: 10,
     },
+    singleitemContainer: {
+        // flex: 1,
+        margin: 8,
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        width: 180,
+        paddingVertical: 10,
+        height: 280,
+        borderColor: 'white',
+        borderWidth: 2,
+        shadowColor: '#00acc1',
+        shadowOffset: { width: 0, height: 6 },
+        shadowRadius: 15,
+        elevation: 10,
+    },
     image: {
         width: 150,
         height: 120,
@@ -214,7 +228,7 @@ const styles = StyleSheet.create({
         width: 150,
         marginTop: 5,
         color: '#555',
-        textAlign: 'center',fontWeight:'bold'
+        textAlign: 'center', fontWeight: 'bold'
     },
     priceContainer: {
         flexDirection: 'row',

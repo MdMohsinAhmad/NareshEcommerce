@@ -40,8 +40,8 @@ const FoodDetails = ({ route, navigation }) => {
         <View style={styles.container}>
             <Image source={{ uri: item.imageurl }} style={styles.image} />
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.price}>Rs {item.price}</Text>
             <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.price}>Rs {item.price}</Text>
 
             {/* Add to Cart Button */}
             {quantity === 0 ? (
