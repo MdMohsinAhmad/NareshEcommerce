@@ -124,7 +124,7 @@ const StackNavigator = () => {
           name="Info"
           component={ProductInfoScreen}
           options={{
-            header: () => <CustomHeader title="Product Info" />,
+            headerTitle: 'Item Information'
           }}
         />
         <Stack.Screen
@@ -156,23 +156,23 @@ const StackNavigator = () => {
           name="yourOrder"
           component={OrderHistory}
           options={{
-            header: () => <CustomHeader title="Order History" />,
+            headerTitle: 'Order History'
           }}
         />
         <Stack.Screen
           name="yourAccount"
           component={YourAccount}
-          options={{ headerShown: false }}
+          options={{ headerShown: true,headerTitle: 'Account', }}
         />
         <Stack.Screen
           name="selecteditems"
           component={SelectedItems}
-          options={{ headerShown: true,headerTitle:'Items List'  }}
+          options={{ headerShown: true, headerTitle: 'Items List' }}
         />
         <Stack.Screen
           name="restaurants"
           component={RestaurantFood}
-          options={{ headerShown: true,headerTitle:'Restaurent Items'  }}
+          options={{ headerShown: true, headerTitle: 'Restaurent Items' }}
         />
         <Stack.Screen
           name="splashscreen"
@@ -182,12 +182,12 @@ const StackNavigator = () => {
         <Stack.Screen
           name="fooddetails"
           component={FoodDetails}
-          options={{ headerShown: true,headerTitle:'Food Details'  }}
+          options={{ headerShown: true, headerTitle: 'Food Details' }}
         />
         <Stack.Screen
           name="restaurantlist"
           component={RestaurentList}
-          options={{ headerShown: true,headerTitle:'Restaurents List' }}
+          options={{ headerShown: true, headerTitle: 'Restaurents List' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

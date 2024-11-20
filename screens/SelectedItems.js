@@ -76,8 +76,8 @@ const SelectedItems = ({ route }) => {
                 <TouchableOpacity onPress={() => navigation.navigate('Info', { product: item })}>
                     <Image source={{ uri: item?.image }} style={styles.image} resizeMode="contain" />
                     <Text style={styles.title} numberOfLines={1}>{item?.title}</Text>
-                    <Text style={styles.description} numberOfLines={2}>{item?.description}</Text>
-                    <Text style={styles.description}>Quantity: {itemQuantity}</Text>
+                    {/* <Text style={styles.description} numberOfLines={2}>{item?.description}</Text> */}
+                    <Text style={styles.quantity}>Qty: {item?.Quantity}</Text>
                     <View style={styles.priceContainer}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.rupee}>₹ </Text>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: 180,
         paddingVertical: 10,
-        height: 330,
+        height: 280,
         borderColor: 'white',
         borderWidth: 2,
         shadowColor: '#00acc1',
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: 172,
         paddingVertical: 10,
-        height: 330,
+        height: 280,
         borderColor: '#00bcd4',
         borderWidth: 2,
         justifyContent: 'space-between',
@@ -209,6 +209,12 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: '#555',
         textAlign: 'center',
+    },
+    quantity: {
+        width: 150,
+        marginTop: 5,
+        color: '#555',
+        textAlign: 'center',fontWeight:'bold'
     },
     priceContainer: {
         flexDirection: 'row',

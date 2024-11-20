@@ -85,7 +85,7 @@ const ProductInfoScreen = ({ route }) => {
   return (
     <ScrollView style={{ marginTop: 0, flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
-        <Text style={{position:'absolute',zIndex:999,left:12,backgroundColor:'yellow',borderRadius:10,padding:3,top:12, fontWeight: 'bold'}}> {((product.MRP - product.price) * 100 / product.MRP).toFixed(1)}% off</Text>
+        <Text style={{position:'absolute',zIndex:999,left:12,backgroundColor:'#FFC72C',borderRadius:10,padding:6,top:12, fontWeight: 'bold'}}> {((product.MRP - product.price) * 100 / product.MRP).toFixed(1)}% off</Text>
         <Image source={{ uri: product.image }} style={styles.image} />
         <Text style={styles.title}>{product.title}</Text>
         <Text style={styles.description} >{product.description}</Text>
@@ -95,9 +95,9 @@ const ProductInfoScreen = ({ route }) => {
       <Text style={{ textAlign: 'left', marginLeft: 20, fontSize: 16, fontWeight: 'bold' }} >Quantity :{product.Quantity}</Text>
       <View style={{ padding: 10 }}>
         <Text style={styles.price}><Text style={{ marginRight: 40, fontSize: 16, }}>MRP : <Text style={{ textDecorationLine: 'line-through', color: 'gray' }}>₹ {product.MRP}</Text></Text> New Price : ₹ <Text>{product.price}</Text> </Text>
-        <Text style={styles.deliveryText}>
+        {/* <Text style={styles.deliveryText}>
           Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM.
-        </Text>
+        </Text> */}
         <View style={styles.locationContainer}>
           <Ionicons name="location" size={24} color="black" />
           <Text style={styles.locationText}> Deliver to  {address.city} - {address.postalCode}</Text>
