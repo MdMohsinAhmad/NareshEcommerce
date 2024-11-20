@@ -58,7 +58,7 @@ const StackNavigator = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
-            tabBarLabel: 'Profile',
+            headerShown:false,
             tabBarLabelStyle: { color: '#0a3d62' },
             tabBarIcon: ({ focused }) =>
               focused ? (

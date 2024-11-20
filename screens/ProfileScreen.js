@@ -15,33 +15,33 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
 
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350 }}>
-          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 19 }}>Dashboard</Text>
-        </View>
-      ),
-      headerStyle: {
-        backgroundColor: 'transparent',
-      },
-      headerRight: () => (
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 6,
-            marginRight: 12, fontSize: 13
-          }}
-        >
-        </View>
-      ),
-    });
-  }, [navigation]);
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerTitle: () => (
+  //       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: 350 }}>
+  //         <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 19 }}>Dashboard</Text>
+  //       </View>
+  //     ),
+  //     headerStyle: {
+  //       backgroundColor: 'transparent',
+  //     },
+  //     headerRight: () => (
+  //       <View
+  //         style={{
+  //           display: 'flex',
+  //           flexDirection: 'row',
+  //           alignItems: 'center',
+  //           justifyContent: 'center',
+  //           gap: 6,
+  //           marginRight: 12, fontSize: 13
+  //         }}
+  //       >
+  //       </View>
+  //     ),
+  //   });
+  // }, [navigation]);
 
-  
+
   const logout = async () => {
     await AsyncStorage.removeItem('authToken');
     clearAuthToken();
@@ -55,24 +55,38 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Welcome</Text>
+      <Text style={styles.headerText}>Welcome to dashboard</Text>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
         <Pressable onPress={() => navigation.navigate('yourOrder')} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Your Orders</Text>
         </Pressable>
+      </View>
 
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
         <Pressable onPress={() => navigation.navigate('yourAccount')} style={styles.actionButton}>
           <Text style={styles.actionButtonText}>Your Account</Text>
         </Pressable>
       </View>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
-        <Pressable style={styles.actionButton} onPress={()=>navigation.replace('Main')}>
+        <Pressable style={styles.actionButton} onPress={() => navigation.replace('Main')}>
           <Text style={styles.actionButtonText}>Buy Again</Text>
         </Pressable>
 
-        <Pressable onPress={logout} style={styles.actionButton}>
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
+        <Pressable onPress={logout} style={{
+          padding: 15,
+          backgroundColor: '#d63031',
+          borderRadius: 14,
+          flex: 1,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 3 },
+          shadowOpacity: 0.3,
+          shadowRadius: 5,
+          elevation: 4, height: 140, alignItems: 'center', justifyContent: 'center'
+        }}>
           <Text style={styles.actionButtonText}>Logout</Text>
         </Pressable>
       </View>
@@ -91,23 +105,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
-    marginVertical: 20,
+    marginVertical: 40,
   },
   actionButton: {
     padding: 15,
-    backgroundColor: '#4CAF50',
-    borderRadius: 25,
+    backgroundColor: '#0984e3',
+    borderRadius: 14,
     flex: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 4,
+    elevation: 4, height: 140, alignItems: 'center', justifyContent: 'center'
   },
   actionButtonText: {
     textAlign: 'center',
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: 'bold', fontSize: 20
   },
 });
 

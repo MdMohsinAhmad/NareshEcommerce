@@ -13,6 +13,7 @@ import { UserType } from '../UserContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import URL_path from '../URL';
+
 const YourAccount = () => {
   const navigation = useNavigation();
   const { userId } = useContext(UserType);
