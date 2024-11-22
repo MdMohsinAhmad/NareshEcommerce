@@ -135,14 +135,15 @@ const SelectedItems = ({ route }) => {
             )}
 
             {cart.length > 0 && (
-                <View style={styles.cartButtonContainer}>
+                <Pressable style={styles.cartButtonContainer}
+                    onPress={() => navigation.navigate('Cart')}
+                >
                     <TouchableOpacity
                         style={styles.cartButton}
-                        onPress={() => navigation.navigate('Cart')}
                     >
                         <Text style={styles.cartButtonText}>Go to Cart</Text>
                     </TouchableOpacity>
-                </View>
+                </Pressable>
             )}
         </View>
     );
