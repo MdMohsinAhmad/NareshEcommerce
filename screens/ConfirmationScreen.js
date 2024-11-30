@@ -25,6 +25,8 @@ const ConfirmationScreen = () => {
   const [PushToken, setPushToken] = useState([])
   const [paying, setPaying] = useState(false)
   const cart = useSelector((state) => state.cart.cart);
+  const deliverycharges = 40
+
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);
@@ -75,11 +77,12 @@ const ConfirmationScreen = () => {
   const [selectedOptions, setSelectedOptions] = useState('');
 
   const handlePlaceOrderCod = async () => {
+    setPaying(true)
     try {
       const orderData = {
         userId: userId,
         cartItems: cart,
-        totalPrice: total + 40,
+        totalPrice: total + deliverycharges,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
         orderStatus: false,
@@ -95,12 +98,15 @@ const ConfirmationScreen = () => {
         setOptions(false)
         setAddresses('')
         setSelectedOptions('')
+        setPaying(false)
         navigation.navigate('Order');
         dispatch(cleanCart());
       } else {
+        setPaying(false)
         console.log('Error creating order');
       }
     } catch (error) {
+      setPaying(false)
       console.log('Error', error);
     }
   };
@@ -109,7 +115,7 @@ const ConfirmationScreen = () => {
       const orderData = {
         userId: userId,
         cartItems: cart,
-        totalPrice: total + 40,
+        totalPrice: total + deliverycharges,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
         orderStatus: false,
@@ -158,7 +164,7 @@ const ConfirmationScreen = () => {
   const initiatePayment = async () => {
     setPaying(true)
     // Amount in INR, e.g., 500 INR
-    const amount = total + 40
+    const amount = total + deliverycharges
     const currency = 'INR';
 
     const order = await createOrder(amount, currency);
@@ -220,7 +226,7 @@ const ConfirmationScreen = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 40 }}>
+      <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: deliverycharges }}>
         <View
           style={{
             flexDirection: 'row',
@@ -593,7 +599,7 @@ const ConfirmationScreen = () => {
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
                 Delivery charges
               </Text>
-              <Text style={{ color: 'gray', fontSize: 16 }}>₹40</Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹{deliverycharges}</Text>
             </View>
 
             <View
@@ -610,7 +616,7 @@ const ConfirmationScreen = () => {
               <Text
                 style={{ color: '#c60c30', fontSize: 17, fontWeight: 'bold' }}
               >
-                ₹{total + 40}
+                ₹{total + deliverycharges}
               </Text>
             </View>
           </View>
@@ -631,17 +637,22 @@ const ConfirmationScreen = () => {
           </View>
           <Pressable
             onPress={handlePlaceOrderCod}
+            disabled={paying} // Correctly set the disabled prop here
             style={{
-              backgroundColor: '#FFC72C',
+              backgroundColor: paying ? 'gray' : '#FFC72C',
               padding: 10,
               borderRadius: 20,
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 20,
+              opacity: paying ? 0.5 : 1, // Optional: Add visual feedback when disabled
             }}
           >
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Place your order</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+              {paying ? 'Please wait ...' : 'Place your order'}
+            </Text>
           </Pressable>
+
         </View>
       )}
 
@@ -686,7 +697,7 @@ const ConfirmationScreen = () => {
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
                 Delivery charges
               </Text>
-              <Text style={{ color: 'gray', fontSize: 16 }}>₹40</Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹{deliverycharges}</Text>
             </View>
 
             <View
@@ -703,7 +714,7 @@ const ConfirmationScreen = () => {
               <Text
                 style={{ color: '#c60c30', fontSize: 17, fontWeight: 'bold' }}
               >
-                ₹{total + 2}
+                ₹{total + deliverycharges}
               </Text>
             </View>
           </View>
@@ -724,6 +735,7 @@ const ConfirmationScreen = () => {
           </View>
           <Pressable
             onPress={initiatePayment}
+            disabled={paying}
             style={{
               backgroundColor: '#FFC72C',
               padding: 10,
@@ -731,6 +743,7 @@ const ConfirmationScreen = () => {
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 20,
+              opacity: paying ? 0.5 : 1
             }}
           >
             <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{paying ? "Please wait..." : "Place your order"}</Text>
