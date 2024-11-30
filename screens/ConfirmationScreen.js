@@ -79,7 +79,7 @@ const ConfirmationScreen = () => {
       const orderData = {
         userId: userId,
         cartItems: cart,
-        totalPrice: total + 2,
+        totalPrice: total + 40,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
         orderStatus: false,
@@ -109,7 +109,7 @@ const ConfirmationScreen = () => {
       const orderData = {
         userId: userId,
         cartItems: cart,
-        totalPrice: total + 2,
+        totalPrice: total + 40,
         shippingAddress: selectedAddress,
         paymentMethod: selectedOptions,
         orderStatus: false,
@@ -158,7 +158,7 @@ const ConfirmationScreen = () => {
   const initiatePayment = async () => {
     setPaying(true)
     // Amount in INR, e.g., 500 INR
-    const amount = total + 2
+    const amount = total + 40
     const currency = 'INR';
 
     const order = await createOrder(amount, currency);
@@ -593,7 +593,7 @@ const ConfirmationScreen = () => {
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
                 Delivery charges
               </Text>
-              <Text style={{ color: 'gray', fontSize: 16 }}>₹2</Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹40</Text>
             </View>
 
             <View
@@ -610,7 +610,7 @@ const ConfirmationScreen = () => {
               <Text
                 style={{ color: '#c60c30', fontSize: 17, fontWeight: 'bold' }}
               >
-                ₹{total + 2}
+                ₹{total + 40}
               </Text>
             </View>
           </View>
@@ -686,7 +686,7 @@ const ConfirmationScreen = () => {
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'gray' }}>
                 Delivery charges
               </Text>
-              <Text style={{ color: 'gray', fontSize: 16 }}>₹2</Text>
+              <Text style={{ color: 'gray', fontSize: 16 }}>₹40</Text>
             </View>
 
             <View
