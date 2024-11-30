@@ -32,7 +32,6 @@ const AddressScreen = () => {
 
 
   const [address, setAddress] = useState([]);
-  // console.log('--', address)
   const { userId, setUserId } = useContext(UserType);
   //  auto detect address 
 
@@ -160,6 +159,7 @@ const AddressScreen = () => {
             onChangeText={setMobileNo}
             placeholderTextColor={'#A9A9A9'}
             placeholder="Mobile No"
+            maxLength={10}
             style={styles.input}
             keyboardType="phone-pad"
           />
@@ -203,7 +203,7 @@ const AddressScreen = () => {
             value={city}
             onChangeText={setCity}
             placeholderTextColor={'#A9A9A9'}
-            placeholder="E.g., near Apollo Hospital"
+            placeholder="E.g., Moinabad, or Himayat Nagar"
             style={styles.input}
           />
         </View>
@@ -214,7 +214,7 @@ const AddressScreen = () => {
             value={state}
             onChangeText={setState}
             placeholderTextColor={'#A9A9A9'}
-            placeholder="E.g., near Apollo Hospital"
+            placeholder="E.g., Telangana"
             style={styles.input}
           />
         </View>
@@ -227,6 +227,7 @@ const AddressScreen = () => {
             onChangeText={setPostalCode}
             placeholderTextColor={'#A9A9A9'}
             placeholder="Enter Pincode"
+            maxLength={6}
             style={styles.input}
             keyboardType="numeric"
           />
