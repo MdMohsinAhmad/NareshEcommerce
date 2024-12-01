@@ -8,10 +8,9 @@ const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const { userId } = useContext(UserType);
     const [scaleValue] = useState(new Animated.Value(1));
-    const [currentStatus, setCurrentStatus] = useState('pending');
+    const [currentStatus, setCurrentStatus] = useState('pending'); // Multiple statuses as an array
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const fetchOrders = async () => {
         setLoading(true);
         try {
@@ -25,13 +24,19 @@ const OrderHistory = () => {
     };
 
     const filterOrders = (status) => {
-        setCurrentStatus(status);
+        if (currentStatus.includes(status)) {
+            // Remove status from array if it's already included
+            setCurrentStatus(currentStatus.filter(item => item !== status));
+        } else {
+            // Add status to array
+            setCurrentStatus(status);
+        }
     };
 
     const filteredOrders = currentStatus === 'All'
         ? orders
         : orders.filter(order =>
-            order.products.some(product => product.orderStatus === currentStatus.toLowerCase())
+            order.products.some(product => currentStatus.includes(product.orderStatus.toLowerCase()))
         );
 
     const handleCancelProduct = async (orderId, productId) => {
@@ -71,10 +76,9 @@ const OrderHistory = () => {
     }, [userId]);
 
     const renderOrderItem = ({ item }) => {
-        // Calculate the total payable amount for this order
         const totalPayable = item.products
-            .filter(product => product.orderStatus !== 'canceled') // Exclude canceled products
-            .reduce((sum, product) => sum + product.price * product.quantity, 0); // Sum up the prices
+            .filter(product => product.orderStatus !== 'canceled')
+            .reduce((sum, product) => sum + product.price * product.quantity, 0);
 
         return (
             <View style={styles.orderCard}>
@@ -84,9 +88,7 @@ const OrderHistory = () => {
                     Payment Mode: {item.paymentMethod === 'cash' ? 'Cash on delivery' : "Paid Online"}
                 </Text>
                 {item?.paymentId && <Text style={styles.total}>Payment ID: {item?.paymentId}</Text>}
-
-                {/* Display the total payable amount */}
-                <Text style={styles.total}>Total Payable: ₹ {totalPayable == 0? 0 :totalPayable+40}<Text style={{fontSize:12,color:'black'}}> (included delivery charges)</Text></Text>
+                <Text style={styles.total}>Total Payable: ₹ {totalPayable === 0 ? 0 : totalPayable + 40}<Text style={{ fontSize: 12, color: 'black' }}> (included delivery charges)</Text></Text>
 
                 {item.products.map((product, index) => (
                     <View key={index} style={styles.productContainer}>
@@ -99,15 +101,9 @@ const OrderHistory = () => {
                                 <Text style={styles.total}>Total: ₹ {product.price * product.quantity}</Text>
                             </View>
                             <Text style={styles.itemDetails}>Order ID: {product.uniqueId}</Text>
-                            {product.orderStatus === 'canceled' ? (
-                                <Text style={styles.getStatusStyle(product.orderStatus)}>
-                                    Status: {product.orderStatus}
-                                </Text>
-                            ) : (
-                                <Text style={styles.getStatusStyle(product.orderStatus)}>
-                                    Status: {product.orderStatus}
-                                </Text>
-                            )}
+                            <Text style={styles.getStatusStyle(product.orderStatus)}>
+                                Status: {product.orderStatus}
+                            </Text>
                             {item.paymentMethod === 'card' && (
                                 <Text style={{ marginTop: 4, color: 'orange', fontWeight: 'bold' }}>
                                     * Online payment order cannot be cancelled
@@ -130,24 +126,15 @@ const OrderHistory = () => {
     return (
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.filterButton, currentStatus === 'pending' && styles.activeButton]}
-                    onPress={() => filterOrders('pending')}
-                >
-                    <Text style={styles.buttonText}>Pending</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.filterButton, currentStatus === 'delivered' && styles.activeButton]}
-                    onPress={() => filterOrders('delivered')}
-                >
-                    <Text style={styles.buttonText}>Delivered</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.filterButton, currentStatus === 'All' && styles.activeButton]}
-                    onPress={() => filterOrders('All')}
-                >
-                    <Text style={styles.buttonText}>All Orders</Text>
-                </TouchableOpacity>
+                {['pending', 'packed', 'delivered', 'All'].map(status => (
+                    <TouchableOpacity
+                        key={status}
+                        style={[styles.filterButton, currentStatus.includes(status) && styles.activeButton]}
+                        onPress={() => filterOrders(status)}
+                    >
+                        <Text style={styles.buttonText}>{status.charAt(0).toUpperCase() + status.slice(1)}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
 
             {loading ? (
@@ -185,15 +172,19 @@ const styles = StyleSheet.create({
     image: { width: 100, height: 170, borderRadius: 10, marginRight: 15, borderWidth: 1, borderColor: '#e0e0e0' },
     infoContainer: { flex: 1 },
     itemName: { fontSize: 16, fontWeight: '600', color: '#333' },
-    itemDetails: { fontSize: 14, color: '#666', marginVertical: 2 },
-    getStatusStyle: (status) => ({
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: status === 'canceled' ? 'red' : 'green',
-    }),
-    cancelButton: { backgroundColor: '#e74c3c', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 5, marginTop: 5 },
-    cancelButtonText: { color: '#fff', fontWeight: 'bold', textAlign: 'center' },
-    emptyText: { fontSize: 18, color: '#b0b0b0', textAlign: 'center', marginTop: 50 },
+    itemDetails: { fontSize: 14, color: 'gray' },
+    cancelButton: { backgroundColor: '#e74c3c', padding: 10, borderRadius: 5, alignItems: 'center' },
+    cancelButtonText: { color: '#fff', fontWeight: 'bold' },
+    emptyText: { textAlign: 'center', marginTop: 20, fontSize: 16, color: 'gray' },
+    getStatusStyle: (status) => {
+        switch (status.toLowerCase()) {
+            case 'pending': return { color: '#f39c12', fontWeight: 'bold',fontSize:20 };
+            case 'packed': return { color: '#f1c40f', fontWeight: 'bold',fontSize:20 };
+            case 'delivered': return { color: '#2ecc71', fontWeight: 'bold',fontSize:20 };
+            case 'canceled': return { color: '#e74c3c', fontWeight: 'bold',fontSize:20 };
+            default: return { color: '#3498db', fontWeight: 'bold' };
+        }
+    }
 });
 
 export default OrderHistory;
