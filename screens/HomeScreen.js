@@ -8,8 +8,10 @@ import {
   Pressable,
   Image,
   Text,
-  Dimensions, FlatList, TouchableOpacity, Animated,BackHandler,Alert
+  Dimensions, FlatList, TouchableOpacity, Animated, BackHandler, Alert
 } from 'react-native';
+import { FadeInUp, FadeOutDown } from 'react-native-reanimated';
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 // import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -224,7 +226,7 @@ const HomeScreen = ({ navigation }) => {
                   styles.categoryButton,
                 ]}
               >
-                <Image source={item.icon} style={styles.categoryIcon} />
+                <Animated.Image entering={FadeOutDown.duration(100).springify().damping(30).mass(5)} source={item.icon} style={styles.categoryIcon} />
                 <Text style={[styles.categoryText, selectedCategory === item.category]}>
                   {item.label}
                 </Text>

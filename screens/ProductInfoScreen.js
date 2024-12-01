@@ -6,12 +6,19 @@ import {
   StyleSheet,
   Text,
   View,
+  Animated,
+  Easing,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from '../redux/CartReducer';
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+  removeFromCart,
+} from '../redux/CartReducer';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
@@ -26,6 +33,26 @@ const ProductInfoScreen = ({ route }) => {
   const cart = useSelector((state) => state.cart.cart);
   const cartItem = cart.find((item) => item._id === product._id);
   const quantity = cartItem ? cartItem.quantity : 0;
+  const [fadeAnim] = useState(new Animated.Value(0)); // Start opacity at 0
+  const [translateYAnim] = useState(new Animated.Value(50)); // Start translated down
+
+  useEffect(() => {
+    // Entry animation: fade-in with upward motion
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1, // Full opacity
+        duration: 700,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateYAnim, {
+        toValue: 0, // Back to original position
+        duration: 700,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   const addItemToCart = (item) => {
     setAddedToCart(true);
@@ -62,7 +89,10 @@ const ProductInfoScreen = ({ route }) => {
   const getLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      alert('Permission Denied', 'Location access is needed to fetch your current location.');
+      alert(
+        'Permission Denied',
+        'Location access is needed to fetch your current location.'
+      );
       return;
     }
 
@@ -73,67 +103,115 @@ const ProductInfoScreen = ({ route }) => {
     if (result) {
       setAddress(result);
     } else {
-      alert("Error", "Unable to retrieve address.");
+      alert('Error', 'Unable to retrieve address.');
     }
   };
 
-  const handleBututton = () => {
+  const handleButton = () => {
     dispatch(addToCart(product));
-    navigation.navigate('Cart')
-  }
+    navigation.navigate('Cart');
+  };
 
   return (
-    <ScrollView style={{ marginTop: 0, flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.container}>
-        <Text style={{position:'absolute',zIndex:999,left:12,backgroundColor:'#FFC72C',borderRadius:10,padding:6,top:12, fontWeight: 'bold'}}> {((product.MRP - product.price) * 100 / product.MRP).toFixed(1)}% off</Text>
-        <Image source={{ uri: product.image }} style={styles.image} />
-        <Text style={styles.title}>{product.title}</Text>
-        <Text style={styles.description} >{product.description}</Text>
-      </View>
-
-      <Text style={{ height: 1, borderColor: '#D0D0D0', borderWidth: 1 }} />
-      <Text style={{ textAlign: 'left', marginLeft: 20, fontSize: 16, fontWeight: 'bold' }} >Quantity :{product.Quantity}</Text>
-      <View style={{ padding: 10 }}>
-        <Text style={styles.price}><Text style={{ marginRight: 40, fontSize: 16, }}>MRP : <Text style={{ textDecorationLine: 'line-through', color: 'gray' }}>₹ {product.MRP}</Text></Text> New Price : ₹ <Text>{product.price}</Text> </Text>
-        {/* <Text style={styles.deliveryText}>
-          Delivery between 6:00 AM to 9:00 AM Or 5:00 PM to 7:00 PM.
-        </Text> */}
-        <View style={styles.locationContainer}>
-          <Ionicons name="location" size={24} color="black" />
-          <Text style={styles.locationText}> Deliver to  {address.city} - {address.postalCode}</Text>
-        </View>
-      </View>
-
-      {/* <Text style={styles.stockText}>In Stock</Text> */}
-
-      {quantity < 1 && (
-        <Pressable onPress={() => addItemToCart(product)} style={styles.addToCartButton}>
-          <Text style={styles.buttonText}>
-            {addedToCart ? 'Added to Cart' : 'Add to Cart'}
+    <Animated.View style={{
+      flex: 1,
+      opacity: fadeAnim,
+      transform: [{ translateY: translateYAnim }],
+    }}>
+      <ScrollView style={{ marginTop: 0, flex: 1, backgroundColor: '#fff' }}>
+        <View style={styles.container}>
+          <Text
+            style={{
+              position: 'absolute',
+              zIndex: 999,
+              left: 12,
+              backgroundColor: '#FFC72C',
+              borderRadius: 10,
+              padding: 6,
+              top: 12,
+              fontWeight: 'bold',
+            }}
+          >
+            {((product.MRP - product.price) * 100 / product.MRP).toFixed(1)}% off
           </Text>
-        </Pressable>
-      )}
-
-      {quantity > 0 && (
-        <View style={styles.quantityContainer}>
-          <Pressable onPress={() => decreaseQuantity(product)} style={styles.iconContainer}>
-            {quantity > 1 ? (
-              <AntDesign name="minus" size={20} color="black" />
-            ) : (
-              <AntDesign name="delete" size={20} color="red" />
-            )}
-          </Pressable>
-          <Text style={styles.quantityText}>{quantity}</Text>
-          <Pressable onPress={() => increaseQuantity(product)} style={styles.iconContainerAdd}>
-            <Feather name="plus" size={20} color="white" />
-          </Pressable>
+          <Image source={{ uri: product.image }} style={styles.image} />
+          <Text style={styles.title}>{product.title}</Text>
+          <Text style={styles.description}>{product.description}</Text>
         </View>
-      )}
 
-      <Pressable onPress={() => { cart.length === 0 ? handleBututton(product) : navigation.navigate('Cart') }} style={styles.buyNowButton}>
-        <Text style={styles.buttonText}>Buy Now</Text>
-      </Pressable>
-    </ScrollView>
+        <Text style={{ height: 1, borderColor: '#D0D0D0', borderWidth: 1 }} />
+        <Text
+          style={{
+            textAlign: 'left',
+            marginLeft: 20,
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}
+        >
+          Quantity :{product.Quantity}
+        </Text>
+        <View style={{ padding: 10 }}>
+          <Text style={styles.price}>
+            <Text style={{ marginRight: 40, fontSize: 16 }}>
+              MRP :{' '}
+              <Text style={{ textDecorationLine: 'line-through', color: 'gray' }}>
+                ₹ {product.MRP}
+              </Text>
+            </Text>{' '}
+            New Price : ₹ <Text>{product.price}</Text>{' '}
+          </Text>
+
+          <View style={styles.locationContainer}>
+            <Ionicons name="location" size={24} color="black" />
+            <Text style={styles.locationText}>
+              Deliver to {address.city} - {address.postalCode}
+            </Text>
+          </View>
+        </View>
+
+        {quantity < 1 && (
+          <Pressable
+            onPress={() => addItemToCart(product)}
+            style={styles.addToCartButton}
+          >
+            <Text style={styles.buttonText}>
+              {addedToCart ? 'Added to Cart' : 'Add to Cart'}
+            </Text>
+          </Pressable>
+        )}
+
+        {quantity > 0 && (
+          <View style={styles.quantityContainer}>
+            <Pressable
+              onPress={() => decreaseQuantity(product)}
+              style={styles.iconContainer}
+            >
+              {quantity > 1 ? (
+                <AntDesign name="minus" size={20} color="black" />
+              ) : (
+                <AntDesign name="delete" size={20} color="red" />
+              )}
+            </Pressable>
+            <Text style={styles.quantityText}>{quantity}</Text>
+            <Pressable
+              onPress={() => increaseQuantity(product)}
+              style={styles.iconContainerAdd}
+            >
+              <Feather name="plus" size={20} color="white" />
+            </Pressable>
+          </View>
+        )}
+
+        <Pressable
+          onPress={() =>
+            cart.length === 0 ? handleButton(product) : navigation.navigate('Cart')
+          }
+          style={styles.buyNowButton}
+        >
+          <Text style={styles.buttonText}>Buy Now</Text>
+        </Pressable>
+      </ScrollView>
+    </Animated.View>
   );
 };
 
@@ -172,12 +250,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#0a3d62',
     paddingHorizontal: 10,
-    display: 'flex', flexDirection: 'row', justifyContent: 'space-between'
-  },
-  deliveryText: {
-    color: 'green',
-    paddingHorizontal: 10,
-    marginVertical: 5,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   locationContainer: {
     flexDirection: 'row',
@@ -186,11 +261,6 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 15,
-    fontWeight: '500',
-  },
-  stockText: {
-    color: 'green',
-    marginHorizontal: 10,
     fontWeight: '500',
   },
   addToCartButton: {
@@ -215,7 +285,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     backgroundColor: '#f5f5f5',
-    borderRadius: 10, justifyContent: 'center'
+    borderRadius: 10,
+    justifyContent: 'center',
   },
   iconContainer: {
     backgroundColor: '#fab1a0',
@@ -248,6 +319,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 5,
   },
 });

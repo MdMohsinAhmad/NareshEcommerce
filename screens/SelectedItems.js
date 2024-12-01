@@ -7,7 +7,8 @@ import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from 
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-
+import { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 const SelectedItems = ({ route }) => {
     const selecteditem = route.params;
     const [products, setProducts] = useState([]);
@@ -17,6 +18,20 @@ const SelectedItems = ({ route }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
+    // Create a shared value
+    const scale = useSharedValue(0);
+
+    // Trigger the animation when the component mounts
+    React.useEffect(() => {
+        scale.value = withSpring(1, { damping: 2, stiffness: 15 });
+    }, []);
+
+    // Define an animated style inline
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ scale: scale.value }],
+        };
+    });
     const cart = useSelector((state) => state.cart.cart);
     const quantity = cart.find((item) => item._id === item._id)?.quantity || 0;
 
@@ -115,7 +130,7 @@ const SelectedItems = ({ route }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, animatedStyle]}>
             {loading ? (
                 <ActivityIndicator size="large" color="#13274F" style={styles.loadingIndicator} />
             ) : (
@@ -145,7 +160,7 @@ const SelectedItems = ({ route }) => {
                     </TouchableOpacity>
                 </Pressable>
             )}
-        </View>
+        </Animated.View>
     );
 };
 
