@@ -144,8 +144,8 @@ const ProductInfoScreen = ({ route }) => {
           style={{
             textAlign: 'left',
             marginLeft: 20,
-            fontSize: 16,
-            fontWeight: 'bold',
+            fontSize: 17,
+            fontWeight: 'bold',marginTop:10
           }}
         >
           Quantity :{product.Quantity}

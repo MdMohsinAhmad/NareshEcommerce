@@ -19,6 +19,7 @@ import URL_path from '../URL';
 import Carousel from 'react-native-snap-carousel';
 import { useRef } from 'react';
 import { useIsFocused } from '@react-navigation/native'; // To detect if the current screen is focused
+import { ImageBackground } from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
   const { width } = Dimensions.get('window');
@@ -200,7 +201,7 @@ const HomeScreen = ({ navigation }) => {
           }, shimmerStyle, { width: 150 }]} />
         </View>
           :
-          <View style={styles.categoryButtonsContainer}>
+          <ImageBackground source={require('../assets/pic3.png')} style={styles.categoryButtonsContainer}>
             {[
               { label: 'Sweets', icon: require('../assets/sweets.png'), category: 'Sweet items' },
               { label: 'Milk ', icon: require('../assets/milk.png'), category: 'Milk' },
@@ -232,7 +233,7 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </Pressable>
             ))}
-          </View>}
+          </ImageBackground>}
         <View style={{ borderStyle: 'dashed', borderWidth: 1, borderColor: 'gray', marginHorizontal: 58, }}></View>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 12,
     textAlign: 'center',
-    color: '#333',
+    color: '#333',fontWeight:'bold'
   },
   selectedCategoryButton: {
     padding: 2,

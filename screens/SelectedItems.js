@@ -23,7 +23,7 @@ const SelectedItems = ({ route }) => {
 
     // Trigger the animation when the component mounts
     React.useEffect(() => {
-        scale.value = withSpring(1, { damping: 2, stiffness: 15 });
+        scale.value = withSpring(1, { damping: 2, stiffness: 12 });
     }, []);
 
     // Define an animated style inline
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     image: {
         width: 150,
         height: 120,
-        borderRadius: 10,
+        borderRadius: 20,
     },
     containerAdded: {
         marginVertical: 10,

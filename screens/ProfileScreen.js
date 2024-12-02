@@ -1,5 +1,6 @@
 import {
   Image,
+  ImageBackground,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -26,7 +27,8 @@ const ProfileScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    
+    <ImageBackground source={require('../assets/pic2.png')} style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Welcome to Dashboard</Text>
       </View>
@@ -64,7 +66,10 @@ const ProfileScreen = () => {
           <Text style={styles.cardText}>Logout</Text>
         </Pressable>
       </View>
-    </ScrollView>
+      <View>
+      </View>
+        <View style={{height:200,width:300,}}/>
+    </ImageBackground>
   );
 };
 
@@ -72,7 +77,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f7f8fa',
-    padding: 20,
+    padding: 20
   },
   header: {
     marginBottom: 30,marginTop:30
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
+    elevation: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
