@@ -13,7 +13,7 @@ import AddressScreen from '../screens/AddressScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
-import OrderScreen from '../screens/OrderScreen';
+import OrderScreen from '../screens/OrderSuccessScreen';
 import YourAccount from '../Dashboard/YourAccount';
 import OrderHistory from '../Dashboard/YourOrders';
 import CustomHeader from './orderHeader';
