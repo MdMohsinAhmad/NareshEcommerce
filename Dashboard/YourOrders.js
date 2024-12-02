@@ -82,7 +82,7 @@ const OrderHistory = () => {
 
         return (
             <View style={styles.orderCard}>
-                <Text style={styles.orderStatus}>Order Status: {item.orderStatus ? "Delivered" : "Pending"}</Text>
+                <Text style={styles.orderStatus}>Order History</Text>
                 <Text style={styles.orderDate}>Ordered on: {new Date(item.createdAt).toLocaleDateString()}</Text>
                 <Text style={item.paymentMethod === 'cash' ? styles.cashPayment : styles.onlinePayment}>
                     Payment Mode: {item.paymentMethod === 'cash' ? 'Cash on delivery' : "Paid Online"}
@@ -172,16 +172,16 @@ const styles = StyleSheet.create({
     image: { width: 100, height: 170, borderRadius: 10, marginRight: 15, borderWidth: 1, borderColor: '#e0e0e0' },
     infoContainer: { flex: 1 },
     itemName: { fontSize: 16, fontWeight: '600', color: '#333' },
-    itemDetails: { fontSize: 14, color: 'gray' },
+    itemDetails: { fontSize: 14, color: 'gray',fontWeight:'bold' },
     cancelButton: { backgroundColor: '#e74c3c', padding: 10, borderRadius: 5, alignItems: 'center' },
     cancelButtonText: { color: '#fff', fontWeight: 'bold' },
     emptyText: { textAlign: 'center', marginTop: 20, fontSize: 16, color: 'gray' },
     getStatusStyle: (status) => {
         switch (status.toLowerCase()) {
-            case 'pending': return { color: '#f39c12', fontWeight: 'bold',fontSize:20 };
-            case 'packed': return { color: '#f1c40f', fontWeight: 'bold',fontSize:20 };
-            case 'delivered': return { color: '#2ecc71', fontWeight: 'bold',fontSize:20 };
-            case 'canceled': return { color: '#e74c3c', fontWeight: 'bold',fontSize:20 };
+            case 'pending': return { color: '#f39c12', fontWeight: 'bold',fontSize:20 ,marginBottom:10};
+            case 'packed': return { color: '#f1c40f', fontWeight: 'bold',fontSize:20 ,marginBottom:10};
+            case 'delivered': return { color: '#2ecc71', fontWeight: 'bold',fontSize:20,marginBottom:10 };
+            case 'canceled': return { color: '#e74c3c', fontWeight: 'bold',fontSize:20 ,marginBottom:10};
             default: return { color: '#3498db', fontWeight: 'bold' };
         }
     }
