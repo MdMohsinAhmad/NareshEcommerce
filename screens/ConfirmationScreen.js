@@ -26,6 +26,11 @@ const ConfirmationScreen = () => {
   const [paying, setPaying] = useState(false)
   const cart = useSelector((state) => state.cart.cart);
   const deliverycharges = 40
+  const dispatch = useDispatch();
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [options, setOptions] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState('');
+  const [pageLoad, setPageLoad] = useState(true)
 
   const total = cart
     ?.map((item) => item.price * item.quantity)
@@ -41,7 +46,6 @@ const ConfirmationScreen = () => {
   const FetchALLDeliveryTOKEN = async () => {
     try {
       const response = await axios.get(`${URL_path}/deliveryboy/token`);
-      // Assuming the response has a structure like { data: { All_Push_Tokens: [{ pushToken: "..." }, ...] } }
       const tokens = response.data.All_Push_Tokens.map(item => item.pushToken);
       setPushToken(tokens);
     } catch (error) {
@@ -71,10 +75,12 @@ const ConfirmationScreen = () => {
     fetchAddresses();  // Trigger a refresh of addresses when user pulls down
   };
 
-  const dispatch = useDispatch();
-  const [selectedAddress, setSelectedAddress] = useState('');
-  const [options, setOptions] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState('');
+ 
+  useEffect(() => {
+    setTimeout(() => {
+      setPageLoad(false)
+    }, 800)
+  }, [])
 
   const handlePlaceOrderCod = async () => {
     setPaying(true)
@@ -129,8 +135,8 @@ const ConfirmationScreen = () => {
 
       if (response.status === 200) {
         setOptions(false)
-        setAddresses('')
         setSelectedOptions('')
+        setAddresses('')
         setPaying(false)
         navigation.navigate('Order');
         dispatch(cleanCart());
@@ -204,10 +210,14 @@ const ConfirmationScreen = () => {
   const [refresh, setRefresh] = useState(true)
 
   useEffect(() => {
+    setOptions(false)
+    setSelectedOptions('')
+    setSelectedAddress('')
     setTimeout(() => {
       setRefresh(false)
     }, 1000)
   }, [])
+
   if (refresh) {
     return (
       <View style={{
@@ -220,6 +230,14 @@ const ConfirmationScreen = () => {
     )
   }
 
+  if (pageLoad) {
+    return (
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+        <ActivityIndicator size="large" color="#0F70E6" />
+
+      </View>
+    )
+  }
   return (
     <ScrollView style={{ marginTop: 15 }}
       refreshControl={
