@@ -1,6 +1,6 @@
 // RequestResetPassword.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
 import axios from 'axios';
 import URL_path from '../URL';
 const RequestResetPassword = ({ navigation }) => {
@@ -36,6 +36,9 @@ const RequestResetPassword = ({ navigation }) => {
             />
             {loading ? <Button title="Sending reset link..." /> :
                 <Button title="Request Reset" onPress={handleRequestReset} />}
+            <Pressable onPress={()=>navigation.navigate('Login')} style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center', width: '100%', padding: 10, borderRadius: 10, fontSize: 16, fontWeight: 'bold' }}>
+                <Text style={{ color:'white',fontSize: 17, fontWeight: 'bold' ,backgroundColor:'#0984e3',paddingVertical:10,borderRadius:6,paddingHorizontal:20}}>Home</Text>
+            </Pressable>
         </View>
     );
 };
