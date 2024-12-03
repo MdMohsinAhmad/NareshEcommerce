@@ -4,7 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View, Alert
 } from 'react-native';
 import React, { useLayoutEffect, useState, useEffect, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,12 +13,15 @@ import { UserType } from '../UserContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import URL_path from '../URL';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import LottieView from 'lottie-react-native';
 
 const YourAccount = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false)
   const { userId } = useContext(UserType);
   const [user, setUser] = useState();
- 
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: 'Account Profile',
@@ -55,6 +58,43 @@ const YourAccount = () => {
     console.log('auth token cleared');
     navigation.replace('Login');
   };
+
+
+  const handleRequestReset = async (email) => {
+    setLoading(true)
+    try {
+      await axios.post(`${URL_path}/requestpassword/token`, { email });
+      Alert.alert('Success', 'Check your email for the reset link.');
+
+      setLoading(false)
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+      setLoading(false)
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <LottieView
+          source={require('../assets/reset.json')}
+          style={{
+            height: 280,
+            width: 320,
+            alignSelf: 'center',
+            marginTop: 40,
+            justifyContent: 'center',
+          }}
+          autoPlay
+          loop={false}
+          speed={0.7}
+        />
+        <Text style={styles.changepassword1}>Sending Email Link ...</Text>
+
+      </View>
+    )
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -79,11 +119,13 @@ const YourAccount = () => {
           <Ionicons name="call-outline" size={24} color="#007AFF" />
           <Text style={styles.infoText}>Phone: {user?.mobile || 'N/A'}</Text>
         </View>
+        <Pressable onPress={() => handleRequestReset(user?.email)} style={styles.infoRow}>
+          <MaterialIcons name="password" size={24} color="#007AFF" />
+          <Text style={styles.changepassword}>Change Password</Text>
+        </Pressable>
+
       </View>
 
-      {/* <Pressable style={styles.actionButton}>
-        <Text style={styles.actionButtonText}>Edit Profile</Text>
-      </Pressable> */}
       <Pressable style={[styles.actionButton, styles.logoutButton]} onPress={logout}>
         <Text style={styles.actionButtonText}>Logout</Text>
       </Pressable>
@@ -117,7 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: '#007AFF',resizeMode:'contain'
+    borderColor: '#007AFF', resizeMode: 'contain'
   },
   userName: {
     fontSize: 24,
@@ -150,6 +192,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
     color: '#333',
+  },
+  changepassword1: {
+    fontSize: 18,
+    marginLeft: 10,
+    color: 'black',
+    fontWeight: 'bold',},
+  changepassword: {
+    fontSize: 18,
+    marginLeft: 10,
+    color: 'white',
+    fontWeight: 'bold', borderWidth: 1, padding: 3, backgroundColor: '#03a9fc', borderRadius: 5, borderColor: '#03a9fc'
   },
   actionButton: {
     backgroundColor: '#007AFF',

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import URL_path from '../URL';
+
 const ResetPassword = ({ route }) => {
   const { token } = route.params; // Get the reset token from the navigation params
   const [newPassword, setNewPassword] = useState('');
