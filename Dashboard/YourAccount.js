@@ -26,10 +26,10 @@ const YourAccount = () => {
     navigation.setOptions({
       headerTitle: 'Account Profile',
       headerStyle: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#fff',
         shadowColor: 'transparent',
       },
-      headerTintColor: 'white',
+      headerTintColor: 'black',
     });
   }, []);
 
@@ -102,27 +102,27 @@ const YourAccount = () => {
           source={{ uri: user?.avatar || 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small/man-avatar-image-for-profile-png.png' }}
           style={styles.avatar}
         />
-        <Text style={styles.userName}>{user?.name}</Text>
-        <Text style={styles.userEmail}>{user?.email}</Text>
+        <Text style={styles.userName}>{user?.name ? user?.name :'Please wait...'}</Text>
+        <Text style={styles.userEmail}>{user?.email?user?.email:'Loading...'}</Text>
       </View>
 
       <View style={styles.infoContainer}>
         <View style={styles.infoRow}>
           <Ionicons name="person-circle-outline" size={24} color="#007AFF" />
-          <Text style={styles.infoText}>Username: {user?.name}</Text>
+          <Text style={styles.infoText}>Username: {user?.name ?user?.name:' Loading...'}</Text>
         </View>
         <View style={styles.infoRow}>
           <Ionicons name="mail-outline" size={24} color="#007AFF" />
-          <Text style={styles.infoText}>Email: {user?.email}</Text>
+          <Text style={styles.infoText}>Email: {user?.email ?user?.email:' Loading...' }</Text>
         </View>
         <View style={styles.infoRow}>
           <Ionicons name="call-outline" size={24} color="#007AFF" />
-          <Text style={styles.infoText}>Phone: {user?.mobile || 'N/A'}</Text>
+          <Text style={styles.infoText}>Phone: {user?.mobile || 'XXXXXXXXXX'}</Text>
         </View>
-        <Pressable onPress={() => handleRequestReset(user?.email)} style={styles.infoRow}>
+       {user && <Pressable onPress={() => handleRequestReset(user?.email)} style={styles.infoRow}>
           <MaterialIcons name="password" size={24} color="#007AFF" />
           <Text style={styles.changepassword}>Change Password</Text>
-        </Pressable>
+        </Pressable>}
 
       </View>
 
