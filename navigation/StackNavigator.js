@@ -30,6 +30,7 @@ import SplashScreen from '../screens/SplashScreen';
 import FoodDetails from '../screens/FoodDetails';
 import RestaurentList from '../screens/RestaurentList';
 import ContactUs from '../screens/ContactUs';
+import OrderedItemHistorry from '../screens/OrderedItemHistorry';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -100,6 +101,11 @@ const StackNavigator = () => {
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OrderItemHistory"
+          component={OrderedItemHistorry}
+          options={{ headerShown: true,headerTitle:'Ordered Item Info' }}
         />
         <Stack.Screen
           name="ResetPassword"

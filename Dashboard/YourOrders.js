@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Alert, Animated, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, Alert, Animated, TouchableOpacity, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import axios from 'axios';
 import { UserType } from '../UserContext';
 import URL_path from '../URL';
 
-const OrderHistory = () => {
+const OrderHistory = ({ navigation }) => {
     const [orders, setOrders] = useState([]);
     const { userId } = useContext(UserType);
     const [scaleValue] = useState(new Animated.Value(1));
@@ -91,7 +91,7 @@ const OrderHistory = () => {
                 <Text style={styles.total}>Total Payable: ₹ {totalPayable === 0 ? 0 : totalPayable + 40}<Text style={{ fontSize: 12, color: 'black' }}> (included delivery charges)</Text></Text>
 
                 {item.products.map((product, index) => (
-                    <View key={index} style={styles.productContainer}>
+                    <Pressable onPress={() => navigation.navigate('OrderItemHistory', {product})} key={index} style={styles.productContainer}>
                         <Image source={{ uri: product.image }} resizeMode="contain" style={styles.image} />
                         <View style={styles.infoContainer}>
                             <Text style={styles.itemName}>{product.name}</Text>
@@ -117,7 +117,7 @@ const OrderHistory = () => {
                                 </TouchableOpacity>
                             )}
                         </View>
-                    </View>
+                    </Pressable>
                 ))}
             </View>
         );
@@ -172,16 +172,16 @@ const styles = StyleSheet.create({
     image: { width: 100, height: 170, borderRadius: 10, marginRight: 15, borderWidth: 1, borderColor: '#e0e0e0' },
     infoContainer: { flex: 1 },
     itemName: { fontSize: 16, fontWeight: '600', color: '#333' },
-    itemDetails: { fontSize: 14, color: 'gray',fontWeight:'bold' },
+    itemDetails: { fontSize: 14, color: 'gray', fontWeight: 'bold' },
     cancelButton: { backgroundColor: '#e74c3c', padding: 10, borderRadius: 5, alignItems: 'center' },
     cancelButtonText: { color: '#fff', fontWeight: 'bold' },
     emptyText: { textAlign: 'center', marginTop: 20, fontSize: 16, color: 'gray' },
     getStatusStyle: (status) => {
         switch (status.toLowerCase()) {
-            case 'pending': return { color: '#f39c12', fontWeight: 'bold',fontSize:20 ,marginBottom:10};
-            case 'packed': return { color: '#f1c40f', fontWeight: 'bold',fontSize:20 ,marginBottom:10};
-            case 'delivered': return { color: '#2ecc71', fontWeight: 'bold',fontSize:20,marginBottom:10 };
-            case 'canceled': return { color: '#e74c3c', fontWeight: 'bold',fontSize:20 ,marginBottom:10};
+            case 'pending': return { color: '#f39c12', fontWeight: 'bold', fontSize: 20, marginBottom: 10 };
+            case 'packed': return { color: '#f1c40f', fontWeight: 'bold', fontSize: 20, marginBottom: 10 };
+            case 'delivered': return { color: '#2ecc71', fontWeight: 'bold', fontSize: 20, marginBottom: 10 };
+            case 'canceled': return { color: '#e74c3c', fontWeight: 'bold', fontSize: 20, marginBottom: 10 };
             default: return { color: '#3498db', fontWeight: 'bold' };
         }
     }
