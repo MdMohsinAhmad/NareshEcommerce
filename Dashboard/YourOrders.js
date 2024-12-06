@@ -91,7 +91,7 @@ const OrderHistory = ({ navigation }) => {
                 <Text style={styles.total}>Total Payable: ₹ {totalPayable === 0 ? 0 : totalPayable + 40}<Text style={{ fontSize: 12, color: 'black' }}> (included delivery charges)</Text></Text>
 
                 {item.products.map((product, index) => (
-                    <Pressable onPress={() => navigation.navigate('OrderItemHistory', {product})} key={index} style={styles.productContainer}>
+                    <Pressable onPress={() => navigation.navigate('OrderItemHistory', [product,item])} key={index} style={styles.productContainer}>
                         <Image source={{ uri: product.image }} resizeMode="contain" style={styles.image} />
                         <View style={styles.infoContainer}>
                             <Text style={styles.itemName}>{product.name}</Text>
