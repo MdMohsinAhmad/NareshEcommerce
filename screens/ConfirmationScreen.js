@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View, RefreshControl, ActivityIndicator } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserType } from '../UserContext';
@@ -32,6 +32,9 @@ const ConfirmationScreen = () => {
   const [selectedOptions, setSelectedOptions] = useState('');
   const [pageLoad, setPageLoad] = useState(true)
 
+  const [data, setData] = useState(null);
+  const [validationResult, setValidationResult] = useState(false); // To store validation status
+  const valueToValidate = selectedAddress.postalCode; // The value you want to validate against
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);
@@ -75,7 +78,7 @@ const ConfirmationScreen = () => {
     fetchAddresses();  // Trigger a refresh of addresses when user pulls down
   };
 
- 
+
   useEffect(() => {
     setTimeout(() => {
       setPageLoad(false)
@@ -84,6 +87,11 @@ const ConfirmationScreen = () => {
 
   const handlePlaceOrderCod = async () => {
     setPaying(true)
+    if (!validationResult) {
+      Alert.alert('Not Deliverable Location', 'The location you provided is not deliverable,try other location')
+      setPaying(false)
+      return
+    }
     try {
       const orderData = {
         userId: userId,
@@ -169,6 +177,11 @@ const ConfirmationScreen = () => {
   // pay with card or UPI
   const initiatePayment = async () => {
     setPaying(true)
+    if (!validationResult) {
+      setPaying(false)
+      Alert.alert('Not Deliverable Location', 'The location you provided is not deliverable,try other location')
+      return
+    }
     // Amount in INR, e.g., 500 INR
     const amount = total + deliverycharges
     const currency = 'INR';
@@ -218,6 +231,32 @@ const ConfirmationScreen = () => {
     }, 1000)
   }, [])
 
+  // Function to fetch data from the backend
+  const fetchPostalCode = async () => {
+    try {
+      const response = await axios.get(`${URL_path}/api/postalcode`);
+      console.log("==", response.data.PostalCodes)
+
+      setData(response.data.PostalCodes);
+
+      // Validate data items
+      const isValid = response.data.PostalCodes.some((item) => item.PostalCode === valueToValidate);
+      console.log(isValid)
+      setValidationResult(isValid);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      Alert.alert('Error', 'Failed to fetch data from the server.');
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedAddress.postalCode == null) {
+      fetchPostalCode();
+    }
+  }, []);
+
+
   if (refresh) {
     return (
       <View style={{
@@ -230,9 +269,12 @@ const ConfirmationScreen = () => {
     )
   }
 
+
+
+
   if (pageLoad) {
     return (
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0F70E6" />
 
       </View>
@@ -368,53 +410,6 @@ const ConfirmationScreen = () => {
                   <Text style={{ fontSize: 15, color: '#181818' }} t>
                     Pin code : {item.postalCode}
                   </Text>
-                  {/* <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 10,
-                      marginTop: 7,
-                    }}
-                  >
-                    <Pressable
-                      style={{
-                        backgroundColor: '#F5F5F5',
-                        paddingHorizontal: 10,
-                        paddingVertical: 6,
-                        borderRadius: 5,
-                        borderWidth: 0.9,
-                        borderColor: '#D0D0D0',
-                      }}
-                    >
-                      <Text>Edit</Text>
-                    </Pressable>
-
-                    <Pressable
-                      style={{
-                        backgroundColor: '#F5F5F5',
-                        paddingHorizontal: 10,
-                        paddingVertical: 6,
-                        borderRadius: 5,
-                        borderWidth: 0.9,
-                        borderColor: '#D0D0D0',
-                      }}
-                    >
-                      <Text>Remove</Text>
-                    </Pressable>
-
-                    <Pressable
-                      style={{
-                        backgroundColor: '#F5F5F5',
-                        paddingHorizontal: 10,
-                        paddingVertical: 6,
-                        borderRadius: 5,
-                        borderWidth: 0.9,
-                        borderColor: '#D0D0D0',
-                      }}
-                    >
-                      <Text>Set as Default</Text>
-                    </Pressable>
-                  </View> */}
                   <View>
                     {selectedAddress && selectedAddress._id === item?._id && (
                       <Pressable

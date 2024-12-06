@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,7 +21,7 @@ import jwt_decode from 'jwt-decode';
 const AddressScreen = ({ navigation }) => {
   const [isManualInput, setIsManualInput] = useState(true);
   const { userId, setUserId } = useContext(UserType);
-
+  const [loading, setLoading] = useState(false)
   const [address, setFormFields] = useState({
     name: '',
     mobileNo: '',
@@ -45,8 +46,7 @@ const AddressScreen = ({ navigation }) => {
     fetchUser();
   }, []);
 
-  const handleEnterAddressManually = () => {
-    setIsManualInput(true);
+  const resetFields = () => {
     setFormFields({
       name: '',
       mobileNo: '',
@@ -59,43 +59,38 @@ const AddressScreen = ({ navigation }) => {
       longitude: null,
       postalCode: null,
     })
+  }
+  const handleEnterAddressManually = () => {
+    setIsManualInput(true);
+    resetFields()
   };
 
 
 
   const handleAddAddress = async () => {
+    setLoading(true)
 
     if (!address.name || !address.mobileNo || !address.houseNo || !address.street ||
       !address.landmark || !address.city || !address.state || !address.postalCode
     ) {
       Alert.alert('Validation Error', 'Please fill in all fields before submitting.');
+      setLoading(false)
       return;
     }
 
     await axios
       .post(`${URL_path}/addresses`, { userId, address })
       .then(() => {
+        setLoading(false)
         Alert.alert('Success', 'Address added successfully!');
-        setFormFields({
-          name: '',
-          mobileNo: '',
-          houseNo: '',
-          street: '',
-          landmark: '',
-          city: '',
-          state: '',
-          latitude: '',
-          longitude: null,
-          postalCode: null,
-        })
+        resetFields()
         navigation.goBack();
       })
       .catch((error) => {
+        setLoading(false)
         console.error('Error adding address:', error);
         Alert.alert('Error', 'Failed to add address.');
       });
-    Alert.alert('Success', 'Address added successfully!');
-    // Handle the form submission logic here
   };
 
   const handleAutoFetch = async () => {
@@ -132,33 +127,27 @@ const AddressScreen = ({ navigation }) => {
   };
 
   const handleSubmitCoordinates = () => {
+    setLoading(true)
+
     if (!address.name || !address.mobileNo || !address.houseNo || !address.street ||
       !address.landmark || !address.city || !address.state || !address.postalCode ||
-       !address.latitude || !address.longitude
+      !address.latitude || !address.longitude
     ) {
       Alert.alert('Error', 'Please enter mandatory fields');
+      setLoading(false)
       return;
     }
 
     axios
       .post(`${URL_path}/addresses`, { userId, address })
       .then(() => {
+        setLoading(false)
         Alert.alert('Success', 'Address added successfully!');
-        setFormFields({
-          name: '',
-          mobileNo: '',
-          houseNo: '',
-          street: '',
-          landmark: '',
-          city: '',
-          state: '',
-          latitude: '',
-          longitude: null,
-          postalCode: null,
-        })
+        resetFields()
         navigation.goBack();
       })
       .catch((error) => {
+        setLoading(false)
         console.error('Error adding address:', error);
         Alert.alert('Error', 'Failed to add address.');
       });
@@ -189,65 +178,6 @@ const AddressScreen = ({ navigation }) => {
         {isManualInput && (
           <View style={styles.inputContainer}>
             <TextInput
-              placeholder="Full Name"
-              style={styles.input}
-              value={address.name}
-              onChangeText={(text) => setFormFields({ ...address, name: text })}
-            />
-            <TextInput
-              placeholder="Mobile Number"
-              style={styles.input}
-              value={address.mobileNo}
-              onChangeText={(text) => setFormFields({ ...address, mobileNo: text })}
-              keyboardType="phone-pad"
-            />
-            <TextInput
-              placeholder="House/Flat No"
-              style={styles.input}
-              value={address.houseNo}
-              onChangeText={(text) => setFormFields({ ...address, houseNo: text })}
-            />
-            <TextInput
-              placeholder="Street"
-              style={styles.input}
-              value={address.street}
-              onChangeText={(text) => setFormFields({ ...address, street: text })}
-            />
-            <TextInput
-              placeholder="Landmark"
-              style={styles.input}
-              value={address.landmark}
-              onChangeText={(text) => setFormFields({ ...address, landmark: text })}
-            />
-            <TextInput
-              placeholder="City"
-              style={styles.input}
-              value={address.city}
-              onChangeText={(text) => setFormFields({ ...address, city: text })}
-            />
-            <TextInput
-              placeholder="State"
-              style={styles.input}
-              value={address.state}
-              onChangeText={(text) => setFormFields({ ...address, state: text })}
-            />
-            <TextInput
-              placeholder="Pincode"
-              style={styles.input}
-              value={address.postalCode}
-              onChangeText={(text) => setFormFields({ ...address, postalCode: text })}
-              keyboardType="numeric"
-            />
-            <Pressable style={[styles.button, styles.submitButton]} onPress={handleAddAddress}>
-              <Text style={styles.buttonText}>Add Address</Text>
-            </Pressable>
-          </View>
-        )}
-
-        {/* Display name, phone, latitude, and longitude if Auto Fetch mode is active */}
-        {!isManualInput && (
-          <View style={styles.locationContainer}>
-            <TextInput
               placeholder="Full Name*"
               style={styles.input}
               value={address.name}
@@ -256,7 +186,7 @@ const AddressScreen = ({ navigation }) => {
             <TextInput
               placeholder="Mobile Number*"
               style={styles.input}
-              value={address.mobileNo}
+              value={address.mobileNo} maxLength={13}
               onChangeText={(text) => setFormFields({ ...address, mobileNo: text })}
               keyboardType="phone-pad"
             />
@@ -293,16 +223,82 @@ const AddressScreen = ({ navigation }) => {
             <TextInput
               placeholder="Pincode*"
               style={styles.input}
-              value={address.postalCode}
-              aria-disabled
+              value={address.postalCode} maxLength={6}
               onChangeText={(text) => setFormFields({ ...address, postalCode: text })}
+              keyboardType="numeric"
+            />
+            {!loading && <Pressable style={[styles.button, styles.submitButton]} onPress={handleAddAddress}>
+              <Text style={styles.buttonText}>Add Address</Text>
+            </Pressable>}
+            {loading && <Pressable style={[styles.buttonLoading, styles.submitButtonloading]} >
+              <ActivityIndicator size={40} color={'white'} />
+            </Pressable>}
+          </View>
+        )}
+
+        {/* Display name, phone, latitude, and longitude if Auto Fetch mode is active */}
+        {!isManualInput && (
+          <View style={styles.locationContainer}>
+            <TextInput
+              placeholder="Full Name*"
+              style={styles.input}
+              value={address.name}
+              onChangeText={(text) => setFormFields({ ...address, name: text })}
+            />
+            <TextInput
+              placeholder="Mobile Number*"
+              style={styles.input}
+              value={address.mobileNo} maxLength={13}
+              onChangeText={(text) => setFormFields({ ...address, mobileNo: text })}
+              keyboardType="phone-pad"
+            />
+            <TextInput
+              placeholder="House/Flat No*"
+              style={styles.input}
+              value={address.houseNo}
+              onChangeText={(text) => setFormFields({ ...address, houseNo: text })}
+            />
+            <TextInput
+              placeholder="Street*"
+              style={styles.input}
+              value={address.street}
+              onChangeText={(text) => setFormFields({ ...address, street: text })}
+            />
+            <TextInput
+              placeholder="Landmark*"
+              style={styles.input}
+              value={address.landmark}
+              onChangeText={(text) => setFormFields({ ...address, landmark: text })}
+            />
+            <TextInput
+              placeholder="City*"
+              style={styles.input}
+              value={address.city}
+              onChangeText={(text) => setFormFields({ ...address, city: text })}
+            />
+            <TextInput
+              placeholder="State*"
+              style={styles.input}
+              value={address.state}
+              // onChangeText={(text) => setFormFields({ ...address, state: text })}
+            />
+            <TextInput
+              placeholder="Pincode*"
+              style={styles.input}
+              value={address.postalCode} maxLength={6}
+              // onChangeText={(text) => setFormFields({ ...address, postalCode: text })}
               keyboardType="numeric"
             />
             <Text style={styles.locationText}>Latitude: {address.latitude}</Text>
             <Text style={styles.locationText}>Longitude: {address.longitude}</Text>
-            <Pressable style={[styles.button, styles.submitButton]} onPress={handleSubmitCoordinates}>
-              <Text style={styles.buttonText}>Submit Address</Text>
-            </Pressable>
+
+            {loading && <Pressable style={[styles.buttonLoading, styles.submitButtonloading]} >
+              <ActivityIndicator size={40} color={'white'} />
+            </Pressable>}
+
+            {!loading && <Pressable style={[styles.button, styles.submitButton]} onPress={handleSubmitCoordinates}>
+              <Text style={styles.buttonText}>Add Address</Text>
+            </Pressable>}
             <Text style={{ color: '#273c75', fontSize: 16, marginTop: 15, textAlign: 'center' }}>Use Auto Current Address is best and accurate for delivering orders.</Text>
 
           </View>
@@ -339,6 +335,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5,
   },
+  buttonLoading: {
+    flex: 1,
+    position: 'absolute',
+    padding: 50,
+    borderRadius: 8,
+    backgroundColor: '#8395a7',
+    width: '45%',
+    alignItems: 'center',
+    top: '30%',
+  },
   buttonSelected: {
     backgroundColor: '#2e86de',
   },
@@ -373,6 +379,11 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#28a745',
+    width: '100%',
+    marginTop: 15,
+  },
+  submitButtonloading: {
+    backgroundColor: '#0abde3',
     width: '100%',
     marginTop: 15,
   },

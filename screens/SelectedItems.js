@@ -23,7 +23,7 @@ const SelectedItems = ({ route }) => {
 
     // Trigger the animation when the component mounts
     React.useEffect(() => {
-        scale.value = withSpring(1, { damping: 2, stiffness: 12 });
+        scale.value = withSpring(1, { damping: 2, stiffness: 10 });
     }, []);
 
     // Define an animated style inline
