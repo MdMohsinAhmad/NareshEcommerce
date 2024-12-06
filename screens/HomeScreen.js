@@ -156,7 +156,11 @@ const HomeScreen = ({ navigation }) => {
     return () => backHandler.remove(); // Cleanup the event listener
   }, [isFocused]);
 
-
+  const categoryColors = [
+    '#f8c291', '#82ccdd', '#60a3bc', '#78e08f', '#e77f67',
+    '#fa983a', '#b8e994', '#38ada9', '#e55039', '#b71540',
+    '#079992', '#fa983a', '#BDC581', '#82589F', '#f7d794',
+  ];
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -201,6 +205,7 @@ const HomeScreen = ({ navigation }) => {
           }, shimmerStyle, { width: 150 }]} />
         </View>
           :
+
           <ImageBackground source={require('../assets/pic3.png')} style={styles.categoryButtonsContainer}>
             {[
               { label: 'Sweets', icon: require('../assets/sweets.png'), category: 'Sweet items' },
@@ -210,30 +215,35 @@ const HomeScreen = ({ navigation }) => {
               { label: 'Vegetables', icon: require('../assets/vegetable.png'), category: 'Vegetables' },
               { label: 'Chicken & Meat', icon: require('../assets/meat.png'), category: 'meat' },
               { label: 'Dry fruits & seads', icon: require('../assets/dry fruits.png'), category: 'dry fruits' },
-              { label: 'Gree and Oils', icon: require('../assets/ghee and oils.png'), category: 'Ghee and oils' },
+              { label: 'Ghee and Oils', icon: require('../assets/ghee and oils.png'), category: 'Ghee and oils' },
               { label: 'Dal,Atta & More', icon: require('../assets/dal.png'), category: 'Dal atta' },
               { label: 'Suji,Poha & More', icon: require('../assets/poha.jpg'), category: 'Suji Poha' },
               { label: 'Masala & Spices', icon: require('../assets/masala.png'), category: 'Masala and Spices' },
               { label: 'Salt & Sugar', icon: require('../assets/salt sugar.png'), category: 'Salt and Sugar' },
-              { label: 'Tea &Coffee', icon: require('../assets/tea.png'), category: 'Tea and Coffee' },
+              { label: 'Tea & Coffee', icon: require('../assets/tea.png'), category: 'Tea and Coffee' },
               { label: 'Under ₹99 & Below', icon: require('../assets/under99.png'), category: 'Under 99' },
               { label: 'Other', icon: require('../assets/other.png'), category: 'Other' },
-
             ].map((item, index) => (
               <Pressable
                 key={index}
                 onPress={() => navigation.navigate('selecteditems', item.category)}
                 style={[
                   styles.categoryButton,
+                  { backgroundColor: categoryColors[index % categoryColors.length] }, // Dynamic background color
                 ]}
               >
-                <Animated.Image entering={FadeOutDown.duration(100).springify().damping(30).mass(5)} source={item.icon} style={styles.categoryIcon} />
+                <Animated.Image
+                  entering={FadeOutDown.duration(100).springify().damping(30).mass(5)}
+                  source={item.icon}
+                  style={styles.categoryIcon}
+                />
                 <Text style={[styles.categoryText, selectedCategory === item.category]}>
                   {item.label}
                 </Text>
               </Pressable>
             ))}
-          </ImageBackground>}
+          </ImageBackground>
+        }
         <View style={{ borderStyle: 'dashed', borderWidth: 1, borderColor: 'gray', marginHorizontal: 58, }}></View>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -323,9 +333,11 @@ const styles = StyleSheet.create({
     padding: 10, backgroundColor: '#fff', elevation: 5
   },
   categoryButton: {
+    display:'flex',
     alignItems: 'center',
     width: '30%', // This ensures three items fit per row
-    marginVertical: 10,
+    marginVertical: 10, backgroundColor: 'red',
+     height: 150, borderRadius: 6, padding: 10,flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10
   },
   categoryIcon: {
     height: 60,
@@ -334,9 +346,9 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     marginTop: 5,
-    fontSize: 12,
+    fontSize: 15,
     textAlign: 'center',
-    color: '#333',fontWeight:'bold'
+    color: '#fff', fontWeight: 'bold'
   },
   selectedCategoryButton: {
     padding: 2,
