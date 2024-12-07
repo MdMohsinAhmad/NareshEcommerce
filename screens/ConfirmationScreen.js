@@ -235,8 +235,6 @@ const ConfirmationScreen = () => {
   const fetchPostalCode = async () => {
     try {
       const response = await axios.get(`${URL_path}/api/postalcode`);
-      console.log("==", response.data.PostalCodes)
-
       setData(response.data.PostalCodes);
 
       // Validate data items
@@ -251,7 +249,7 @@ const ConfirmationScreen = () => {
   };
 
   useEffect(() => {
-    if (!selectedAddress.postalCode == null) {
+    if (!selectedAddress.postalCode === null) {
       fetchPostalCode();
     }
   }, []);

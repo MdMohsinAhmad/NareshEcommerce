@@ -31,6 +31,9 @@ import FoodDetails from '../screens/FoodDetails';
 import RestaurentList from '../screens/RestaurentList';
 import ContactUs from '../screens/ContactUs';
 import OrderedItemHistorry from '../screens/OrderedItemHistorry';
+import ContentPolicy from '../screens/ContentPolicy';
+import PrivacyPolicy from '../screens/PrivacyPolicy';
+import TermsOfService from '../screens/TermsOfService';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -200,6 +203,21 @@ const StackNavigator = () => {
           name="contactUs"
           component={ContactUs}
           options={{ headerShown: true, headerTitle: 'Contact Us' }}
+        />
+        <Stack.Screen
+          name="policy"
+          component={PrivacyPolicy}
+          options={{ headerShown: true, headerTitle: 'Privacy Policy' }}
+        />
+        <Stack.Screen
+          name="contentpolicy"
+          component={ContentPolicy}
+          options={{ headerShown: true, headerTitle: 'Content Policy' }}
+        />
+        <Stack.Screen
+          name="termsservices"
+          component={TermsOfService}
+          options={{ headerShown: true, headerTitle: 'Terms of Service' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

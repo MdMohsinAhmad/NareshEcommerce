@@ -138,6 +138,11 @@ const LoginScreen = () => {
           <Text style={styles.signupText}>Don't have an account? </Text>
           <Text style={styles.signupTextsignin}>Sign Up</Text>
         </Pressable>
+
+        <Text style={{marginTop:50,color:'#dfe6e9'}}>By continuing, you agree to our</Text>
+        <Text style={{marginTop:10,}}><Text onPress={()=>navigation.navigate('termsservices')} style={{color:'#0984e3',marginRight:4}}>Terms of Service  </Text> 
+        <Text style={{color:'#ff7675',marginRight:4,textDecorationStyle:'dashed',}} onPress={()=>navigation.navigate('policy')}>Privacy Policy  </Text>
+        <Text style={{color:'#fdcb6e',marginRight:4}} onPress={()=>navigation.navigate('contentpolicy')}>Content Policy</Text></Text>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 150,
-    height: 150, borderRadius: 100,
+    height: 150, borderRadius: 50,
   },
   keyboardContainer: {
     width: '90%',

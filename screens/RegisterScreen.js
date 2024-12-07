@@ -111,6 +111,10 @@ const RegisterScreen = () => {
         <Pressable onPress={() => navigation.goBack()} style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
           <Text style={styles.footerText}>Already have an account? </Text><Text style={styles.footerTextlogin}>SignIn</Text>
         </Pressable>
+        <Text style={{marginTop:50,color:'#dfe6e9',textAlign:'center'}}>By continuing, you agree to our</Text>
+        <Text style={{marginTop:10,textAlign:'center'}}><Text onPress={()=>navigation.navigate('termsservices')} style={{color:'#0984e3',marginRight:4}}>Terms of Service  </Text> 
+        <Text style={{color:'#ff7675',marginRight:4,textDecorationStyle:'dashed',}} onPress={()=>navigation.navigate('policy')}>Privacy Policy  </Text>
+        <Text style={{color:'#fdcb6e',marginRight:4}} onPress={()=>navigation.navigate('contentpolicy')}>Content Policy</Text></Text>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -133,8 +137,7 @@ const styles = StyleSheet.create({
   },
   logoImage: {
     width: 150,
-    height: 150,
-    borderRadius: 100,
+    height: 150, borderRadius: 50,
     marginBottom: 10,
   },
   titleText: {
