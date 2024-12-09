@@ -22,6 +22,7 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false)
+  const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
 
   const handleRegister = () => {
     setLoading(true)
@@ -55,10 +56,12 @@ const RegisterScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
-        <View style={styles.logoContainer}>
-          <Image style={styles.logoImage} source={require('../assets/logo-color.png')} />
-          <Text style={styles.titleText}>Register to Your Account</Text>
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.logoContainer}>
+            <Image style={styles.logoImage} source={require('../assets/logo-color1.png')} />
+          </View>
         </View>
+        <Text style={styles.titleText}>Register to Your Account</Text>
 
         <View style={styles.inputContainer}>
           <Entypo name="user" size={24} style={styles.inputIcon} color="black" />
@@ -100,21 +103,28 @@ const RegisterScreen = () => {
             style={styles.inputField}
             placeholder="Enter your Password"
             placeholderTextColor="#888"
-            secureTextEntry
+            secureTextEntry={!passwordVisible} // Toggle password visibility 
           />
+          <Pressable onPress={() => setPasswordVisible(!passwordVisible)}>
+            <Ionicons
+              name={passwordVisible ? "eye" : "eye-off"}
+              size={24}
+              color="#6c757d"
+            />
+          </Pressable>
         </View>
 
         <Pressable onPress={handleRegister} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
-          <Text style={styles.buttonText}>{loading ? 'Registering...':'Register'}</Text>
+          <Text style={styles.buttonText}>{loading ? 'Registering...' : 'Register'}</Text>
         </Pressable>
 
         <Pressable onPress={() => navigation.goBack()} style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
           <Text style={styles.footerText}>Already have an account? </Text><Text style={styles.footerTextlogin}>SignIn</Text>
         </Pressable>
-        <Text style={{marginTop:50,color:'#dfe6e9',textAlign:'center'}}>By continuing, you agree to our</Text>
-        <Text style={{marginTop:10,textAlign:'center'}}><Text onPress={()=>navigation.navigate('termsservices')} style={{color:'#0984e3',marginRight:4}}>Terms of Service  </Text> 
-        <Text style={{color:'#ff7675',marginRight:4,textDecorationStyle:'dashed',}} onPress={()=>navigation.navigate('policy')}>Privacy Policy  </Text>
-        <Text style={{color:'#fdcb6e',marginRight:4}} onPress={()=>navigation.navigate('contentpolicy')}>Content Policy</Text></Text>
+        <Text style={{ marginTop: 50, color: '#dfe6e9', textAlign: 'center' }}>By continuing, you agree to our</Text>
+        <Text style={{ marginTop: 10, textAlign: 'center' }}><Text onPress={() => navigation.navigate('termsservices')} style={{ color: '#0984e3', marginRight: 4, fontSize: 12 }}>Terms of Service  </Text>
+          <Text style={{ color: '#ff7675', marginRight: 4, textDecorationStyle: 'dashed', fontSize: 12 }} onPress={() => navigation.navigate('policy')}>Privacy Policy  </Text>
+          <Text style={{ color: '#fdcb6e', marginRight: 4, fontSize: 12 }} onPress={() => navigation.navigate('contentpolicy')}>Content Policy</Text></Text>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -130,14 +140,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logoContainer: {
+    display: 'flex',
     alignItems: 'center',
     marginBottom: 30,
-
-
+    backgroundColor: 'white',
+    height: 120, width: 150,
+    justifyContent: 'center',
+    borderRadius: 5,
   },
   logoImage: {
-    width: 150,
-    height: 150, borderRadius: 50,
+    width: 120,
+    height: 70, borderRadius: 50,
     marginBottom: 10,
   },
   titleText: {
@@ -168,7 +181,7 @@ const styles = StyleSheet.create({
   inputField: {
     color: '#333',
     fontSize: 16,
-    flex: 1,
+    flex: 1, fontWeight: 'bold'
   },
   button: {
     backgroundColor: '#0F70E6',

@@ -79,7 +79,7 @@ const LoginScreen = () => {
       <View style={styles.logoContainer}>
         <Image
           style={styles.logo}
-          source={require('../assets/logo-color.png')}
+          source={require('../assets/logo-color1.png')}
         />
       </View>
 
@@ -140,9 +140,9 @@ const LoginScreen = () => {
         </Pressable>
 
         <Text style={{marginTop:50,color:'#dfe6e9'}}>By continuing, you agree to our</Text>
-        <Text style={{marginTop:10,}}><Text onPress={()=>navigation.navigate('termsservices')} style={{color:'#0984e3',marginRight:4}}>Terms of Service  </Text> 
-        <Text style={{color:'#ff7675',marginRight:4,textDecorationStyle:'dashed',}} onPress={()=>navigation.navigate('policy')}>Privacy Policy  </Text>
-        <Text style={{color:'#fdcb6e',marginRight:4}} onPress={()=>navigation.navigate('contentpolicy')}>Content Policy</Text></Text>
+        <Text style={{marginTop:10,}}><Text onPress={()=>navigation.navigate('termsservices')} style={{color:'#0984e3',marginRight:4,fontSize:12}}>Terms of Service  </Text> 
+        <Text style={{color:'#ff7675',marginRight:4,textDecorationStyle:'dashed',fontSize:12}} onPress={()=>navigation.navigate('policy')}>Privacy Policy  </Text>
+        <Text style={{color:'#fdcb6e',marginRight:4,fontSize:12}} onPress={()=>navigation.navigate('contentpolicy')}>Content Policy</Text></Text>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -163,11 +163,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoContainer: {
-    marginBottom: 20,
+    marginBottom: 20,height:120,width:150,backgroundColor:'white',
+    display:'flex',justifyContent:'center',alignItems:'center',borderRadius: 5,
   },
   logo: {
-    width: 150,
-    height: 150, borderRadius: 50,
+    width: 125,
+    height: 70, borderRadius: 1,
   },
   keyboardContainer: {
     width: '90%',
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     color: '#343a40',
     marginLeft: 10,
     fontSize: 16,
-    flex: 1,
+    flex: 1,fontWeight:'bold'
   },
   optionsContainer: {
     width: '100%',

@@ -34,7 +34,19 @@ const ConfirmationScreen = () => {
 
   const [data, setData] = useState(null);
   const [validationResult, setValidationResult] = useState(false); // To store validation status
-  const valueToValidate = selectedAddress.postalCode; // The value you want to validate against
+  const valueToValidate = !selectedAddress.postalCode ? null : selectedAddress.postalCode; // The value you want to validate against
+  console.log(valueToValidate)
+
+  const valid = () => {
+    const postalCodes = data.map(item => item === valueToValidate);
+    console.log('postr', postalCodes, valueToValidate)
+
+  }
+  useEffect(() => {
+    valid()
+  }, [selectedAddress])
+  // Extract only the postal code values into an array
+
   const total = cart
     ?.map((item) => item.price * item.quantity)
     .reduce((curr, prev) => curr + prev, 0);
@@ -235,23 +247,33 @@ const ConfirmationScreen = () => {
   const fetchPostalCode = async () => {
     try {
       const response = await axios.get(`${URL_path}/api/postalcode`);
-      setData(response.data.PostalCodes);
 
-      // Validate data items
-      const isValid = response.data.PostalCodes.some((item) => item.PostalCode === valueToValidate);
-      console.log(isValid)
-      setValidationResult(isValid);
+      // Check if the response data is structured correctly
+      if (Array.isArray(response.data.PostalCodes)) {
+        setData(response.data.PostalCodes);
+
+        // // Extract only the postal code values into an array
+        // const postalCodes = response.data.PostalCodes.some(item => item===valueToValidate );
+        // console.log('', postalCodes, valueToValidate)
+        // Validate if the postal code exists in the array
+        // const isValid = postalCodes.includes(valueToValidate);
+        // console.log(postalCodes); // Logs array of postal codes
+        // setValidationResult(isValid);
+      } else {
+        console.error('Invalid data format:', response.data);
+        Alert.alert('Error', 'Unexpected data format received.');
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       Alert.alert('Error', 'Failed to fetch data from the server.');
     } finally {
+      // You can add any cleanup or finalization code here if needed
     }
   };
 
+
   useEffect(() => {
-    if (!selectedAddress.postalCode === null) {
-      fetchPostalCode();
-    }
+    fetchPostalCode();
   }, []);
 
 
