@@ -7,7 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
+  ActivityIndicator,Linking 
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -92,20 +92,34 @@ const AddressScreen = ({ navigation }) => {
         Alert.alert('Error', 'Failed to add address.');
       });
   };
-
   const handleAutoFetch = async () => {
     setIsManualInput(false);
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
+      // Check location permissions
+      let { status } = await Location.getForegroundPermissionsAsync();
+  
       if (status !== 'granted') {
-        alert('Location permission denied. Unable to fetch your location.');
-        return;
+        // Ask for permissions again
+        const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
+  
+        if (newStatus !== 'granted') {
+          // If still not granted, guide the user to app settings
+          return Alert.alert(
+            'Permissions Required',
+            'Location permission is denied. To enable it, go to your device settings.',
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Open Settings', onPress: () => Linking.openSettings() },
+            ]
+          );
+        }
       }
-
+  
+      // If permissions are granted, fetch the location
       const currentLocation = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = currentLocation.coords;
       const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
-
+  
       if (result) {
         setFormFields({
           ...address,
@@ -118,14 +132,13 @@ const AddressScreen = ({ navigation }) => {
           postalCode: result.postalCode || '',
         });
       } else {
-        alert("Error", "Unable to retrieve address.");
+        Alert.alert('Error', 'Unable to retrieve address.');
       }
     } catch (error) {
       console.error('Error fetching location:', error);
-      alert('Unable to fetch location.');
+      Alert.alert('Error', 'Unable to fetch location.');
     }
   };
-
   const handleSubmitCoordinates = () => {
     setLoading(true)
 

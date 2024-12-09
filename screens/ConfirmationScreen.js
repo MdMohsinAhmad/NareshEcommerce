@@ -32,20 +32,52 @@ const ConfirmationScreen = () => {
   const [selectedOptions, setSelectedOptions] = useState('');
   const [pageLoad, setPageLoad] = useState(true)
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [validationResult, setValidationResult] = useState(false); // To store validation status
-  const valueToValidate = !selectedAddress.postalCode ? null : selectedAddress.postalCode; // The value you want to validate against
-  console.log(valueToValidate)
 
-  const valid = () => {
-    const postalCodes = data.map(item => item === valueToValidate);
-    console.log('postr', postalCodes, valueToValidate)
-
-  }
-  useEffect(() => {
-    valid()
-  }, [selectedAddress])
-  // Extract only the postal code values into an array
+  const valid = (code) => {
+    if (!code) {
+      console.log("No postal code selected");
+      setValidationResult(false);
+      return;
+    }
+  
+    if (!Array.isArray(data)) {
+      setValidationResult(false);
+      return;
+    }
+  
+    // Debugging: Check the structure of data and code
+    // console.log("Data:", data); // Should be an array of objects
+    // console.log("Code to validate:", code); // Should be a postal code like 501503
+  
+    // Ensure code is a number
+    const parsedCode = Number(code);
+    if (isNaN(parsedCode)) {
+      console.error("Invalid code format:", code);
+      setValidationResult(false);
+      return;
+    }
+  
+    // Validate against the `postalCode` property in objects
+    const isValid = data.some(item => {
+      // console.log(`Comparing ${item.postalCode} with ${parsedCode}`);
+      return item.postalCode === parsedCode;
+    });
+  
+    if (isValid) {
+      console.log("Postal code is valid");
+      setValidationResult(true);
+    } else {
+      console.log("Postal code is invalid");
+      setValidationResult(false);
+    }
+  };
+  
+  const SelectedAddress = (item) => {
+    setSelectedAddress(item);
+    valid(item.postalCode); // Validate the postal code
+  };
 
   const total = cart
     ?.map((item) => item.price * item.quantity)
@@ -89,6 +121,7 @@ const ConfirmationScreen = () => {
   const onRefresh = () => {
     fetchAddresses();  // Trigger a refresh of addresses when user pulls down
   };
+
 
 
   useEffect(() => {
@@ -252,13 +285,6 @@ const ConfirmationScreen = () => {
       if (Array.isArray(response.data.PostalCodes)) {
         setData(response.data.PostalCodes);
 
-        // // Extract only the postal code values into an array
-        // const postalCodes = response.data.PostalCodes.some(item => item===valueToValidate );
-        // console.log('', postalCodes, valueToValidate)
-        // Validate if the postal code exists in the array
-        // const isValid = postalCodes.includes(valueToValidate);
-        // console.log(postalCodes); // Logs array of postal codes
-        // setValidationResult(isValid);
       } else {
         console.error('Invalid data format:', response.data);
         Alert.alert('Error', 'Unexpected data format received.');
@@ -395,7 +421,7 @@ const ConfirmationScreen = () => {
                   <FontAwesome5 name="dot-circle" size={20} color="#008897" />
                 ) : (
                   <Entypo
-                    onPress={() => setSelectedAddress(item)}
+                    onPress={() => SelectedAddress(item)}
                     name="circle"
                     size={24}
                     color="gray"

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, Linking } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
@@ -14,6 +14,7 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { BottomModal, SlideAnimation, ModalContent } from 'react-native-modals';
 import Entypo from '@expo/vector-icons/Entypo';
 import URL_path from '../URL';
+
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState('');
@@ -34,22 +35,42 @@ const HomeHeader = () => {
     }, []);
 
     const getLocation = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Permission Denied', 'Location access is needed to fetch your current location.');
-            return;
-        }
+        try {
+            // Check current location permissions
+            const { status } = await Location.getForegroundPermissionsAsync();
 
-        const currentLocation = await Location.getCurrentPositionAsync({});
-        const { latitude, longitude } = currentLocation.coords;
-        const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
+            if (status !== 'granted') {
+                // Request permissions again
+                const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
 
-        if (result) {
-            const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
-            setAddress(formattedAddress);
-            setPincode({ postalCode: result.postalCode, city: result.city });
-        } else {
-            alert("Error", "Unable to retrieve address.");
+                if (newStatus !== 'granted') {
+                    // If still not granted, guide user to settings
+                    return Alert.alert(
+                        'Permission Required',
+                        'Location access is required to fetch your current location. Please enable it in your device settings.',
+                        [
+                            { text: 'Cancel', style: 'cancel' },
+                            { text: 'Open Settings', onPress: () => Linking.openSettings() },
+                        ]
+                    );
+                }
+            }
+
+            // If permissions are granted, fetch the current location
+            const currentLocation = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = currentLocation.coords;
+            const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+            if (result) {
+                const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
+                setAddress(formattedAddress);
+                setPincode({ postalCode: result.postalCode, city: result.city });
+            } else {
+                Alert.alert('Error', 'Unable to retrieve address.');
+            }
+        } catch (error) {
+            console.error('Error fetching location:', error);
+            Alert.alert('Error', 'Unable to fetch location.');
         }
     };
 
@@ -97,13 +118,13 @@ const HomeHeader = () => {
             setDrawerOpen(!drawerOpen);
             navigation.navigate('yourAccount')
             return
-            
+
         }
         if (num == 3) {
             setDrawerOpen(!drawerOpen);
             navigation.navigate('yourOrder')
             return
-            
+
         }
         if (num == 4) {
             setDrawerOpen(!drawerOpen);
@@ -267,8 +288,8 @@ const HomeHeader = () => {
                             <Text style={styles.menuText}>Add Address</Text>
                         </TouchableOpacity>
                         <View style={styles.underline} />
-                        <TouchableOpacity onPress={() => handleBarsButton(6)}  style={styles.menuItem}>
-                        {/* contactUs */}
+                        <TouchableOpacity onPress={() => handleBarsButton(6)} style={styles.menuItem}>
+                            {/* contactUs */}
                             <MaterialIcons name="connect-without-contact" size={24} color="#227093" />
                             <Text style={styles.menuText}>Contact Us</Text>
                         </TouchableOpacity>
@@ -348,11 +369,11 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 18,
-        color: '#227093',fontWeight:'bold'
+        color: '#227093', fontWeight: 'bold'
     },
     menuText1: {
         fontSize: 18,
-        color: 'red',fontWeight:'bold'
+        color: 'red', fontWeight: 'bold'
     },
     underline: {
         borderBottomColor: '#f3f3f3',
