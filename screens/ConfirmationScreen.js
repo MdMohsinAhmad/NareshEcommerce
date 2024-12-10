@@ -37,7 +37,6 @@ const ConfirmationScreen = () => {
 
   const valid = (code) => {
     if (!code) {
-      console.log("No postal code selected");
       setValidationResult(false);
       return;
     }
@@ -46,15 +45,10 @@ const ConfirmationScreen = () => {
       setValidationResult(false);
       return;
     }
-  
-    // Debugging: Check the structure of data and code
-    // console.log("Data:", data); // Should be an array of objects
-    // console.log("Code to validate:", code); // Should be a postal code like 501503
-  
+
     // Ensure code is a number
     const parsedCode = Number(code);
     if (isNaN(parsedCode)) {
-      console.error("Invalid code format:", code);
       setValidationResult(false);
       return;
     }

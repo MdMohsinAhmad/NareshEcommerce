@@ -221,20 +221,14 @@ const HomeHeader = () => {
                         </Pressable>
                     </ScrollView>
                     <View style={styles.pincodeSection}>
-                        {/* <View style={styles.pincodeRow}>
-                            <Entypo name="location-pin" size={22} color="#0066B2" />
-                            <Text style={styles.pincodeText}>Enter an Indian Pincode</Text>
-                        </View> */}
+                       
                         <View style={styles.pincodeRow}>
                             <Ionicons name="locate-sharp" size={22} color="#0066B2" />
                             <Text style={styles.pincodeText} onPress={getLocation}>
                                 Use My Current Location
                             </Text>
                         </View>
-                        {/* <View style={styles.pincodeRow}>
-                            <AntDesign name="earth" size={22} color="#0066B2" />
-                            <Text style={styles.pincodeText}>Deliver outside India</Text>
-                        </View> */}
+                       
                     </View>
                 </ModalContent>
             </BottomModal>

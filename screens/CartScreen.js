@@ -52,21 +52,21 @@ const CartScreen = () => {
   }, [navigation]);
 
   const cart = useSelector((state) => state.cart.cart);
-  const total = cart?.map((item) => item.price * item.quantity)
+  const total = cart?.map((product) => product.price * product.quantity)
     .reduce((curr, prev) => curr + prev, 0) || 0;
 
   const dispatch = useDispatch();
 
-  const increaseQuantity = (item) => {
-    dispatch(incrementQuantity(item));
+  const increaseQuantity = (product) => {
+    dispatch(incrementQuantity(product));
   };
 
-  const decreaseQuantity = (item) => {
-    dispatch(decrementQuantity(item));
+  const decreaseQuantity = (product) => {
+    dispatch(decrementQuantity(product));
   };
 
-  const deleteItem = (item) => {
-    dispatch(removeFromCart(item));
+  const deleteItem = (product) => {
+    dispatch(removeFromCart(product));
   };
 
   return (
@@ -93,11 +93,11 @@ const CartScreen = () => {
             marginTop: 10,
           }}
         >
-          <Text>Proceed to Buy ({cart.length}) item</Text>
+          <Text style={{fontWeight:'bold'}}>Proceed to Buy ({cart.length}) product</Text>
         </Pressable></>
         :
         <>
-          <Text style={{ textAlign: 'center', position: 'absolute', top: 90, left: 90, fontSize: 20, fontWeight: 'bold', color: 'gray' }}>No items in the Cart 😔</Text>
+          <Text style={{ textAlign: 'center', position: 'absolute', top: 90, left: 90, fontSize: 20, fontWeight: 'bold', color: 'gray' }}>No products in the Cart 😔</Text>
           <LottieView
             source={require('../assets/emptycart.json')}
             style={{
@@ -118,8 +118,8 @@ const CartScreen = () => {
 
 
       <View style={{ marginHorizontal: 10 }}>
-        {cart?.map((item, index) => (
-          <View
+        {cart?.map((product, index) => (
+          <View 
             key={index}
             style={{
               backgroundColor: 'white',
@@ -129,27 +129,38 @@ const CartScreen = () => {
               borderLeftWidth: 0,
               borderRightWidth: 0,
               borderTopWidth: 0,
+              borderColor: 'white',
+              borderRadius:6,
+             borderWidth: 2,
+             shadowColor: 'black',
+             shadowOffset: { width: 0, height: 6 },
+             shadowRadius: 15,
+             elevation: 10,backgroundColor:'white'
             }}
           >
             <Pressable
               style={{
                 marginVertical: 10,
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                justifyContent: 'space-between', 
+               
               }}
             >
               <View >
                 <Image
                   style={{ width: 140, height: 140, resizeMode: 'contain' }}
-                  source={{ uri: item?.image ? item?.image :item?.imageurl  }}
+                  source={{ uri: product?.image ? product?.image :product?.imageurl  }}
                 />
               </View >
               <View >
                 <Text numberOfLines={3} style={{ width: 150, marginTop: 10, fontSize: 15, fontWeight: 'bold', color: '#0a3d62' }}>
-                  {item?.title ? item?.title : item?.name}
+                  {product?.title ? product?.title : product?.name}
                 </Text>
                 <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 6, color: '#0a3d62' }}>
-                  Price : ₹ {item?.price}
+                  Price : ₹ {product?.price}
+                </Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', marginTop: 6, color: '#0a3d62' }}>
+                 Total Price: ₹ {product?.price} x {product?.quantity} = ₹ {product?.price*product?.quantity}
                 </Text>
                 <Pressable
                   style={{
@@ -169,29 +180,29 @@ const CartScreen = () => {
                       borderRadius: 7,
                     }}
                   >
-                    {item?.quantity > 1 ? (
+                    {product?.quantity > 1 ? (
                       <Pressable
-                        onPress={() => decreaseQuantity(item)}
+                        onPress={() => decreaseQuantity(product)}
                         style={{
-                          backgroundColor: '#D8D8D8',
+                          backgroundColor: '#eb3b5a',
                           padding: 7,
                           borderTopLeftRadius: 6,
                           borderBottomLeftRadius: 6,
                         }}
                       >
-                        <AntDesign name="minus" size={24} color="black" />
+                        <AntDesign name="minus" size={24} color="#fff" />
                       </Pressable>
                     ) : (
                       <Pressable
-                        onPress={() => deleteItem(item)}
+                        onPress={() => deleteItem(product)}
                         style={{
-                          backgroundColor: '#D8D8D8',
+                          backgroundColor: '#eb3b5a',
                           padding: 7,
                           borderTopLeftRadius: 6,
                           borderBottomLeftRadius: 6,
                         }}
                       >
-                        <AntDesign name="delete" size={24} color="black" />
+                        <AntDesign name="delete" size={24} color="#fff" />
                       </Pressable>
                     )}
 
@@ -200,44 +211,40 @@ const CartScreen = () => {
                         style={{
                           backgroundColor: 'white',
                           paddingHorizontal: 18,
-                          paddingVertical: 6,
+                          paddingVertical: 8,fontWeight:'bold'
                         }}
                       >
-                        {item?.quantity}
+                        {product?.quantity}
                       </Text>
                     </Pressable>
                     <Pressable
-                      onPress={() => increaseQuantity(item)}
+                      onPress={() => increaseQuantity(product)}
                       style={{
-                        backgroundColor: '#D8D8D8',
+                        backgroundColor: '#20bf6b',
                         padding: 7,
-                        borderTopLeftRadius: 6,
-                        borderBottomLeftRadius: 6,
+                        borderTopRightRadius: 6,
+                        borderBottomRightRadius: 6,
                       }}
                     >
-                      <Feather name="plus" size={24} color="black" />
+                      <Feather name="plus" size={24} color="#fff" />
                     </Pressable>
                   </View>
                   <Pressable
-                    onPress={() => deleteItem(item)}
+                    onPress={() => deleteItem(product)}
                     style={{
-                      backgroundColor: 'white',
+                      backgroundColor: '#fa8231',
                       paddingHorizontal: 8,
                       paddingVertical: 10,
                       borderRadius: 5,
                       borderColor: '#0a3d62',
-                      borderWidth: 0.6,
+                      borderWidth: 0.6,marginRight:6
                     }}
                   >
-                    <Text style={{ color: '#0a3d62' }}>Delete</Text>
+                    <Text style={{ color: '#fff' }}>Delete</Text>
                   </Pressable>
                 </Pressable>
               </View>
             </Pressable>
-
-
-            {/* <Text style={{ color: 'green', textAlign: 'justify',marginHorizontal:10,marginBottom:4 }} numberOfLines={4}>{item?.description}</Text> */}
-
           </View>
         ))}
       </View>

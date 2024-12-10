@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buyNowButton: {
-    backgroundColor: '#FFAC1C',
+    backgroundColor: '#0fb9b1',
     padding: 15,
     borderRadius: 20,
     justifyContent: 'center',

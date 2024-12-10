@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
+import { Easing } from 'react-native-reanimated';
 const SelectedItems = ({ route }) => {
     const selecteditem = route.params;
     const [products, setProducts] = useState([]);
@@ -23,7 +25,7 @@ const SelectedItems = ({ route }) => {
 
     // Trigger the animation when the component mounts
     React.useEffect(() => {
-        scale.value = withSpring(1, { damping: 2, stiffness: 10 });
+        scale.value = withSpring(1, { damping: 0.5, stiffness: 3 });
     }, []);
 
     // Define an animated style inline
@@ -86,7 +88,8 @@ const SelectedItems = ({ route }) => {
     const renderItem = ({ item }) => {
         const itemQuantity = cart.find((cartItem) => cartItem._id === item._id)?.quantity || 0;
         return (
-            <Pressable style={itemQuantity > 0 ? styles.containerAdded : (filteredItems.length == 1 ? styles.singleitemContainer : styles.itemContainer)} key={item._id}>
+            <Animated.View  entering={FadeInDown.delay(200)
+                 .duration(700).easing(Easing.linear)}  style={itemQuantity > 0 ? styles.containerAdded : (filteredItems.length == 1 ? styles.singleitemContainer : styles.itemContainer)} key={item._id}>
                 <TouchableOpacity onPress={() => navigation.navigate('Info', { product: item })}>
                     <Image source={{ uri: item?.image }} style={styles.image} resizeMode="contain" />
                     <Text style={styles.title} numberOfLines={1}>{item?.title}</Text>
@@ -125,12 +128,12 @@ const SelectedItems = ({ route }) => {
                         </Pressable>
                     </Pressable>
                 )}
-            </Pressable>
+            </Animated.View>
         );
     };
 
     return (
-        <Animated.View style={[styles.container, animatedStyle]}>
+        <View style={[styles.container]}>
             {loading ? (
                 <ActivityIndicator size="large" color="#13274F" style={styles.loadingIndicator} />
             ) : (
@@ -160,7 +163,7 @@ const SelectedItems = ({ route }) => {
                     </TouchableOpacity>
                 </Pressable>
             )}
-        </Animated.View>
+        </View>
     );
 };
 
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
         height: 280,
         borderColor: 'white',
         borderWidth: 2,
-        shadowColor: '#00acc1',
+        shadowColor: 'black',
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 15,
         elevation: 10,
