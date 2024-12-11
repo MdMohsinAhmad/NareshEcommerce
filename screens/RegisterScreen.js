@@ -25,33 +25,85 @@ const RegisterScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
 
   const handleRegister = () => {
-    setLoading(true)
-    if (!email || !password) {
-      Alert.alert('Notice', 'Enter All details')
-      setLoading(false)
-      return
-    }
-    const user = { name, email, mobile, password };
+    setLoading(true);
 
-    axios.post(`${URL_path}/register`, user)
-      .then(() => {
-        setLoading(false)
-        Alert.alert('Registration Successful', 'You have registered successfully');
-        setName('');
-        setEmail('');
-        setMobile('');
-        setPassword('');
-        navigation.navigate('Login')
-      })
-      .catch(() => {
-        setLoading(false)
-        Alert.alert('Registration Error', 'An error occurred during registration');
-        setName('');
-        setEmail('');
-        setMobile('');
-        setPassword('');
-      });
+    // Basic validation
+    if (!name) {
+      Alert.alert('Name Missing', 'Please enter your name');
+      setLoading(false);
+      return;
+    }
+
+    if (!email) {
+      Alert.alert('Email Missing', 'Please enter your email');
+      setLoading(false);
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+
+    if (!mobile) {
+      Alert.alert('Mobile Missing', 'Please enter your mobile number');
+      setLoading(false);
+      return;
+    }
+
+    // Mobile number validation
+    const mobileRegex = /^[0-9]{10}$/; // Assuming a 10-digit mobile number
+    if (!mobileRegex.test(mobile)) {
+      Alert.alert('Invalid Mobile', 'Mobile number should be 10 digits');
+      setLoading(false);
+      return;
+    }
+
+    if (!password) {
+      Alert.alert('Password Missing', 'Please enter a password');
+      setLoading(false);
+      return;
+    }
+
+    // Password validation
+    if (password.length < 8) {
+      Alert.alert('Password Error', 'Password must be at least 8 characters long');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const user = { name, email, mobile, password };
+      axios.post(`${URL_path}/register`, user)
+        .then((res) => {
+          console.log(res);
+          setLoading(false);
+          Alert.alert('Registration Successful', 'You have registered successfully');
+          setName('');
+          setEmail('');
+          setMobile('');
+          setPassword('');
+          navigation.navigate('Login');
+        })
+        .catch((err) => {
+          setLoading(false);
+          Alert.alert('Registration Failed', 'The provided email already exists');
+          console.log(err);
+          setName('');
+          setEmail('');
+          setMobile('');
+          setPassword('');
+        });
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      Alert.alert('Error', 'Something went wrong');
+    }
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,6 +141,7 @@ const RegisterScreen = () => {
           <TextInput
             value={mobile}
             onChangeText={(text) => setMobile(text)}
+            maxLength={10}
             style={styles.inputField}
             placeholder="Enter your Mobile No"
             placeholderTextColor="#888"
