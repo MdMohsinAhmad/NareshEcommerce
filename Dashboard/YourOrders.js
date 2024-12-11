@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     cashPayment: { fontSize: 18, color: '#e67e22', marginBottom: 15, fontWeight: 'bold' },
     onlinePayment: { fontSize: 18, color: '#27ae60', marginBottom: 15, fontWeight: 'bold' },
     productContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 5, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-    image: { width: 100, height: 170, borderRadius: 10, marginRight: 15, borderWidth: 1, borderColor: '#e0e0e0' },
+    image: { width: 100, height: 170,  marginRight: 15, },
     infoContainer: { flex: 1 },
     itemName: { fontSize: 16, fontWeight: '600', color: '#333' },
     itemDetails: { fontSize: 14, color: 'gray', fontWeight: 'bold' },
