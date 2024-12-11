@@ -14,7 +14,7 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { BottomModal, SlideAnimation, ModalContent } from 'react-native-modals';
 import Entypo from '@expo/vector-icons/Entypo';
 import URL_path from '../URL';
-
+import AntDesign from '@expo/vector-icons/AntDesign';
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState('');
@@ -221,14 +221,14 @@ const HomeHeader = () => {
                         </Pressable>
                     </ScrollView>
                     <View style={styles.pincodeSection}>
-                       
+
                         <View style={styles.pincodeRow}>
                             <Ionicons name="locate-sharp" size={22} color="#0066B2" />
                             <Text style={styles.pincodeText} onPress={getLocation}>
                                 Use My Current Location
                             </Text>
                         </View>
-                       
+
                     </View>
                 </ModalContent>
             </BottomModal>
@@ -261,37 +261,60 @@ const HomeHeader = () => {
                         gap: 20
                     }}>
                         <TouchableOpacity onPress={() => handleBarsButton(1)} style={styles.menuItem}>
-                            <Ionicons name="cart" size={24} color="#227093" />
-                            <Text style={styles.menuText}>Cart</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                                <Ionicons name="cart" size={24} color="#227093" />
+                                <Text style={styles.menuText}>Cart</Text>
+                            </View>
+                            <AntDesign name="right" size={20} color="#227093" />
                         </TouchableOpacity>
                         <View style={styles.underline} />
 
                         <TouchableOpacity onPress={() => handleBarsButton(2)} style={styles.menuItem}>
-                            <FontAwesome name="user-circle" size={24} color="#227093" />
-                            <Text style={styles.menuText}>Profile</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                                <FontAwesome name="user-circle" size={24} color="#227093" />
+                                <Text style={styles.menuText}>Profile</Text>
+                            </View>
+                            <AntDesign name="right" size={20} color="#227093" />
+
                         </TouchableOpacity>
                         <View style={styles.underline} />
 
                         <TouchableOpacity onPress={() => handleBarsButton(3)} style={styles.menuItem}>
-                            <SimpleLineIcons name="handbag" size={24} color="#227093" />
-                            <Text style={styles.menuText}>Orders</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                                <SimpleLineIcons name="handbag" size={24} color="#227093" />
+                                <Text style={styles.menuText}>Orders</Text>
+                            </View>
+                            <AntDesign name="right" size={20} color="#227093" />
+
                         </TouchableOpacity>
                         <View style={styles.underline} />
                         <TouchableOpacity onPress={() => handleBarsButton(5)} style={styles.menuItem}>
-                            <Ionicons name="location" size={24} color="#227093" />
-                            <Text style={styles.menuText}>Add Address</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                                <Ionicons name="location" size={24} color="#227093" />
+                                <Text style={styles.menuText}>Add Address</Text>
+                            </View>
+                            <AntDesign name="right" size={20} color="#227093" />
+
                         </TouchableOpacity>
                         <View style={styles.underline} />
                         <TouchableOpacity onPress={() => handleBarsButton(6)} style={styles.menuItem}>
-                            {/* contactUs */}
-                            <MaterialIcons name="connect-without-contact" size={24} color="#227093" />
-                            <Text style={styles.menuText}>Contact Us</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+
+                                <MaterialIcons name="connect-without-contact" size={24} color="#227093" />
+                                <Text style={styles.menuText}>Contact Us</Text>
+                            </View>
+                            <AntDesign name="right" size={20} color="#227093" />
+
                         </TouchableOpacity>
                         <View style={styles.underline} />
 
                         <TouchableOpacity onPress={() => handleBarsButton(4)} style={[styles.menuItem, { marginTop: 40, }]}>
-                            <MaterialCommunityIcons name="logout" size={24} color="red" />
-                            <Text style={styles.menuText1}>LogOut</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                                <MaterialCommunityIcons name="logout" size={24} color="red" />
+                                <Text style={styles.menuText1}>LogOut</Text>
+                            </View>
+                            <AntDesign name="right" size={20} color="#227093" />
+
                         </TouchableOpacity>
                     </View>
 
@@ -359,7 +382,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         width: '100%',
         paddingVertical: 4,
-        paddingHorizontal: 8,
+        paddingHorizontal: 8, justifyContent: 'space-between'
     },
     menuText: {
         fontSize: 18,

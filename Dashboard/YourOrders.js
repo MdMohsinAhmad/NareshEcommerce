@@ -95,11 +95,11 @@ const OrderHistory = ({ navigation }) => {
                         <Image source={{ uri: product.image }} resizeMode="contain" style={styles.image} />
                         <View style={styles.infoContainer}>
                             <Text style={styles.itemName}>{product.name}</Text>
-                            <Text style={styles.itemDetails}>Qty: {product.quantity}</Text>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            {/* <Text style={styles.itemDetails}>Qty: {product.quantity}</Text> */}
+                            {/* <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={styles.itemDetails}>Price: ₹ {product.price}</Text>
-                                <Text style={styles.total}>Total: ₹ {product.price * product.quantity}</Text>
-                            </View>
+                            </View> */}
+                                {/* <Text style={styles.total}>Total : ₹{product.price} x { product.quantity} = ₹{product.price * product.quantity}</Text> */}
                             <Text style={styles.itemDetails}>Order ID: {product.uniqueId}</Text>
                             <Text style={styles.getStatusStyle(product.orderStatus)}>
                                 Status: {product.orderStatus}

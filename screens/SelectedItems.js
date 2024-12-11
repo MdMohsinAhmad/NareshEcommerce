@@ -93,7 +93,7 @@ const SelectedItems = ({ route }) => {
                 <TouchableOpacity onPress={() => navigation.navigate('Info', { product: item })}>
                     <Image source={{ uri: item?.image }} style={styles.image} resizeMode="contain" />
                     <Text style={styles.title} numberOfLines={1}>{item?.title}</Text>
-                    <Text style={styles.quantity}>Qty: {item?.Quantity}</Text>
+                    <Text style={styles.quantity}> {item?.Quantity}</Text>
                     <View style={styles.priceContainer}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.rupee}>₹ </Text>

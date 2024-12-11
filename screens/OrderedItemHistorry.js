@@ -1,9 +1,19 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 
-const OrderedItemHistorry = ({route}) => {
-    const [ product,item ] = route.params
-   
+const OrderedItemHistorry = ({ route }) => {
+    const [product, item] = route.params
+    console.log(item)
+    const date = new Date(item.createdAt);
+    const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // For 12-hour clock
+    };
+    const formattedDate = date.toLocaleString("en-US", options);
     return (
         <ScrollView style={styles.container}>
             <View style={styles.card}>
@@ -14,29 +24,34 @@ const OrderedItemHistorry = ({route}) => {
                 <View style={styles.details}>
                     <Text style={styles.title}>Item : {product?.name}</Text>
                     <Text style={styles.price}>Price : ₹{product?.price}</Text>
-                    <Text style={styles.quantity}>Quantity: {product?.quantity}</Text>
+                    <Text style={styles.quantity}>Quantity: {product?.Quantity}</Text>
+                    <Text style={styles.quantity}>Qty: x{product?.quantity}</Text>
                     <Text style={styles.orderid}>Order Id: {product?.uniqueId}</Text>
-                    <Text style={styles.orderid}>PaymentId: <Text style={{color:'#0097e6'}}>{item?.paymentId}</Text></Text>
-                    <Text style={styles.orderid}>PaymentId: <Text style={{color:'#0097e6'}}>{item?.paymentMethod }</Text></Text>
-                    <Text style={[styles.status, product.orderStatus === "pending" ? styles.pending :product?.orderStatus === "canceled" ? styles.packed:styles.completed]}>
+                    {item?.paymentId && <Text style={styles.orderid}>PaymentId: <Text style={{ color: '#0097e6' }}>{item?.paymentId}</Text></Text>}
+                    <Text style={styles.orderid}>Payment Mode: <Text style={{ color: '#0097e6' }}>{item?.paymentMethod}</Text></Text>
+                    <Text style={[styles.status, product.orderStatus === "pending" ? styles.pending : product?.orderStatus === "canceled" ? styles.packed : styles.completed]}>
                         Status: {product?.orderStatus}
                     </Text>
                 </View>
 
                 {/* Total Price */}
                 <View style={styles.totalPriceContainer}>
-                    <Text style={styles.totalPriceLabel}>Total Price:</Text>
+                    <Text style={styles.totalPriceLabel}>Total Bill <Text style={{ fontSize: 10, color: '#e84118' }}>(excluded delivery charges)</Text> :</Text>
                     <Text style={styles.totalPrice}>₹{product?.totalPrice}</Text>
                 </View>
-                <Text style={styles.title}>Delivery  Details</Text>
-                <Text style={styles.Address}>Name : {item?.shippingAddress?.name}</Text>
+                <View style={{ paddingHorizontal: 16 }}>
 
-                <Text style={styles.Address}>House No : {item?.shippingAddress?.houseNo}</Text>
-                <Text style={styles.Address}>landmark : {item?.shippingAddress?.landmark}</Text>
-                <Text style={styles.Address}>Village/Area : {item?.shippingAddress?.street}</Text>
-                <Text style={styles.Address}>Phone No : {item?.shippingAddress?.mobileNo}</Text>
-                <Text style={styles.Address}>City : {item?.shippingAddress?.street}</Text>
-                <Text style={styles.Address}>Pincode : {item?.shippingAddress?.postalCode}</Text>
+                    <Text style={styles.titleDdress}>Delivery  Address</Text>
+                    <Text style={styles.orderDate}>Orderd at : {formattedDate}</Text>
+                    <Text style={styles.Address}>Name : {item?.shippingAddress?.name}</Text>
+
+                    <Text style={styles.Address}>House No : {item?.shippingAddress?.houseNo}</Text>
+                    <Text style={styles.Address}>landmark : {item?.shippingAddress?.landmark}</Text>
+                    <Text style={styles.Address}>Village/Area : {item?.shippingAddress?.street}</Text>
+                    <Text style={styles.Address}>Phone No : {item?.shippingAddress?.mobileNo}</Text>
+                    <Text style={styles.Address}>City : {item?.shippingAddress?.street}</Text>
+                    <Text style={styles.Address}>Pincode : {item?.shippingAddress?.postalCode}</Text>
+                </View>
             </View>
         </ScrollView>
     );
@@ -47,10 +62,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#f9f9f9",
         padding: 16,
-        
+
     },
     card: {
-        flex:1,
+        flex: 1,
         backgroundColor: "#fff",
         borderRadius: 10,
         overflow: "hidden",
@@ -59,11 +74,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 4,
-        marginBottom: 20,justifyContent:'center',marginTop:10
+        marginBottom: 20, justifyContent: 'center', marginTop: 10
     },
     image: {
         width: "100%",
-        height: 200,
+        height: 150,
         resizeMode: "contain",
     },
     details: {
@@ -75,10 +90,25 @@ const styles = StyleSheet.create({
         color: "#333",
         marginBottom: 8,
     },
+    titleDdress: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "#1e272e",
+        marginBottom: 8,
+        textDecorationLine: "underline",
+        textAlign: 'center',
+        marginBottom: 15
+    },
     Address: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#333",
+        color: "#485460",
+        marginBottom: 8,
+    },
+    orderDate: {
+        fontSize: 12,
+        fontWeight: "bold",
+        color: "#e84118",
         marginBottom: 8,
     },
     price: {
@@ -93,22 +123,22 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     orderid: {
-        fontSize: 18,
+        fontSize: 16,
         color: "#000",
-        marginBottom: 8,fontWeight:'bold'
+        marginBottom: 8, fontWeight: 'bold'
     },
     status: {
         fontSize: 16,
         fontWeight: "bold",
     },
     pending: {
-        color: "#e67e22",fontSize:20
+        color: "#e67e22", fontSize: 20
     },
     completed: {
-        color: "#2ecc71",fontSize:20
+        color: "#2ecc71", fontSize: 20
     },
     packed: {
-        color: "red",fontSize:20
+        color: "red", fontSize: 20
     },
     totalPriceContainer: {
         backgroundColor: "#f5f5f5",

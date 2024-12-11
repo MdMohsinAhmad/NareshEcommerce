@@ -11,7 +11,6 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const ProfileScreen = () => {
   const navigation = useNavigation();
 
