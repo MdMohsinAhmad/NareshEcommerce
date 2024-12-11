@@ -7,7 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,Linking 
+  ActivityIndicator, Linking
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -97,11 +97,11 @@ const AddressScreen = ({ navigation }) => {
     try {
       // Check location permissions
       let { status } = await Location.getForegroundPermissionsAsync();
-  
+
       if (status !== 'granted') {
         // Ask for permissions again
         const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
-  
+
         if (newStatus !== 'granted') {
           // If still not granted, guide the user to app settings
           return Alert.alert(
@@ -114,12 +114,12 @@ const AddressScreen = ({ navigation }) => {
           );
         }
       }
-  
+
       // If permissions are granted, fetch the location
       const currentLocation = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = currentLocation.coords;
       const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
-  
+
       if (result) {
         setFormFields({
           ...address,
@@ -130,6 +130,8 @@ const AddressScreen = ({ navigation }) => {
           street: result.city || '',
           state: result.region || '',
           postalCode: result.postalCode || '',
+          city: result.city || '',
+          landmark: result.street || result.city
         });
       } else {
         Alert.alert('Error', 'Unable to retrieve address.');
@@ -275,25 +277,25 @@ const AddressScreen = ({ navigation }) => {
               placeholder="Street*"
               style={styles.input}
               value={address.street}
-              onChangeText={(text) => setFormFields({ ...address, street: text })}
+              // onChangeText={(text) => setFormFields({ ...address, street: text })}
             />
             <TextInput
               placeholder="Landmark*"
               style={styles.input}
               value={address.landmark}
-              onChangeText={(text) => setFormFields({ ...address, landmark: text })}
+              // onChangeText={(text) => setFormFields({ ...address, landmark: text })}
             />
             <TextInput
               placeholder="City*"
               style={styles.input}
               value={address.city}
-              onChangeText={(text) => setFormFields({ ...address, city: text })}
+              // onChangeText={(text) => setFormFields({ ...address, city: text })}
             />
             <TextInput
               placeholder="State*"
               style={styles.input}
               value={address.state}
-              // onChangeText={(text) => setFormFields({ ...address, state: text })}
+            // onChangeText={(text) => setFormFields({ ...address, state: text })}
             />
             <TextInput
               placeholder="Pincode*"
@@ -302,8 +304,8 @@ const AddressScreen = ({ navigation }) => {
               // onChangeText={(text) => setFormFields({ ...address, postalCode: text })}
               keyboardType="numeric"
             />
-            <Text style={styles.locationText}>Latitude: {address.latitude}</Text>
-            <Text style={styles.locationText}>Longitude: {address.longitude}</Text>
+            {/* <Text style={styles.locationText}>Latitude: {address.latitude}</Text>
+            <Text style={styles.locationText}>Longitude: {address.longitude}</Text> */}
 
             {loading && <Pressable style={[styles.buttonLoading, styles.submitButtonloading]} >
               <ActivityIndicator size={40} color={'white'} />
