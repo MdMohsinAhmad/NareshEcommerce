@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         paddingHorizontal: 4,
         paddingTop: Platform.OS === 'android' ? 10 : 0,
+        paddingBottom:46
     },
     listContainer: {
         paddingBottom: 13,

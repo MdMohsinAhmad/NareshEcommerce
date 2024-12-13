@@ -21,7 +21,7 @@ import {
 } from '../redux/CartReducer';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import * as Location from 'expo-location';
-
+import BANNER from '../assets/ban.jpg'
 const ProductInfoScreen = ({ route }) => {
   const { product } = route.params;
   const { width } = Dimensions.get('window');
@@ -119,21 +119,22 @@ const ProductInfoScreen = ({ route }) => {
       transform: [{ translateY: translateYAnim }],
     }}>
       <ScrollView style={{ marginTop: 0, flex: 1, backgroundColor: '#fff' }}>
-        <View style={styles.container}>
+          <Image source={require('../assets/ban.jpg')} style={{height:66,resizeMode:'contain',position:'absolute',zIndex:99,right:22,top:-3}}/>
           <Text
             style={{
               position: 'absolute',
-              zIndex: 999,
-              left: 12,
-              backgroundColor: '#FFC72C',
+              zIndex: 99,
+              left: 7,
+              backgroundColor: 'transparent',
               borderRadius: 10,
               padding: 6,
-              top: 12,
+              top: 14,
               fontWeight: 'bold',
             }}
           >
             {((product.MRP - product.price) * 100 / product.MRP).toFixed(1)}% off
           </Text>
+        <View style={styles.container}>
           <Image source={{ uri: product.image }} style={styles.image} />
           <Text style={styles.title}>{product.title}</Text>
           <Text style={styles.description}>{product.description}</Text>
@@ -225,8 +226,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
-    width: '100%',
-    height: 230,
+    width: 200,
+    height: 200,
     borderRadius: 10,
     marginBottom: 20,
     resizeMode: 'contain',
