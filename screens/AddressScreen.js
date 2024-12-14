@@ -7,7 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator, Linking, PermissionsAndroid, Platform
+  ActivityIndicator, Linking, PermissionsAndroid, Platform,Vibration 
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -77,7 +77,7 @@ const AddressScreen = ({ navigation }) => {
       setLoading(false)
       return;
     }
-
+    Vibration.vibrate(100);
     await axios
       .post(`${URL_path}/addresses`, { userId, address })
       .then(() => {
@@ -179,7 +179,7 @@ const AddressScreen = ({ navigation }) => {
       setLoading(false)
       return;
     }
-
+    Vibration.vibrate(100);
     axios
       .post(`${URL_path}/addresses`, { userId, address })
       .then(() => {

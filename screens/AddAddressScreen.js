@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, Alert,Vibration } from 'react-native';
 import { MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -26,6 +26,7 @@ const AddAddressScreen = () => {
   };
 
   const deleteAddress = async (addressId) => {
+    Vibration.vibrate(100);
     try {
       await axios.delete(`${URL_path}/api/user/${userId}/address/${addressId}`);
       Alert.alert('Success', 'Address deleted successfully');
