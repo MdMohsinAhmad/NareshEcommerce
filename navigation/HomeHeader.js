@@ -34,31 +34,97 @@ const HomeHeader = () => {
         getLocation();
     }, []);
 
+    // const getLocation = async () => {
+    //     try {
+    //         // Check current location permissions
+    //         const { status } = await Location.getForegroundPermissionsAsync();
+
+    //         if (status !== 'granted') {
+    //             // Request permissions again
+    //             const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
+
+    //             if (newStatus !== 'granted') {
+    //                 // If still not granted, guide user to settings
+    //                 return Alert.alert(
+    //                     'Permission Required',
+    //                     'Location access is required to fetch your current location. Please enable it in your device settings.',
+    //                     [
+    //                         { text: 'Cancel', style: 'cancel' },
+    //                         { text: 'Open Settings', onPress: () => Linking.openSettings() },
+    //                     ]
+    //                 );
+    //             }
+    //         }
+
+    //         // If permissions are granted, fetch the current location
+    //         const currentLocation = await Location.getCurrentPositionAsync({});
+    //         const { latitude, longitude } = currentLocation.coords;
+    //         const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+    //         if (result) {
+    //             const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
+    //             setAddress(formattedAddress);
+    //             setPincode({ postalCode: result.postalCode, city: result.city });
+    //         } else {
+    //             Alert.alert('Error', 'Unable to retrieve address.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching location:', error);
+    //         Alert.alert('Error', 'Unable to fetch location.');
+    //     }
+    // };
     const getLocation = async () => {
         try {
-            // Check current location permissions
-            const { status } = await Location.getForegroundPermissionsAsync();
+            // Check for current location permissions
+            let { status } = await Location.getForegroundPermissionsAsync();
 
             if (status !== 'granted') {
-                // Request permissions again
-                const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
-
-                if (newStatus !== 'granted') {
-                    // If still not granted, guide user to settings
-                    return Alert.alert(
-                        'Permission Required',
-                        'Location access is required to fetch your current location. Please enable it in your device settings.',
-                        [
-                            { text: 'Cancel', style: 'cancel' },
-                            { text: 'Open Settings', onPress: () => Linking.openSettings() },
-                        ]
+                // For Android, request location permissions with custom dialog (if applicable)
+                if (Platform.OS === 'android') {
+                    const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                        {
+                            title: 'Location Access Required',
+                            message:
+                                'Order Karo requires access to your location to fetch your current address.',
+                            buttonNeutral: 'Ask Me Later',
+                            buttonNegative: 'Cancel',
+                            buttonPositive: 'OK',
+                        }
                     );
+
+                    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                        return Alert.alert(
+                            'Permission Required',
+                            'Location access is required to fetch your current location. Please enable it in your device settings.',
+                            [
+                                { text: 'Cancel', style: 'cancel' },
+                                { text: 'Open Settings', onPress: () => Linking.openSettings() },
+                            ]
+                        );
+                    }
+                } else {
+                    // For iOS or Expo-based apps, request permissions again
+                    const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
+
+                    if (newStatus !== 'granted') {
+                        return Alert.alert(
+                            'Permission Required',
+                            'Location access is required to fetch your current location. Please enable it in your device settings.',
+                            [
+                                { text: 'Cancel', style: 'cancel' },
+                                { text: 'Open Settings', onPress: () => Linking.openSettings() },
+                            ]
+                        );
+                    }
                 }
             }
 
-            // If permissions are granted, fetch the current location
+            // Fetch the current location
             const currentLocation = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = currentLocation.coords;
+
+            // Reverse geocode the location
             const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
 
             if (result) {
