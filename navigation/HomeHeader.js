@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, Linking } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, Linking, PermissionsAndroid, Platform, Alert } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
@@ -15,6 +15,7 @@ import { BottomModal, SlideAnimation, ModalContent } from 'react-native-modals';
 import Entypo from '@expo/vector-icons/Entypo';
 import URL_path from '../URL';
 import AntDesign from '@expo/vector-icons/AntDesign';
+
 const HomeHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState('');
@@ -24,102 +25,81 @@ const HomeHeader = () => {
     const [address, setAddress] = useState('');
     const [pincode, setPincode] = useState([]);
     const [addresses, setAddresses] = useState([]);
+    const [permission, setPermission] = useState(false)
+    const [permissionDrawer, setPermissionDrawer] = useState(false)
 
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
         setOpen(!open);
+    };
+    const togglePermissionDrawer = () => {
+        setPermissionDrawer(!permissionDrawer);
     };
 
     useEffect(() => {
         getLocation();
     }, []);
 
-    // const getLocation = async () => {
-    //     try {
-    //         // Check current location permissions
-    //         const { status } = await Location.getForegroundPermissionsAsync();
 
-    //         if (status !== 'granted') {
-    //             // Request permissions again
-    //             const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
-
-    //             if (newStatus !== 'granted') {
-    //                 // If still not granted, guide user to settings
-    //                 return Alert.alert(
-    //                     'Permission Required',
-    //                     'Location access is required to fetch your current location. Please enable it in your device settings.',
-    //                     [
-    //                         { text: 'Cancel', style: 'cancel' },
-    //                         { text: 'Open Settings', onPress: () => Linking.openSettings() },
-    //                     ]
-    //                 );
-    //             }
-    //         }
-
-    //         // If permissions are granted, fetch the current location
-    //         const currentLocation = await Location.getCurrentPositionAsync({});
-    //         const { latitude, longitude } = currentLocation.coords;
-    //         const [result] = await Location.reverseGeocodeAsync({ latitude, longitude });
-
-    //         if (result) {
-    //             const formattedAddress = `${result.street || ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''} - ${result.postalCode || ''}`;
-    //             setAddress(formattedAddress);
-    //             setPincode({ postalCode: result.postalCode, city: result.city });
-    //         } else {
-    //             Alert.alert('Error', 'Unable to retrieve address.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching location:', error);
-    //         Alert.alert('Error', 'Unable to fetch location.');
-    //     }
-    // };
     const getLocation = async () => {
+
         try {
-            // Check for current location permissions
+            // setPermission(true)
+            // Check location permissions
             let { status } = await Location.getForegroundPermissionsAsync();
 
+            // Request location permissions if not already granted
             if (status !== 'granted') {
-                // For Android, request location permissions with custom dialog (if applicable)
+                setPermission(true)
+                // For Android
                 if (Platform.OS === 'android') {
                     const granted = await PermissionsAndroid.request(
                         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                        {
-                            title: 'Location Access Required',
-                            message:
-                                'Order Karo requires access to your location to fetch your current address.',
-                            buttonNeutral: 'Ask Me Later',
-                            buttonNegative: 'Cancel',
-                            buttonPositive: 'OK',
-                        }
+                        // {
+                        //     title: 'Location Access Required',
+                        //     message: 'Order Karo needs access to your location to automatically fetch your address.',
+                        //     buttonNeutral: 'Ask Me Later',
+                        //     buttonNegative: 'Cancel',
+                        //     buttonPositive: 'OK',
+                        // }
                     );
 
                     if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-                        return Alert.alert(
-                            'Permission Required',
-                            'Location access is required to fetch your current location. Please enable it in your device settings.',
-                            [
-                                { text: 'Cancel', style: 'cancel' },
-                                { text: 'Open Settings', onPress: () => Linking.openSettings() },
-                            ]
-                        );
+                        setPermission(true)
+                        await AsyncStorage.setItem('locationPrompted', 'true'); // Mark as prompted
+                        return setPermissionDrawer(true)
+                        //   Alert.alert(
+                        //     'Permissions Required',
+                        //     'Location permission is denied. To enable it, go to your device settings.',
+                        //     [
+
+                        //         { text: 'Open Settings', onPress: () => Linking.openSettings() },
+                        //     ]
+                        // );
                     }
-                } else {
-                    // For iOS or Expo-based apps, request permissions again
+                }
+                // For iOS/Expo
+                else {
+                    setPermission(false)
                     const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
 
                     if (newStatus !== 'granted') {
-                        return Alert.alert(
-                            'Permission Required',
-                            'Location access is required to fetch your current location. Please enable it in your device settings.',
-                            [
-                                { text: 'Cancel', style: 'cancel' },
-                                { text: 'Open Settings', onPress: () => Linking.openSettings() },
-                            ]
-                        );
+                        setPermission(true)
+                        await AsyncStorage.setItem('locationPrompted', 'true'); // Mark as prompted
+                        return setPermissionDrawer(true)
+                        //  Alert.alert(
+                        //     'Permissions Required',
+                        //     'Location permission is denied. To enable it, go to your device settings.',
+                        //     [
+                        //         { text: 'Cancel', style: 'default' },
+                        //         { text: 'Open Settings', onPress: () => Linking.openSettings() },
+                        //     ]
+                        // );
                     }
+                    setPermission(false)
                 }
             }
-
+            // setPermission(false)
             // Fetch the current location
             const currentLocation = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = currentLocation.coords;
@@ -139,6 +119,25 @@ const HomeHeader = () => {
             Alert.alert('Error', 'Unable to fetch location.');
         }
     };
+
+    const OnpressLocationGrant = () => {
+        Linking.openSettings()
+    }
+    // Trigger location request on app launch
+    const checkAndRequestLocation = async () => {
+        const wasPrompted = await AsyncStorage.getItem('locationPrompted');
+
+        if (wasPrompted !== 'true') {
+            // If the user wasn't prompted before or accepted, try to fetch location
+            await getLocation();
+        } else {
+            console.log('Location permission previously denied, waiting for user action.');
+        }
+    };
+
+    useEffect(() => {
+        checkAndRequestLocation();
+    }, []);
 
     const { userId, setUserId } = useContext(UserType);
 
@@ -298,6 +297,27 @@ const HomeHeader = () => {
                     </View>
                 </ModalContent>
             </BottomModal>
+
+
+            {permission && <BottomModal
+                onBackdropPress={() => togglePermissionDrawer(!permissionDrawer)}
+                swipeDirection={['up', 'down']}
+                swipeThreshold={200}
+                modalAnimation={new SlideAnimation({ slideFrom: 'bottom' })}
+                visible={permissionDrawer}
+            >
+                <ModalContent style={styles.modalContentLocation}>
+                    <Text style={styles.modalTitlelocation}>Location permission has been denied.</Text>
+                    <Text style={styles.modalTitlelocation}>We need your permission to fetch your current location.</Text>
+                    <View style={styles.modalHeaderlocation}>
+                        <Pressable style={{ backgroundColor: '#0984e3', padding: 20, borderRadius: 12, marginTop: -70 }}>
+
+                            <Text onPress={OnpressLocationGrant} style={{ color: 'white', fontWeight: 'bold', fontSize: 17 }}>Grant access</Text>
+                        </Pressable>
+                    </View>
+
+                </ModalContent>
+            </BottomModal>}
 
 
             {drawerOpen && (
@@ -509,14 +529,31 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '100%',
-        height: 420,
+        height: 420, backgroundColor: '#fff'
+    },
+    modalContentLocation: {
+        width: '100%',
+        height: 300, backgroundColor: '#fff'
     },
     modalHeader: {
         marginBottom: 8,
+
+    },
+    modalHeaderlocation: {
+        marginBottom: 8,
+        display: 'flex',
+        height: '100%',
+        borderRadius: 4, justifyContent: 'center',
+        alignItems: 'center',
     },
     modalTitle: {
-        fontSize: 16,
-        fontWeight: '500',
+        fontSize: 18,
+        fontWeight: '500', fontWeight: 'bold', textAlign: 'center', lineHeight: 29
+    },
+    modalTitlelocation: {
+        fontSize: 18,
+        fontWeight: '500', fontWeight: 'bold',
+         textAlign: 'center', lineHeight: 29,color:'#2c3e50'
     },
     modalSubtitle: {
         marginTop: 5,
@@ -533,10 +570,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.2,
         shadowRadius: 10, height: 110,
-
-        // Android shadow
         elevation: 5,
-        // marginBottom:10,
     },
     // 
     selectedCard: {
@@ -561,7 +595,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'lightblue',
         borderRadius: 8,
-        marginVertical: 5, height: 112, shadowColor: '#000',
+        marginVertical: 5, height: 112,
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.2,
         shadowRadius: 10, height: 110,

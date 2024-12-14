@@ -7,7 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator, Linking
+  ActivityIndicator, Linking, PermissionsAndroid, Platform
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -92,29 +92,55 @@ const AddressScreen = ({ navigation }) => {
         Alert.alert('Error', 'Failed to add address.');
       });
   };
+
   const handleAutoFetch = async () => {
     setIsManualInput(false);
+    setLoading(true)
     try {
       // Check location permissions
       let { status } = await Location.getForegroundPermissionsAsync();
-
       if (status !== 'granted') {
-        // Ask for permissions again
-        const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
-
-        if (newStatus !== 'granted') {
-          // If still not granted, guide the user to app settings
-          return Alert.alert(
-            'Permissions Required',
-            'Location permission is denied. To enable it, go to your device settings.',
-            [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Open Settings', onPress: () => Linking.openSettings() },
-            ]
+        if (Platform.OS === 'android') {
+          // Request location permissions with custom dialog on Android
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: 'Location Access Required',
+              message:
+                'Order Karo needs access to your location to automatically fetch your address.',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            }
           );
+
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            return Alert.alert(
+              'Permissions Required',
+              'Location permission is denied. To enable it, go to your device settings.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Open Settings', onPress: () => Linking.openSettings() },
+              ]
+            );
+          }
+        } else {
+          // Request location permissions for iOS/Expo
+          const { status: newStatus } = await Location.requestForegroundPermissionsAsync();
+
+          if (newStatus !== 'granted') {
+            return Alert.alert(
+              'Permissions Required',
+              'Location permission is denied. To enable it, go to your device settings.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Open Settings', onPress: () => Linking.openSettings() },
+              ]
+            );
+          }
         }
       }
-
+      setLoading(false)
       // If permissions are granted, fetch the location
       const currentLocation = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = currentLocation.coords;
@@ -131,7 +157,7 @@ const AddressScreen = ({ navigation }) => {
           state: result.region || '',
           postalCode: result.postalCode || '',
           city: result.city || '',
-          landmark: result.street || result.city
+          landmark: result.street || result.city,
         });
       } else {
         Alert.alert('Error', 'Unable to retrieve address.');
@@ -141,6 +167,7 @@ const AddressScreen = ({ navigation }) => {
       Alert.alert('Error', 'Unable to fetch location.');
     }
   };
+
   const handleSubmitCoordinates = () => {
     setLoading(true)
 
@@ -172,7 +199,6 @@ const AddressScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
-        <Text style={styles.title}>Add a New Address</Text>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -277,19 +303,19 @@ const AddressScreen = ({ navigation }) => {
               placeholder="Street*"
               style={styles.input}
               value={address.street}
-              // onChangeText={(text) => setFormFields({ ...address, street: text })}
+            // onChangeText={(text) => setFormFields({ ...address, street: text })}
             />
             <TextInput
               placeholder="Landmark*"
               style={styles.input}
               value={address.landmark}
-              // onChangeText={(text) => setFormFields({ ...address, landmark: text })}
+            // onChangeText={(text) => setFormFields({ ...address, landmark: text })}
             />
             <TextInput
               placeholder="City*"
               style={styles.input}
               value={address.city}
-              // onChangeText={(text) => setFormFields({ ...address, city: text })}
+            // onChangeText={(text) => setFormFields({ ...address, city: text })}
             />
             <TextInput
               placeholder="State*"
@@ -326,7 +352,7 @@ const AddressScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: '#f7f7f7', paddingTop: 25
+    backgroundColor: '#f7f7f7', paddingTop: 2
   },
   container: {
     padding: 20,

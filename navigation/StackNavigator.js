@@ -145,7 +145,7 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Add"
           component={AddressScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true,headerTitle: 'Add Address' }}
         />
         <Stack.Screen
           name="Confirm"
