@@ -27,7 +27,6 @@
     "expo-constants": "^15.4.6",
     "expo-dev-client": "~3.3.12",
     "expo-location": "~16.5.5",
-    "expo-maps": "^0.6.1",
     "expo-modules-core": "~1.11.14",
     "expo-splash-screen": "~0.26.5",
     "expo-status-bar": "~1.11.1",
