@@ -5,7 +5,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       // Use 'replace' to ensure the SplashScreen is replaced in the stack
-      navigation.replace('Login');
+      navigation.replace('introSlider');
     }, 2000);
 
     return () => clearTimeout(timeout); // Cleanup timeout if the component unmounts

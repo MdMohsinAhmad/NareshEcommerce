@@ -34,6 +34,7 @@ import OrderedItemHistorry from '../screens/OrderedItemHistorry';
 import ContentPolicy from '../screens/ContentPolicy';
 import PrivacyPolicy from '../screens/PrivacyPolicy';
 import TermsOfService from '../screens/TermsOfService';
+import IntroSlider from '../screens/IntroSlider';
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -62,7 +63,7 @@ const StackNavigator = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
-            headerShown:false,
+            headerShown: false,
             tabBarLabelStyle: { color: '#0a3d62' },
             tabBarIcon: ({ focused }) =>
               focused ? (
@@ -108,7 +109,7 @@ const StackNavigator = () => {
         <Stack.Screen
           name="OrderItemHistory"
           component={OrderedItemHistorry}
-          options={{ headerShown: true,headerTitle:'Ordered Item Info' }}
+          options={{ headerShown: true, headerTitle: 'Ordered Item Info' }}
         />
         <Stack.Screen
           name="ResetPassword"
@@ -145,7 +146,7 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Add"
           component={AddressScreen}
-          options={{ headerShown: true,headerTitle: 'Add Address' }}
+          options={{ headerShown: true, headerTitle: 'Add Address' }}
         />
         <Stack.Screen
           name="Confirm"
@@ -172,7 +173,7 @@ const StackNavigator = () => {
         <Stack.Screen
           name="yourAccount"
           component={YourAccount}
-          options={{ headerShown: true,headerTitle: 'Account', }}
+          options={{ headerShown: true, headerTitle: 'Account', }}
         />
         <Stack.Screen
           name="selecteditems"
@@ -218,6 +219,11 @@ const StackNavigator = () => {
           name="termsservices"
           component={TermsOfService}
           options={{ headerShown: true, headerTitle: 'Terms of Service' }}
+        />
+        <Stack.Screen
+          name="introSlider"
+          component={IntroSlider}
+          options={{ headerShown: false, }}
         />
       </Stack.Navigator>
     </NavigationContainer>
